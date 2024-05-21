@@ -9,7 +9,7 @@ import {
     View,
 } from 'react-native';
 import { obtainAllGroupsData } from '../../config/api';
-import {handleImageChange, obtainImgRoute} from "../../utils/ImageUtils";
+import { handleImageChange, obtainImgRoute } from "../../utils/ImageUtils";
 
 const ViewAllGroupsScreen = ({ route, navigation }) => {
     const [groups, setGroups] = useState(null);
@@ -47,11 +47,10 @@ const ViewAllGroupsScreen = ({ route, navigation }) => {
                         />
                         <View style={styles.cardContent}>
                             <Text style={styles.groupName}>{groupDetail.Group.name}</Text>
-                            <Text style={styles.groupDescription}>{groupDetail.Group.description}</Text>
                             <Text style={styles.groupDates}>
                                 {`Del ${new Date(groupDetail.Group.arrivalDate).toLocaleDateString()} al ${new Date(groupDetail.Group.departureDate).toLocaleDateString()}`}
                             </Text>
-                            <Text style={styles.userEmail}>{groupDetail.User.email}</Text>
+                            <Text style={styles.vehicleName}>{groupDetail.Group.VehiclePerson.Car.name}</Text>
                             <TouchableOpacity style={styles.detailsButton} onPress={() => handleDetails(groupDetail.GroupId)}>
                                 <Text style={styles.detailsButtonText}>Ver Detalles</Text>
                             </TouchableOpacity>
@@ -101,18 +100,13 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#333',
     },
-    groupDescription: {
-        fontSize: 14,
-        color: '#666',
-        marginVertical: 5,
-    },
     groupDates: {
         fontSize: 12,
         color: '#999',
     },
-    userEmail: {
-        fontSize: 12,
-        color: '#999',
+    vehicleName: {
+        fontSize: 14,
+        color: '#666',
         marginVertical: 5,
     },
     detailsButton: {

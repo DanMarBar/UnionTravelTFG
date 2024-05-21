@@ -25,8 +25,10 @@ import {
 import {obtainImgRoute} from '../../utils/ImageUtils';
 import {mapStyle} from "../../utils/MapUtils";
 import {obtainAllUserInfo} from "../../utils/UserUtils";
+import ProtectedData from "../../config/ProtectedData";
+import config from "../../config/ProtectedData";
 
-const GOOGLE_MAPS_APIKEY = 'AIzaSyAIQm0By7ivlEQO9hgknMHJ2cfrQ2z1__U';
+const GOOGLE_MAPS_APIKEY = config.googleMapsApiKey;
 
 const ViewGroupDetailsScreen = ({route, navigation}) => {
     const [group, setGroup] = useState(null);
