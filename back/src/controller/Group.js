@@ -1,5 +1,10 @@
 import Group from "../model/GroupModel.js";
 import GroupModel from "../model/GroupModel.js";
+import PlaceModel from "../model/PlaceModel.js";
+import VehiclePersonModel from "../model/VehiclePersonModel.js";
+import UserModel from "../model/UserModel.js";
+import GroupPersonModel from "../model/GroupPersonModel.js";
+import VehicleModel from "../model/VehicleModel.js";
 
 // Crea un grupo
 export const createGroup = async (req, res) => {
@@ -31,16 +36,39 @@ export const getAllGroups = async (req, res) => {
     }
 };
 
-// Obtiene todos los grupos con toda la info de las tablas user, vehiculo...
 export const getAllGroupsWithAllInfo = async (req, res) => {
     try {
-        const groups = await Group.findAll();
+        const groups = await Group.findAll({
+            include: [
+                {
+                    model: PlaceModel,
+                },
+                {
+                    model: VehiclePersonModel,
+                    include: [
+                        {
+                            model: VehicleModel,
+                        },
+                    ]
+                },
+                {
+                    model: GroupPersonModel,
+                    include: [
+                        {
+                            model: UserModel,
+                        }
+                    ]
+                },
+            ]
+        });
+
         return res.json(groups);
     } catch (error) {
         console.error(error);
         return res.status(500).send("Error al obtener los grupos");
     }
 };
+
 
 // Obtiene un grupo por ID
 export const getGroupById = async (req, res) => {

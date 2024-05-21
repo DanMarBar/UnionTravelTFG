@@ -18,7 +18,7 @@ import {
 import {
     createGroup,
     deleteGroup,
-    getAllGroups,
+    getAllGroups, getAllGroupsWithAllInfo,
     getGroupById, getGroupRoute, saveGroupRoute,
     updateGroupById
 } from "../controller/Group.js";
@@ -95,6 +95,7 @@ router.get("/obtainPersonFromGroupById/:userId/:groupId", obtainPersonFromGroupB
 
 // Toda la informacion relacionada los grupos
 router.get("/obtainAllGroupsData", obtainAllGroupsData)
+router.get("/getAllGroupsWithAllInfo", getAllGroupsWithAllInfo)
 router.get("/obtainAllGroupsDataByGroupId/:groupId", obtainAllGroupsDataByGroupId)
 router.get("/obtainAllPeopleFromGroupById/:groupId", obtainAllPeopleFromGroupById)
 router.post('/route/:groupId', saveGroupRoute);

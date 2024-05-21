@@ -223,9 +223,9 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
             <Image source={{uri: obtainImgRoute(item.User.profilePhoto)}} style={styles.userImage}/>
             <View style={styles.userInfo}>
                 <DetailWithIcon icon="person" text={`Usuario: ${item.User.user}`}
-                                iconColor="#b72323"/>
+                                iconColor="#ff0000"/>
                 <DetailWithIcon icon="phone" text={`Celular: ${item.User.cellphone || 'N/A'}`}
-                                iconColor="#b72323"/>
+                                iconColor="#ff0000"/>
             </View>
             {isLeader || isAdmin && !item.isUserLeader && (
                 <TouchableOpacity style={styles.removeButton}
@@ -263,7 +263,7 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                                 {routeCoordinates.length > 0 && (
                                     <Polyline
                                         coordinates={routeCoordinates}
-                                        strokeColor="#b72323"
+                                        strokeColor="#ff0000"
                                         strokeWidth={6}
                                     />
                                 )}
@@ -316,8 +316,8 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                                     }}
                                 />
                                 <View style={styles.buttonContainer}>
-                                    <Button title="Assign Route" color="#b72323" onPress={handleAssignRoute}/>
-                                    <Button title="Reset Route" color="#b72323" onPress={handleResetRoute}/>
+                                    <Button title="Assign Route" color="#ff0000" onPress={handleAssignRoute}/>
+                                    <Button title="Reset Route" color="#ff0000" onPress={handleResetRoute}/>
                                 </View>
                             </View>
                         )}
@@ -326,18 +326,18 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                             <View style={styles.section}>
                                 <Text style={styles.groupHeader}>Información del Grupo</Text>
                                 <Divider/>
-                                <DetailWithIcon icon="group" text={`Nombre: ${group.Group.name}`} iconColor="#b72323"/>
-                                <DetailWithIcon icon="info" text={`Descripción: ${group.Group.description}`} iconColor="#b72323"/>
-                                <DetailWithIcon icon="place" text={`Lugar: ${group.Group.Place.name}`} iconColor="#b72323"/>
-                                <DetailWithIcon icon="event" text={`Llegada: ${new Date(group.Group.arrivalDate).toLocaleDateString()} | Salida: ${new Date(group.Group.departureDate).toLocaleDateString()}`} iconColor="#b72323"/>
+                                <DetailWithIcon icon="group" text={`Nombre: ${group.Group.name}`} iconColor="#ff0000"/>
+                                <DetailWithIcon icon="info" text={`Descripción: ${group.Group.description}`} iconColor="#ff0000"/>
+                                <DetailWithIcon icon="place" text={`Lugar: ${group.Group.Place.name}`} iconColor="#ff0000"/>
+                                <DetailWithIcon icon="event" text={`Llegada: ${new Date(group.Group.arrivalDate).toLocaleDateString()} | Salida: ${new Date(group.Group.departureDate).toLocaleDateString()}`} iconColor="#ff0000"/>
                             </View>
 
                             <View style={styles.section}>
                                 <Text style={styles.groupHeader}>Información del Vehículo</Text>
                                 <Divider/>
-                                <DetailWithIcon icon="directions-car" text={`Registro: ${group.Group.VehiclePerson.registration}`} iconColor="#b72323"/>
-                                <DetailWithIcon icon="color-lens" text={`Color: ${group.Group.VehiclePerson.color}`} iconColor="#b72323"/>
-                                <DetailWithIcon icon="directions-car" text={`Carro: ${group.Group.VehiclePerson.Car.brand} ${group.Group.VehiclePerson.Car.model} (${group.Group.VehiclePerson.Car.year.substring(0, 4)})`} iconColor="#b72323"/>
+                                <DetailWithIcon icon="directions-car" text={`Registro: ${group.Group.VehiclePerson.registration}`} iconColor="#ff0000"/>
+                                <DetailWithIcon icon="color-lens" text={`Color: ${group.Group.VehiclePerson.color}`} iconColor="#ff0000"/>
+                                <DetailWithIcon icon="directions-car" text={`Carro: ${group.Group.VehiclePerson.Car.brand} ${group.Group.VehiclePerson.Car.model} (${group.Group.VehiclePerson.Car.year.substring(0, 4)})`} iconColor="#ff0000"/>
                                 <Image source={{uri: obtainImgRoute(group.Group.VehiclePerson.imageUrl)}} style={styles.vehicleImage}/>
                             </View>
 
@@ -348,8 +348,8 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                                     <View key={user.UserId} style={styles.userContainer}>
                                         <Image source={{uri: obtainImgRoute(user.User.profilePhoto)}} style={styles.userImage}/>
                                         <View style={styles.userInfo}>
-                                            <DetailWithIcon icon="person" text={`Usuario: ${user.User.user}`} iconColor="#b72323"/>
-                                            <DetailWithIcon icon="phone" text={`Celular: ${user.User.cellphone || 'N/A'}`} iconColor="#b72323"/>
+                                            <DetailWithIcon icon="person" text={`Usuario: ${user.User.user}`} iconColor="#ff0000"/>
+                                            <DetailWithIcon icon="phone" text={`Celular: ${user.User.cellphone || 'N/A'}`} iconColor="#ff0000"/>
                                         </View>
                                         {(isLeader || isAdmin) && !user.isUserLeader && (
                                             <TouchableOpacity style={styles.removeButton} onPress={() => handleRemoveUser(user.UserId)}>
@@ -451,7 +451,7 @@ const styles = StyleSheet.create({
     },
     headerText: {
         fontSize: 22,
-        color: '#b72323',
+        color: '#ff0000',
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 20,
@@ -462,7 +462,7 @@ const styles = StyleSheet.create({
         margin: 20,
     },
     iconButton: {
-        backgroundColor: '#b72323',
+        backgroundColor: '#ff0000',
         padding: 15,
         borderRadius: 50,
         alignItems: 'center',

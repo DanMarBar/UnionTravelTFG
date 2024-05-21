@@ -51,6 +51,7 @@ export const getAllPlaces = () => api.get(`/getAllPlaces`);
 export const createGroup = (group) => api.post('/createGroup', group);
 export const getGroupById = (groupId) => api.get(`/getGroupById/${groupId}`);
 export const updateGroupById = (groupId, group) => api.put(`/updateGroupById/${groupId}`, group);
+export const getAllGroupsWithAllInfo = () => api.get(`/getAllGroupsWithAllInfo`);
 
 // GroupPerson
 export const createGroupPerson = (groupPerson) => api.post('/createGroupPerson', groupPerson);
