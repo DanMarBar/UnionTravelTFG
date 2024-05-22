@@ -159,22 +159,34 @@ const ViewAllGroupsScreen = ({route, navigation}) => {
     };
 
     const handleJoinGroup = (groupId) => {
-        Alert.alert(
-            'Confirmación',
-            '¿Estás seguro de que quieres unirte a este grupo?',
-            [
-                {
-                    text: 'Cancelar',
-                    style: 'cancel',
-                },
-                {
-                    text: 'Unirse',
-                    onPress: () => joinGroup(groupId),
-                },
-            ],
-            {cancelable: true}
-        );
+        const group = groups.find(group => group.id === groupId);
+
+        if (group && group.GroupPeople.length >= 5) {
+            Alert.alert(
+                'Grupo Lleno',
+                'Este grupo ya tiene 5 personas y no puedes unirte.',
+                [{ text: 'OK' }],
+                { cancelable: true }
+            );
+        } else {
+            Alert.alert(
+                'Confirmación',
+                '¿Estás seguro de que quieres unirte a este grupo?',
+                [
+                    {
+                        text: 'Cancelar',
+                        style: 'cancel',
+                    },
+                    {
+                        text: 'Unirse',
+                        onPress: () => joinGroup(groupId),
+                    },
+                ],
+                { cancelable: true }
+            );
+        }
     };
+
 
     const isUserInGroup = (groupDetail) => {
         return groupDetail.GroupPeople && groupDetail.GroupPeople.some(member => member.UserId === user.id);

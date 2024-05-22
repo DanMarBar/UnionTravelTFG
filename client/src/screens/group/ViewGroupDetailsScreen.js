@@ -316,8 +316,8 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                                     }}
                                 />
                                 <View style={styles.buttonContainer}>
-                                    <Button title="Assign Route" color="#ff0000" onPress={handleAssignRoute}/>
-                                    <Button title="Reset Route" color="#ff0000" onPress={handleResetRoute}/>
+                                    <Button title="Asignar ruta" color="#ff0000" onPress={handleAssignRoute}/>
+                                    <Button title="Reiniciar" color="#ff0000" onPress={handleResetRoute}/>
                                 </View>
                             </View>
                         )}
@@ -420,11 +420,13 @@ const styles = StyleSheet.create({
     routeInputContainer: {
         marginHorizontal: 20,
         marginBottom: 20,
+        borderRadius: 40,
     },
     buttonContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
         marginTop: 10,
+        borderRadius: 10,
     },
     detailRow: {
         flexDirection: 'row',

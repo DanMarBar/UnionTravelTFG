@@ -6,8 +6,6 @@ const RouteFormScreen = () => {
     const [origin, setOrigin] = useState('');
     const [destination, setDestination] = useState('');
 
-    // Dadas dos rutas optenidas de los parametros envia al usuario a maps con las rutas entre
-    // los dos destinos
     const openGoogleMaps = () => {
         if (!origin.trim() || !destination.trim()) {
             Alert.alert('Error', 'Por favor, completa ambos campos.');
