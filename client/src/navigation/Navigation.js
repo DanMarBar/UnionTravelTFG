@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
-import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {useEffect, useState} from 'react';
+import {createStackNavigator} from '@react-navigation/stack';
+import {FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
@@ -24,6 +24,7 @@ import ViewGroupDetailsScreen from '../screens/group/ViewGroupDetailsScreen';
 import PaymentScreen from '../screens/Payment';
 import GroupChatScreen from '../screens/group/GroupChatScreen';
 import UpdateGroupScreen from '../screens/group/UpdateGroupScreen';
+import UserDetailScreen from "../screens/user/UserProfileScreen";
 
 const Stack = createStackNavigator();
 
@@ -36,7 +37,12 @@ const AppNavigator = () => {
 
     const screens = [
         {name: 'OnBoardingScreen', component: OnBoardingScreen, options: {headerShown: false}},
-        {name: 'UserProfileScreen', component: UserUpdateScreen, options: {title: 'Perfil'}},
+        {
+            name: 'UserProfileScreen', component: UserUpdateScreen, options: {
+                title: 'Actualizar perfil'
+            }
+        },
+        {name: 'UserDetailScreen', component: UserDetailScreen, options: {title: 'Perfil'}},
         {name: 'Login', component: LoginScreen, options: {headerShown: false}},
         {name: 'Register', component: RegisterScreen, options: {headerShown: false}},
         {name: 'MainMenu', component: MainMenuScreen, options: {title: 'Menu principal'}},

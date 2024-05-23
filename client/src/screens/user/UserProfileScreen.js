@@ -12,6 +12,7 @@ import {
 import {Icon} from 'react-native-elements';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {findUserByEmail} from "../../config/api";
+import {obtainAllUserInfo} from "../../utils/UserUtils";
 
 const UserDetailScreen = ({}) => {
     const [userDetails, setUserDetails] = useState(null);
@@ -19,15 +20,8 @@ const UserDetailScreen = ({}) => {
     useEffect(() => {
         const fetchDetails = async () => {
             try {
-                const userData = await AsyncStorage.getItem('userInfo');
-                if (userData) {
-                    const userInfo = JSON.parse(userData);
-                    const response = await findUserByEmail(userInfo.name);
-                    setUserDetails(response.data);
-                    console.log(response.data)
-                } else {
-                    Alert.alert("Error", "No se encontró información del usuario");
-                }
+                const userInfo = await obtainAllUserInfo()
+                setUserDetails(userInfo)
             } catch (error) {
                 console.error('Error recuperando la info del usuario:', error);
                 Alert.alert("Error del server", "No se pudo recuperar la información del usuario");
