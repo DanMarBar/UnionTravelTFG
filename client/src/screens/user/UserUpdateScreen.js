@@ -55,7 +55,8 @@ const UserUpdateScreen = ({ navigation }) => {
 
     const handleUpdate = async () => {
         if (!validatePhoneNumber(userDetails.cellphone) || !validatePhoneNumber(userDetails.secondCellphone)) {
-            Alert.alert("Número de teléfono no válido", "Los números de teléfono deben tener 9 dígitos.");
+            Alert.alert("Número de teléfono no válido", "Debes introducir un numero de telefono" +
+                " valido");
             return;
         }
 
@@ -128,7 +129,7 @@ const UserUpdateScreen = ({ navigation }) => {
     };
 
     const validatePhoneNumber = (text) => {
-        const phoneNumberPattern = /^[0-9]{9}$/;  // Spanish phone numbers have 9 digits
+        const phoneNumberPattern = /^(?:[6-7]\d{8}|[89]\d{8})$/;
         return phoneNumberPattern.test(text);
     };
 
