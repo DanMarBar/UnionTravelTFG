@@ -32,6 +32,7 @@ const UserUpdateScreen = ({ navigation }) => {
         profilePhoto: '',
     });
     const [date, setDate] = useState(new Date());
+    const [initialUserDetails, setInitialUserDetails] = useState({});
 
     const fetchDetails = async () => {
         try {
@@ -41,8 +42,12 @@ const UserUpdateScreen = ({ navigation }) => {
                 birthday: new Date(userData.birthday),
                 profilePhoto: userData.profilePhoto
             });
-            setFinalPhoto(serverConnectionId + '/' + userData.profilePhoto)
-
+            setInitialUserDetails({
+                ...userData,
+                birthday: new Date(userData.birthday),
+                profilePhoto: userData.profilePhoto
+            });
+            setFinalPhoto(serverConnectionId + '/' + userData.profilePhoto);
         } catch (error) {
             console.error('Error recuperando la info del usuario:', error);
             Alert.alert("Error del servidor", "No se pudo recuperar la información del usuario");
@@ -54,9 +59,12 @@ const UserUpdateScreen = ({ navigation }) => {
     }, []);
 
     const handleUpdate = async () => {
-        if (!validatePhoneNumber(userDetails.cellphone) || !validatePhoneNumber(userDetails.secondCellphone)) {
-            Alert.alert("Número de teléfono no válido", "Debes introducir un numero de telefono" +
-                " valido");
+        const isCellphoneUpdated = userDetails.cellphone !== initialUserDetails.cellphone;
+        const isSecondCellphoneUpdated = userDetails.secondCellphone !== initialUserDetails.secondCellphone;
+
+        if ((isCellphoneUpdated && !validatePhoneNumber(userDetails.cellphone)) ||
+            (isSecondCellphoneUpdated && !validatePhoneNumber(userDetails.secondCellphone))) {
+            Alert.alert("Número de teléfono no válido", "Debes introducir un número de teléfono válido");
             return;
         }
 
@@ -93,7 +101,6 @@ const UserUpdateScreen = ({ navigation }) => {
                             await updateUserByEmail(userDetails.email, formData);
                             Alert.alert("Éxito", "Información actualizada correctamente");
                             navigation.goBack();
-
                         } catch (error) {
                             console.error('Error actualizando la información del usuario:', error);
                             Alert.alert("Error", "No se pudo actualizar la información");
@@ -125,7 +132,7 @@ const UserUpdateScreen = ({ navigation }) => {
     };
 
     const handleDiscardChanges = () => {
-        fetchDetails();
+        setUserDetails(initialUserDetails);
     };
 
     const validatePhoneNumber = (text) => {
@@ -187,11 +194,6 @@ const UserUpdateScreen = ({ navigation }) => {
                                                     ...userDetails,
                                                     cellphone: text
                                                 })}
-                                                onBlur={() => {
-                                                    if (!validatePhoneNumber(userDetails.cellphone)) {
-                                                        Alert.alert("Número de teléfono no válido", "El número de teléfono debe tener 9 dígitos.");
-                                                    }
-                                                }}
                                                 keyboardType="numeric"
                                                 maxLength={9} />
                         <EditableDetailWithIcon icon="phone" label="Teléfono secundario"
@@ -200,11 +202,6 @@ const UserUpdateScreen = ({ navigation }) => {
                                                     ...userDetails,
                                                     secondCellphone: text
                                                 })}
-                                                onBlur={() => {
-                                                    if (!validatePhoneNumber(userDetails.secondCellphone)) {
-                                                        Alert.alert("Número de teléfono no válido", "El número de teléfono debe tener 9 dígitos.");
-                                                    }
-                                                }}
                                                 keyboardType="numeric"
                                                 maxLength={9} />
                         <EditableDetailWithIcon icon="home" label="Dirección" maxLength={20}
@@ -239,13 +236,12 @@ const UserUpdateScreen = ({ navigation }) => {
     );
 };
 
-const EditableDetailWithIcon = ({ icon, label, value, onChangeText, onBlur, keyboardType, maxLength }) => (
+const EditableDetailWithIcon = ({ icon, label, value, onChangeText, keyboardType, maxLength }) => (
     <View style={styles.detailRow}>
         <Icon name={icon} size={26} color="#ff0000" style={styles.icon} />
         <View style={styles.editableFieldContainer}>
             <Text style={styles.label}>{label}:</Text>
             <TextInput style={styles.editableField} value={value} onChangeText={onChangeText}
-                       onBlur={onBlur}
                        keyboardType={keyboardType}
                        maxLength={maxLength}
                        placeholderTextColor="#888" />

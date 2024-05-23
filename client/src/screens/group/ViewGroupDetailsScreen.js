@@ -18,14 +18,13 @@ import {
     deleteUserFromGroup,
     getGroupRoute,
     obtainAllGroupsDataByGroupId,
-    obtainAllPeopleFromGroupById, obtainPersonFromGroupById,
-    removeUserFromGroup,
+    obtainAllPeopleFromGroupById,
+    obtainPersonFromGroupById,
     saveGroupRoute
 } from '../../config/api';
 import {obtainImgRoute} from '../../utils/ImageUtils';
 import {mapStyle} from "../../utils/MapUtils";
 import {obtainAllUserInfo} from "../../utils/UserUtils";
-import ProtectedData from "../../config/ProtectedData";
 import config from "../../config/ProtectedData";
 
 const GOOGLE_MAPS_APIKEY = config.googleMapsApiKey;
@@ -109,7 +108,7 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                     }
                 }
             ],
-            { cancelable: false }
+            {cancelable: false}
         );
     };
 
@@ -316,8 +315,10 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                                     }}
                                 />
                                 <View style={styles.buttonContainer}>
-                                    <Button title="Asignar ruta" color="#ff0000" onPress={handleAssignRoute}/>
-                                    <Button title="Reiniciar" color="#ff0000" onPress={handleResetRoute}/>
+                                    <Button title="Asignar ruta" color="#ff0000"
+                                            onPress={handleAssignRoute}/>
+                                    <Button title="Reiniciar" color="#ff0000"
+                                            onPress={handleResetRoute}/>
                                 </View>
                             </View>
                         )}
@@ -326,19 +327,34 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                             <View style={styles.section}>
                                 <Text style={styles.groupHeader}>Información del Grupo</Text>
                                 <Divider/>
-                                <DetailWithIcon icon="group" text={`Nombre: ${group.Group.name}`} iconColor="#ff0000"/>
-                                <DetailWithIcon icon="info" text={`Descripción: ${group.Group.description}`} iconColor="#ff0000"/>
-                                <DetailWithIcon icon="place" text={`Lugar: ${group.Group.Place.name}`} iconColor="#ff0000"/>
-                                <DetailWithIcon icon="event" text={`Llegada: ${new Date(group.Group.arrivalDate).toLocaleDateString()} | Salida: ${new Date(group.Group.departureDate).toLocaleDateString()}`} iconColor="#ff0000"/>
+                                <DetailWithIcon icon="group" text={`Nombre: ${group.Group.name}`}
+                                                iconColor="#ff0000"/>
+                                <DetailWithIcon icon="info"
+                                                text={`Descripción: ${group.Group.description}`}
+                                                iconColor="#ff0000"/>
+                                <DetailWithIcon icon="place"
+                                                text={`Lugar: ${group.Group.Place.name}`}
+                                                iconColor="#ff0000"/>
+                                <DetailWithIcon icon="event"
+                                                text={`Llegada: ${new Date(group.Group.arrivalDate).toLocaleDateString()} | Salida: ${new Date(group.Group.departureDate).toLocaleDateString()}`}
+                                                iconColor="#ff0000"/>
                             </View>
 
                             <View style={styles.section}>
                                 <Text style={styles.groupHeader}>Información del Vehículo</Text>
                                 <Divider/>
-                                <DetailWithIcon icon="directions-car" text={`Registro: ${group.Group.VehiclePerson.registration}`} iconColor="#ff0000"/>
-                                <DetailWithIcon icon="color-lens" text={`Color: ${group.Group.VehiclePerson.color}`} iconColor="#ff0000"/>
-                                <DetailWithIcon icon="directions-car" text={`Carro: ${group.Group.VehiclePerson.Car.brand} ${group.Group.VehiclePerson.Car.model} (${group.Group.VehiclePerson.Car.year.substring(0, 4)})`} iconColor="#ff0000"/>
-                                <Image source={{uri: obtainImgRoute(group.Group.VehiclePerson.imageUrl)}} style={styles.vehicleImage}/>
+                                <DetailWithIcon icon="directions-car"
+                                                text={`Registro: ${group.Group.VehiclePerson.registration}`}
+                                                iconColor="#ff0000"/>
+                                <DetailWithIcon icon="color-lens"
+                                                text={`Color: ${group.Group.VehiclePerson.color}`}
+                                                iconColor="#ff0000"/>
+                                <DetailWithIcon icon="directions-car"
+                                                text={`Carro: ${group.Group.VehiclePerson.Car.brand} ${group.Group.VehiclePerson.Car.model} (${group.Group.VehiclePerson.Car.year.substring(0, 4)})`}
+                                                iconColor="#ff0000"/>
+                                <Image
+                                    source={{uri: obtainImgRoute(group.Group.VehiclePerson.imageUrl)}}
+                                    style={styles.vehicleImage}/>
                             </View>
 
                             <View style={styles.section}>
@@ -346,14 +362,22 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                                 <Divider/>
                                 {users.map(user => (
                                     <View key={user.UserId} style={styles.userContainer}>
-                                        <Image source={{uri: obtainImgRoute(user.User.profilePhoto)}} style={styles.userImage}/>
+                                        <Image
+                                            source={{uri: obtainImgRoute(user.User.profilePhoto)}}
+                                            style={styles.userImage}/>
                                         <View style={styles.userInfo}>
-                                            <DetailWithIcon icon="person" text={`Usuario: ${user.User.user}`} iconColor="#ff0000"/>
-                                            <DetailWithIcon icon="phone" text={`Celular: ${user.User.cellphone || 'N/A'}`} iconColor="#ff0000"/>
+                                            <DetailWithIcon icon="person"
+                                                            text={`Usuario: ${user.User.user}`}
+                                                            iconColor="#ff0000"/>
+                                            <DetailWithIcon icon="phone"
+                                                            text={`Celular: ${user.User.cellphone || 'N/A'}`}
+                                                            iconColor="#ff0000"/>
                                         </View>
                                         {(isLeader || isAdmin) && !user.isUserLeader && (
-                                            <TouchableOpacity style={styles.removeButton} onPress={() => handleRemoveUser(user.UserId)}>
-                                                <Icon name="remove-circle" size={24} color="#FF0000"/>
+                                            <TouchableOpacity style={styles.removeButton}
+                                                              onPress={() => handleRemoveUser(user.UserId)}>
+                                                <Icon name="remove-circle" size={24}
+                                                      color="#FF0000"/>
                                             </TouchableOpacity>
                                         )}
                                     </View>
@@ -365,15 +389,18 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                 renderItem={null}
             />
             <View style={styles.buttonRow}>
-                <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('GroupChatScreen', {group: group})}>
+                <TouchableOpacity style={styles.iconButton}
+                                  onPress={() => navigation.navigate('GroupChatScreen', {group: group})}>
                     <Icon name="chat" size={30} color="#000"/>
                 </TouchableOpacity>
                 {(isLeader || isAdmin) && (
                     <>
-                        <TouchableOpacity style={styles.iconButton} onPress={() => navigation.navigate('UpdateGroupScreen', {group: group})}>
+                        <TouchableOpacity style={styles.iconButton}
+                                          onPress={() => navigation.navigate('UpdateGroupScreen', {group: group})}>
                             <Icon name="edit" size={30} color="#000"/>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.iconButton} onPress={() => navigation.goBack()}>
+                        <TouchableOpacity style={styles.iconButton}
+                                          onPress={() => navigation.goBack()}>
                             <Icon name="arrow-back" size={30} color="#000"/>
                         </TouchableOpacity>
                     </>

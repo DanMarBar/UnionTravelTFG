@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
     Alert,
     Image,
@@ -11,13 +11,13 @@ import {
     View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {createGroupPerson, deleteUserFromGroup, getAllGroupsWithAllInfo} from '../../config/api';
-import {obtainImgRoute} from "../../utils/ImageUtils";
-import {obtainAllUserInfo} from "../../utils/UserUtils";
-import {useFocusEffect} from "@react-navigation/native";
-import {formatTime} from "../../utils/DateUtils";
+import { createGroupPerson, deleteUserFromGroup, getAllGroupsWithAllInfo } from '../../config/api';
+import { obtainImgRoute } from "../../utils/ImageUtils";
+import { obtainAllUserInfo } from "../../utils/UserUtils";
+import { useFocusEffect } from "@react-navigation/native";
+import { formatTime } from "../../utils/DateUtils";
 
-const ViewAllGroupsScreen = ({route, navigation}) => {
+const ViewAllGroupsScreen = ({ route, navigation }) => {
     const [groups, setGroups] = useState(null);
     const [user, setUser] = useState(null);
     const [filteredGroups, setFilteredGroups] = useState([]);
@@ -28,26 +28,48 @@ const ViewAllGroupsScreen = ({route, navigation}) => {
 
     const fetchGroups = async () => {
         try {
-            const userData = await obtainAllUserInfo();
-            setUser(userData);
             const response = await getAllGroupsWithAllInfo();
             setGroups(response.data);
             setFilteredGroups(response.data);
-            console.log(response.data);
         } catch (error) {
             console.error('Error obteniendo los detalles del coche:', error);
         }
     };
 
+    const fetchUserData = async () => {
+        try {
+            const userData = await obtainAllUserInfo();
+            setUser(userData);
+        } catch (error) {
+            console.error('Error obteniendo los detalles del usuario:', error);
+        }
+    };
+
     useEffect(() => {
         fetchGroups();
+        fetchUserData();
     }, []);
 
     useFocusEffect(
         useCallback(() => {
             fetchGroups();
+            fetchUserData();
         }, [])
     );
+
+    const checkPhoneNumber = (user) => {
+        if (!user || (!user.cellphone || user.cellphone === '' || !user.secondCellphone || user.secondCellphone === '')) {
+            Alert.alert("Número de teléfono necesario", "Actualiza tu perfil y añade un número de teléfono para poder entrar en un grupo");
+            return false;
+        }
+        return true;
+    };
+
+    useEffect(() => {
+        if (user) {
+            checkPhoneNumber(user);
+        }
+    }, [user]);
 
     const handleSearch = (text) => {
         setSearchText(text);
@@ -70,6 +92,8 @@ const ViewAllGroupsScreen = ({route, navigation}) => {
     };
 
     const applyFilters = (text, mine, startHour, endHour) => {
+        if (!groups || !user) return;
+
         let filtered = groups.filter(group => group.name.toLowerCase().includes(text.toLowerCase()));
 
         if (mine) {
@@ -88,12 +112,16 @@ const ViewAllGroupsScreen = ({route, navigation}) => {
     };
 
     const handleDetails = (groupId) => {
-        navigation.navigate('ViewGroupDetailsScreen', {groupId});
+        navigation.navigate('ViewGroupDetailsScreen', { groupId });
     };
 
     const joinGroup = async (groupId) => {
         if (!user) {
             console.error('User data is not available');
+            return;
+        }
+
+        if (!checkPhoneNumber(user)) {
             return;
         }
 
@@ -126,6 +154,11 @@ const ViewAllGroupsScreen = ({route, navigation}) => {
     };
 
     const leaveGroup = async (groupId) => {
+        if (!user) {
+            console.error('User data is not available');
+            return;
+        }
+
         try {
             await deleteUserFromGroup(user.id, groupId);
             Alert.alert('Éxito', 'Has salido del grupo exitosamente', [
@@ -154,7 +187,7 @@ const ViewAllGroupsScreen = ({route, navigation}) => {
                     onPress: () => leaveGroup(groupId),
                 },
             ],
-            {cancelable: true}
+            { cancelable: true }
         );
     };
 
@@ -187,13 +220,12 @@ const ViewAllGroupsScreen = ({route, navigation}) => {
         }
     };
 
-
     const isUserInGroup = (groupDetail) => {
-        return groupDetail.GroupPeople && groupDetail.GroupPeople.some(member => member.UserId === user.id);
+        return groupDetail.GroupPeople && groupDetail.GroupPeople.some(member => member.UserId === user?.id);
     };
 
     const isUserLeader = (groupDetail) => {
-        return groupDetail.GroupPeople && groupDetail.GroupPeople.some(member => member.UserId === user.id && member.isUserLeader);
+        return groupDetail.GroupPeople && groupDetail.GroupPeople.some(member => member.UserId === user?.id && member.isUserLeader);
     };
 
     if (!groups) {
@@ -244,7 +276,7 @@ const ViewAllGroupsScreen = ({route, navigation}) => {
                         <View key={index} style={styles.card}>
                             {groupDetail.Place && groupDetail.Place.image ? (
                                 <Image
-                                    source={{uri: obtainImgRoute(`${groupDetail.Place.image}`)}}
+                                    source={{ uri: obtainImgRoute(`${groupDetail.Place.image}`) }}
                                     style={styles.placeImage}
                                 />
                             ) : (
@@ -266,25 +298,25 @@ const ViewAllGroupsScreen = ({route, navigation}) => {
                                             <TouchableOpacity style={styles.detailsButton}
                                                               onPress={() => handleDetails(groupDetail.id)}>
                                                 <Icon name="information-circle" size={20}
-                                                      color="#ff0000"/>
+                                                      color="#ff0000" />
                                             </TouchableOpacity>
 
                                             {!userIsLeader && (
                                                 <TouchableOpacity style={styles.leaveButton}
                                                                   onPress={() => handleLeaveGroup(groupDetail.id)}>
                                                     <Icon name="log-out-outline" size={20}
-                                                          color="#ffffff"/>
+                                                          color="#ffffff" />
                                                 </TouchableOpacity>
                                             )}
-                                            <View style={styles.invisibleButton}/>
+                                            <View style={styles.invisibleButton} />
                                         </>
                                     ) : (
                                         <>
                                             <TouchableOpacity style={styles.joinButton}
                                                               onPress={() => handleJoinGroup(groupDetail.id)}>
-                                                <Icon name="car" size={20} color="#ffffff"/>
+                                                <Icon name="car" size={20} color="#ffffff" />
                                             </TouchableOpacity>
-                                            <View style={styles.invisibleButton}/>
+                                            <View style={styles.invisibleButton} />
                                         </>
                                     )}
                                 </View>
@@ -354,7 +386,7 @@ const styles = StyleSheet.create({
         padding: 20,
         marginBottom: 20,
         shadowColor: '#000',
-        shadowOffset: {width: 0, height: 2},
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.8,
         shadowRadius: 2,
         elevation: 5,
@@ -454,7 +486,6 @@ const styles = StyleSheet.create({
         flex: 1,
         marginHorizontal: 10,
     },
-
 });
 
 export default ViewAllGroupsScreen;
