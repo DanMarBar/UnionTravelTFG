@@ -2,6 +2,7 @@ import User from '../model/UserModel.js';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import jwt from "jsonwebtoken";
+import stytchClient from '../config/Stytch.js';
 
 dotenv.config();
 
@@ -145,4 +146,3 @@ const validateUserCharacterLenght = async (name, password) => {
     }
     return [true, "Exito!"]
 }
-
