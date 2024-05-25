@@ -13,6 +13,7 @@ import ChatRooms from './routes/ChatRooms.js';
 import router from './routes/index.js';
 import initializeSocket from './config/sockets.js';
 import initializePassport from './config/passport.js';
+import Auth from "./routes/Auth.js";
 
 const app = express();
 const server = http.createServer(app);
@@ -47,6 +48,7 @@ app.use(passport.session());
 app.use(router);
 app.use(Payment);
 app.use(ChatRooms)
+app.use('/', Auth);
 
 // Imagenes de los view
 const __filename = fileURLToPath(import.meta.url);
