@@ -18,8 +18,11 @@ import {
 import {
     createGroup,
     deleteGroup,
-    getAllGroups, getAllGroupsWithAllInfo,
-    getGroupById, getGroupRoute, saveGroupRoute,
+    getAllGroups,
+    getAllGroupsWithAllInfo,
+    getGroupById,
+    getGroupRoute,
+    saveGroupRoute,
     updateGroupById
 } from "../controller/Group.js";
 import {
@@ -32,9 +35,12 @@ import {
 import multer from "multer";
 import {manageGetCarById, obtainAllVehicles} from "../controller/Vehicle.js";
 import {
-    createGroupPerson, deleteGroupPerson,
+    createGroupPerson,
+    deleteGroupPerson,
     obtainAllGroupsData,
-    obtainAllGroupsDataByGroupId, obtainAllPeopleFromGroupById, obtainPersonFromGroupById
+    obtainAllGroupsDataByGroupId,
+    obtainAllPeopleFromGroupById,
+    obtainPersonFromGroupById
 } from "../controller/GroupPerson.js";
 
 const router = express.Router();

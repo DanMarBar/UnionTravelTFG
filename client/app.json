@@ -10,24 +10,35 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "extra": {
+      "backendUrl": "https://10da-66-81-168-49.ngrok-free.app"
+    },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.clientuniontravel"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.clientuniontravel"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "scheme": "ClientUnionTravel",
+    "scheme": "union",
     "plugins": [
-      "expo-font"
+      "expo-font",
+      [
+        "react-native-auth0",
+        {
+          "domain": "dev-tv7clsamovagonnp.eu.auth0.com"
+        }
+      ]
     ]
   }
 }
