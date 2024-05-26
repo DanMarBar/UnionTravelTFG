@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {
     Alert,
@@ -12,46 +12,15 @@ import {
     View
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import * as AuthSession from 'expo-auth-session';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const BACKEND_URL = 'https://10da-66-81-168-49.ngrok-free.app';
+import { useGitHubAuth } from '../service/Oauth';
+import { loginUser } from "../config/api";
 
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const redirectUri = AuthSession.makeRedirectUri({
-        useProxy: false,
-        native: `${BACKEND_URL}/authenticate`
-    });
-    console.log('Redirect URI:', redirectUri);
-
-    const [request, response, promptAsync] = AuthSession.useAuthRequest(
-        {
-            clientId: "Ov23liVPnKd4Ud6L1ox8",
-            redirectUri: `${BACKEND_URL}/authenticate`,
-            scopes: ['read:user', 'user:email'],
-        },
-        { authorizationEndpoint: 'https://github.com/login/oauth/authorize' }
-    );
-
-    useEffect(() => {
-        if (response?.type === 'success') {
-            const { code } = response.params;
-
-            fetch(`${BACKEND_URL}/authenticate?code=${code}`)
-                .then(res => res.json())
-                .then(data => {
-                    AsyncStorage.setItem('userInfo', JSON.stringify(data));
-                    navigation.replace('MainMenu');
-                })
-                .catch(error => {
-                    console.error('Error fetching user info', error);
-                    Alert.alert('Error', 'Failed to fetch user info');
-                });
-        }
-    }, [response]);
+    const { request, promptAsync } = useGitHubAuth(navigation);
 
     const handleLogin = async () => {
         try {
@@ -61,6 +30,7 @@ const LoginScreen = ({ navigation }) => {
             const userInfo = { email };
             await AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
             navigation.replace('MainMenu');
+
         } catch (error) {
             console.error('Error logging in', error);
             Alert.alert('Error', 'Failed to log in');
