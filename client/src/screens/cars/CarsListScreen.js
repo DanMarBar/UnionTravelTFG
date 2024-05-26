@@ -10,9 +10,8 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import {getCars, manageDeleteCar, manageGetUserVehiclesByUserId} from '../../config/api.js';
+import {manageDeleteCar, manageGetUserVehiclesByUserId} from '../../config/api.js';
 import {Icon} from "react-native-elements";
-import {useFocusEffect} from "@react-navigation/native";
 import {obtainAllUserInfo} from "../../utils/UserUtils";
 import {obtainImgRoute} from "../../utils/ImageUtils";
 
@@ -20,7 +19,7 @@ const CarListScreen = ({navigation}) => {
     const [cars, setCars] = useState([]);
     const [loading, setLoading] = useState(true);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const userId = 1; // Reemplaza esto con el id de usuario correspondiente
+    const userId = 1;
 
     // Obtiene todos los vehiculos
     const fetchCarsData = async () => {
@@ -135,7 +134,8 @@ const CarListScreen = ({navigation}) => {
                         contentContainerStyle={styles.detailsScrollContent}
                     >
                         <View style={styles.contentContainer}>
-                            <Image source={{ uri: obtainImgRoute(car.imageUrl) }} style={styles.carImage} />
+                            <Image source={{uri: obtainImgRoute(car.imageUrl)}}
+                                   style={styles.carImage}/>
                             <View style={styles.textContainer}>
                                 {renderCarDetail("Registro", car.registration, "confirmation-number", "#ffc107")}
                                 {renderCarDetail("Color", car.color, "palette", "#ff5722")}
@@ -144,13 +144,16 @@ const CarListScreen = ({navigation}) => {
                                 <View/>
                                 <View style={styles.actionContainer}>
                                     <TouchableOpacity onPress={handleUpdate}>
-                                        <Icon name="edit" size={24} color="#007bff" style={styles.actionIcon} />
+                                        <Icon name="edit" size={24} color="#007bff"
+                                              style={styles.actionIcon}/>
                                     </TouchableOpacity>
                                     <TouchableOpacity onPress={handleDelete}>
-                                        <Icon name="delete" size={24} color="#dc3545" style={styles.actionIcon} />
+                                        <Icon name="delete" size={24} color="#dc3545"
+                                              style={styles.actionIcon}/>
                                     </TouchableOpacity>
                                     <TouchableOpacity onPress={handleDetails}>
-                                        <Icon name="visibility" size={24} color="#28a745" style={styles.actionIcon} />
+                                        <Icon name="visibility" size={24} color="#28a745"
+                                              style={styles.actionIcon}/>
                                     </TouchableOpacity>
                                 </View>
                             </View>
@@ -168,7 +171,7 @@ const CarListScreen = ({navigation}) => {
 
 const renderCarDetail = (label, value, iconName, iconColor) => (
     <View style={styles.detailRow}>
-        <Icon name={iconName} size={24} color={iconColor} />
+        <Icon name={iconName} size={24} color={iconColor}/>
         <View style={styles.detailTextContainer}>
             <Text style={styles.carText}>
                 {label}: <Text style={styles.carInfo}>{value}</Text>

@@ -75,15 +75,12 @@ const handleDeepLink = async (event, navigationRef) => {
     };
 
     const { path, userInfo } = parseUrl(url);
-    console.log('User Info:', userInfo);
 
     if (userInfo) {
         const { email, login: name } = userInfo;
         const storedUserInfo = { name, email };
         await AsyncStorage.setItem('userInfo', JSON.stringify(storedUserInfo));
         navigationRef.current?.navigate('MainMenu');
-    } else {
-        Alert.alert('Error', 'No se pudo obtener la información del usuario');
     }
 };
 

@@ -1,18 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import {
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
-} from 'react-native';
-import { Icon } from 'react-native-elements';
+import React, {useEffect, useState} from 'react';
+import {Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Icon} from 'react-native-elements';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import MapView, { Marker } from 'react-native-maps';
-import PaymentScreen from "./Payment";
+import MapView, {Marker} from 'react-native-maps';
+import {mapStyle} from "../utils/MapUtils";
+import DigitalClock from './modals/DigitalClock';
 
-const MainMenuScreen = ({ navigation }) => {
+const MainMenuScreen = ({navigation}) => {
     const [userInfo, setUserInfo] = useState({});
 
     useEffect(() => {
@@ -48,8 +42,11 @@ const MainMenuScreen = ({ navigation }) => {
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <View style={styles.headerContainer}>
-                <Text style={styles.mainTitle}>Vehicle Panel</Text>
-                <Text style={styles.welcomeText}>Welcome back, {userInfo.name}</Text>
+                <Text style={styles.mainTitle}>Menu principal</Text>
+                <Text style={styles.welcomeText}>Bienvenido de vuelta, {userInfo.name}</Text>
+            </View>
+            <View style={styles.clockContainer}>
+                <DigitalClock/>
             </View>
             <View style={styles.mapContainer}>
                 <MapView
@@ -60,9 +57,10 @@ const MainMenuScreen = ({ navigation }) => {
                         latitudeDelta: 0.0922,
                         longitudeDelta: 0.0421,
                     }}
+                    customMapStyle={mapStyle}
                 >
                     <Marker
-                        coordinate={{ latitude: 37.78825, longitude: -122.4324 }}
+                        coordinate={{latitude: 37.78825, longitude: -122.4324}}
                         title={"Your Location"}
                         description={"This is where you are"}
                     />
@@ -73,7 +71,9 @@ const MainMenuScreen = ({ navigation }) => {
                     style={styles.menuItem}
                     onPress={() => navigation.navigate('CarsListScreen')}
                 >
-                    <Icon name="car" type="font-awesome" size={40} color="#FFD700" />
+                    <View style={styles.iconContainer}>
+                        <Icon name="car" type="font-awesome" size={20} color="#FF0000"/>
+                    </View>
                     <Text style={styles.menuText}>Vehicles</Text>
                 </TouchableOpacity>
 
@@ -81,7 +81,9 @@ const MainMenuScreen = ({ navigation }) => {
                     style={styles.menuItem}
                     onPress={() => navigation.navigate('InsertCarScreen')}
                 >
-                    <Icon name="plus-circle" type="font-awesome" size={40} color="#FFD700" />
+                    <View style={styles.iconContainer}>
+                        <Icon name="plus-circle" type="font-awesome" size={20} color="#FF0000"/>
+                    </View>
                     <Text style={styles.menuText}>Add Vehicle</Text>
                 </TouchableOpacity>
 
@@ -89,7 +91,9 @@ const MainMenuScreen = ({ navigation }) => {
                     style={styles.menuItem}
                     onPress={() => navigation.navigate('UserProfileScreen')}
                 >
-                    <Icon name="user" type="font-awesome" size={40} color="#FFD700" />
+                    <View style={styles.iconContainer}>
+                        <Icon name="user" type="font-awesome" size={20} color="#FF0000"/>
+                    </View>
                     <Text style={styles.menuText}>Profile</Text>
                 </TouchableOpacity>
 
@@ -97,7 +101,9 @@ const MainMenuScreen = ({ navigation }) => {
                     style={styles.menuItem}
                     onPress={() => navigation.navigate('RouteScreen')}
                 >
-                    <Icon name="road" type="font-awesome" size={40} color="#FFD700" />
+                    <View style={styles.iconContainer}>
+                        <Icon name="road" type="font-awesome" size={20} color="#FF0000"/>
+                    </View>
                     <Text style={styles.menuText}>Find Route</Text>
                 </TouchableOpacity>
 
@@ -105,7 +111,9 @@ const MainMenuScreen = ({ navigation }) => {
                     style={styles.menuItem}
                     onPress={() => navigation.navigate('InsertGroupScreen')}
                 >
-                    <Icon name="road" type="font-awesome" size={40} color="#FFD700" />
+                    <View style={styles.iconContainer}>
+                        <Icon name="users" type="font-awesome" size={20} color="#FF0000"/>
+                    </View>
                     <Text style={styles.menuText}>Ver los grupos</Text>
                 </TouchableOpacity>
 
@@ -113,7 +121,9 @@ const MainMenuScreen = ({ navigation }) => {
                     style={styles.menuItem}
                     onPress={() => navigation.navigate('PaymentScreen')}
                 >
-                    <Icon name="road" type="font-awesome" size={40} color="#FFD700" />
+                    <View style={styles.iconContainer}>
+                        <Icon name="money" type="font-awesome" size={20} color="#FF0000"/>
+                    </View>
                     <Text style={styles.menuText}>Apoyanos!</Text>
                 </TouchableOpacity>
 
@@ -121,7 +131,9 @@ const MainMenuScreen = ({ navigation }) => {
                     style={styles.menuItem}
                     onPress={() => navigation.navigate('ViewAllGroupsScreen')}
                 >
-                    <Icon name="user" type="font-awesome" size={40} color="#FFD700" />
+                    <View style={styles.iconContainer}>
+                        <Icon name="group" type="font-awesome" size={20} color="#FF0000"/>
+                    </View>
                     <Text style={styles.menuText}>Grupos</Text>
                 </TouchableOpacity>
 
@@ -129,7 +141,9 @@ const MainMenuScreen = ({ navigation }) => {
                     style={styles.menuItem}
                     onPress={handleLogout}
                 >
-                    <Icon name="sign-out" type="font-awesome" size={40} color="#FFD700" />
+                    <View style={styles.iconContainer}>
+                        <Icon name="sign-out" type="font-awesome" size={20} color="#FF0000"/>
+                    </View>
                     <Text style={styles.menuText}>Logout</Text>
                 </TouchableOpacity>
             </View>
@@ -147,14 +161,26 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     mainTitle: {
-        fontSize: 36,
+        fontSize: 40,
         fontWeight: 'bold',
-        color: '#FFD700',
-        marginBottom: 10,
+        color: '#FF0000',
+        textTransform: 'uppercase',
+        alignItems:"center",
+        letterSpacing: 2,
+        marginBottom: 5,
     },
     welcomeText: {
-        fontSize: 20,
-        color: '#FFD700',
+        fontSize: 18,
+        color: '#FFF',
+        alignItems:"flex-start"
+    },
+    clockContainer: {
+        backgroundColor: '#1C1C1C',
+        borderRadius: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        marginBottom: 20,
+        alignItems: 'center',
     },
     mapContainer: {
         height: 200,
@@ -168,18 +194,18 @@ const styles = StyleSheet.create({
     menuContainer: {
         flexDirection: 'row',
         flexWrap: 'wrap',
-        justifyContent: 'space-around',
+        justifyContent: 'space-between',
     },
     menuItem: {
         backgroundColor: '#1C1C1C',
-        width: '45%',
-        height: 150,
+        width: '30%',
+        height: 100,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 10,
         marginBottom: 20,
         padding: 10,
-        shadowColor: "#FFD700",
+        shadowColor: "#ffffff",
         shadowOffset: {
             width: 0,
             height: 2,
@@ -188,10 +214,17 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 10,
     },
+    iconContainer: {
+        width: 40,
+        height: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 20,
+    },
     menuText: {
-        color: '#FFD700',
-        marginTop: 10,
-        fontSize: 18,
+        color: '#FFF',
+        marginTop: 5,
+        fontSize: 14,
         textAlign: 'center',
     },
 });
