@@ -27,7 +27,7 @@ import {mapStyle} from "../../utils/MapUtils";
 import {obtainAllUserInfo} from "../../utils/UserUtils";
 import config from "../../config/ProtectedData";
 
-const GOOGLE_MAPS_APIKEY = config.googleMapsApiKey;
+const GOOGLE_MAPS_APIKEY = 'config.googleMapsApiKey';
 
 const ViewGroupDetailsScreen = ({route, navigation}) => {
     const [group, setGroup] = useState(null);
@@ -67,9 +67,13 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
 
         const getCurrentLocation = async () => {
             try {
-                let {status} = await Location.requestForegroundPermissionsAsync();
+                let { status } = await Location.requestForegroundPermissionsAsync();
                 if (status !== 'granted') {
-                    console.error('Permiso de ubicación denegado');
+                    Alert.alert('Permiso de ubicación denegado', 'Por favor, habilita los servicios de ubicación en la configuración del dispositivo.');
+                    setCurrentLocation({
+                        latitude: 34.052235,
+                        longitude: -118.243683,
+                    });
                     return;
                 }
 
@@ -80,6 +84,11 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                 });
             } catch (error) {
                 console.error('Error obteniendo la ubicación:', error);
+                Alert.alert('Error obteniendo la ubicación', 'No se pudo obtener la ubicación actual. Usando coordenadas de respaldo.');
+                setCurrentLocation({
+                    latitude: 34.052235,
+                    longitude: -118.243683,
+                });
             }
         };
 
@@ -143,7 +152,8 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
     };
 
     const fetchPlaceDetails = async (placeId) => {
-        const response = await fetch(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${GOOGLE_MAPS_APIKEY}`);
+        const response = await fetch(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${'GOOGLE_MAPS_APIKEY'}`);
+        console.log(response)
         const data = await response.json();
         return data.result.geometry.location;
     };
@@ -170,7 +180,7 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
         if (currentLocation && destination) {
             const fetchDirections = async () => {
                 const result = await fetch(
-                    `https://maps.googleapis.com/maps/api/directions/json?origin=${currentLocation.latitude},${currentLocation.longitude}&destination=${destination.latitude},${destination.longitude}&key=${GOOGLE_MAPS_APIKEY}`
+                    `https://maps.googleapis.com/maps/api/directions/json?origin=${currentLocation.latitude},${currentLocation.longitude}&destination=${destination.latitude},${destination.longitude}&key=${"GOOGLE_MAPS_APIKEY"}`
                 );
                 const data = await result.json();
                 if (data.routes.length) {
@@ -391,17 +401,17 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
             <View style={styles.buttonRow}>
                 <TouchableOpacity style={styles.iconButton}
                                   onPress={() => navigation.navigate('GroupChatScreen', {group: group})}>
-                    <Icon name="chat" size={30} color="#000"/>
+                    <Icon name="chat" size={30} color="#ff0000"/>
                 </TouchableOpacity>
                 {(isLeader || isAdmin) && (
                     <>
                         <TouchableOpacity style={styles.iconButton}
                                           onPress={() => navigation.navigate('UpdateGroupScreen', {group: group})}>
-                            <Icon name="edit" size={30} color="#000"/>
+                            <Icon name="edit" size={30} color="#ff0000"/>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.iconButton}
                                           onPress={() => navigation.goBack()}>
-                            <Icon name="arrow-back" size={30} color="#000"/>
+                            <Icon name="arrow-back" size={30} color="#ff0000"/>
                         </TouchableOpacity>
                     </>
                 )}
@@ -491,7 +501,7 @@ const styles = StyleSheet.create({
         margin: 20,
     },
     iconButton: {
-        backgroundColor: '#ff0000',
+        backgroundColor: '#ffffff',
         padding: 15,
         borderRadius: 50,
         alignItems: 'center',

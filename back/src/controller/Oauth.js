@@ -8,7 +8,7 @@ dotenv.config();
 
 const GITHUB_OAUTH_URL = 'https://github.com/login/oauth/authorize';
 const GITHUB_TOKEN_URL = 'https://github.com/login/oauth/access_token';
-const REDIRECT_URI = 'https://464c-66-81-168-49.ngrok-free.app/authenticate';
+const REDIRECT_URI = 'https://4156-66-81-168-49.ngrok-free.app/authenticate';
 
 export const redirectToGitHub = (req, res) => {
     const params = new URLSearchParams({

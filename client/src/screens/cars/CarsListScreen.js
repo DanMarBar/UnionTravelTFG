@@ -1,8 +1,7 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Alert,
     Image,
-    ImageBackground,
     SafeAreaView,
     ScrollView,
     StyleSheet,
@@ -10,29 +9,21 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import {manageDeleteCar, manageGetUserVehiclesByUserId} from '../../config/api.js';
-import {Icon} from "react-native-elements";
-import {obtainAllUserInfo} from "../../utils/UserUtils";
-import {obtainImgRoute} from "../../utils/ImageUtils";
+import Icon from 'react-native-vector-icons/Ionicons';
+import { manageDeleteCar, manageGetUserVehiclesByUserId } from '../../config/api.js';
+import { obtainAllUserInfo } from "../../utils/UserUtils";
+import { obtainImgRoute } from "../../utils/ImageUtils";
 
-const CarListScreen = ({navigation}) => {
+const CarListScreen = ({ navigation }) => {
     const [cars, setCars] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const userId = 1;
 
-    // Obtiene todos los vehiculos
     const fetchCarsData = async () => {
         try {
-            const user = await obtainAllUserInfo()
+            const user = await obtainAllUserInfo();
             const cars = await manageGetUserVehiclesByUserId(user.id);
-            if (currentIndex >= cars.length) {
-                setCurrentIndex(0);
-            }
-
             setCars(cars.data);
             setLoading(false);
-
         } catch (error) {
             console.error("Error al obtener los autos:", error);
         }
@@ -40,25 +31,16 @@ const CarListScreen = ({navigation}) => {
 
     useEffect(() => {
         fetchCarsData();
-    }, [])
+    }, []);
 
-    const goToNextCar = () => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % cars.length);
-    };
+    const handleUpdate = (car) => navigation.navigate('UpdateCar', { car });
 
-    const goToPrevCar = () => {
-        setCurrentIndex((prevIndex) => (prevIndex - 1 + cars.length) % cars.length);
-    };
+    const handleDetails = (car) => navigation.navigate('CarDetail', { car });
 
-    const handleUpdate = () => navigation.navigate('UpdateCar', {car});
-
-    const handleDetails = () => navigation.navigate('CarDetail', {car});
-
-    // Se encarga de eliminar, de avisar antes y despues al usuario
-    const handleDelete = () => {
+    const handleDelete = (car) => {
         Alert.alert(
             "Confirmar Eliminación",
-            `¿Estás seguro de que deseas eliminar el auto "${car.name}"?`,
+            `¿Estás seguro de que deseas eliminar el auto "${car.registration}"?`,
             [
                 {
                     text: "Cancelar",
@@ -72,9 +54,7 @@ const CarListScreen = ({navigation}) => {
                             await manageDeleteCar(car.id);
                             console.log("Auto eliminado correctamente");
                             Alert.alert("Eliminado", "El auto ha sido eliminado correctamente.");
-
                             await fetchCarsData();
-
                         } catch (error) {
                             console.error("Error eliminando el auto:", error);
                             Alert.alert("Error", "No se pudo eliminar el auto.");
@@ -96,93 +76,72 @@ const CarListScreen = ({navigation}) => {
 
     if (cars.length === 0) {
         return (
-            <SafeAreaView style={styles.flexContainer}>
-                <ImageBackground
-                    source={require('../../assets/images/peakpx.jpg')}
-                    style={styles.flexContainer}
-                    resizeMode="cover"
-                >
-                    <View style={styles.noCarsContainer}>
-                        <Text style={styles.noCarsText}>No tienes vehículos disponibles</Text>
-                    </View>
-                </ImageBackground>
+            <SafeAreaView style={styles.container}>
+                <View style={styles.noCarsContainer}>
+                    <Text style={styles.noCarsText}>No tienes vehículos disponibles</Text>
+                </View>
             </SafeAreaView>
         );
     }
 
-    const car = cars[currentIndex];
-
     return (
-        <SafeAreaView style={styles.flexContainer}>
-            <ImageBackground
-                source={require('../../assets/images/peakpx.jpg')}
-                style={styles.flexContainer}
-                resizeMode="cover"
-            >
-                <View style={styles.titleContainer}>
-                    <Text style={styles.mainTitle}>Todos tus vehículos</Text>
-                    <Text style={styles.secondaryTitle}>Puedes agregar más o modificarlos</Text>
-                </View>
-                <View style={styles.navigationContainer}>
-                    <TouchableOpacity onPress={goToPrevCar} style={styles.navigationButton}>
-                        <Text style={styles.navigationText}>{"<"}</Text>
-                    </TouchableOpacity>
-
-                    <ScrollView
-                        horizontal={false}
-                        style={styles.detailsScroll}
-                        contentContainerStyle={styles.detailsScrollContent}
-                    >
-                        <View style={styles.contentContainer}>
-                            <Image source={{uri: obtainImgRoute(car.imageUrl)}}
-                                   style={styles.carImage}/>
-                            <View style={styles.textContainer}>
-                                {renderCarDetail("Registro", car.registration, "confirmation-number", "#ffc107")}
-                                {renderCarDetail("Color", car.color, "palette", "#ff5722")}
-                                {renderCarDetail("Año", new Date(car.year).getFullYear(), "event", "#9c27b0")}
-                                {renderCarDetail("Operativo", car.operative ? "Sí" : "No", "build", car.operative ? "#4caf50" : "#f44336")}
-                                <View/>
-                                <View style={styles.actionContainer}>
-                                    <TouchableOpacity onPress={handleUpdate}>
-                                        <Icon name="edit" size={24} color="#007bff"
-                                              style={styles.actionIcon}/>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={handleDelete}>
-                                        <Icon name="delete" size={24} color="#dc3545"
-                                              style={styles.actionIcon}/>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={handleDetails}>
-                                        <Icon name="visibility" size={24} color="#28a745"
-                                              style={styles.actionIcon}/>
-                                    </TouchableOpacity>
+        <SafeAreaView style={styles.container}>
+            <View style={styles.titleContainer}>
+                <Text style={styles.mainTitle}>Todos tus vehículos</Text>
+                <Text style={styles.secondaryTitle}>Puedes agregar más o modificarlos</Text>
+            </View>
+            <ScrollView contentContainerStyle={styles.scrollViewContent}>
+                {cars.map((car, index) => (
+                    <View key={index} style={styles.card}>
+                        <View style={styles.imageAndDetailsContainer}>
+                            {car.imageUrl ? (
+                                <Image
+                                    source={{ uri: obtainImgRoute(car.imageUrl) }}
+                                    style={styles.carImage}
+                                />
+                            ) : (
+                                <View style={[styles.carImage, styles.placeholderImage]}>
+                                    <Text style={styles.placeholderText}>No Image</Text>
+                                </View>
+                            )}
+                            <View style={styles.cardContent}>
+                                <Text style={styles.carName}>{car.registration}</Text>
+                                <View style={styles.carDetailRow}>
+                                    <Icon name="color-palette" size={20} color="#ffffff" style={styles.detailIcon} />
+                                    <Text style={styles.carDetail}>Color: {car.color}</Text>
+                                </View>
+                                <View style={styles.carDetailRow}>
+                                    <Icon name="calendar" size={20} color="#ffffff" style={styles.detailIcon} />
+                                    <Text style={styles.carDetail}>Año: {new Date(car.year).getFullYear()}</Text>
+                                </View>
+                                <View style={styles.carDetailRow}>
+                                    <Icon name="construct" size={20} color="#ffffff" style={styles.detailIcon} />
+                                    <Text style={styles.carDetail}>Operativo: {car.operative ? "Sí" : "No"}</Text>
                                 </View>
                             </View>
                         </View>
-                    </ScrollView>
-
-                    <TouchableOpacity onPress={goToNextCar} style={styles.navigationButton}>
-                        <Text style={styles.navigationText}>{">"}</Text>
-                    </TouchableOpacity>
-                </View>
-            </ImageBackground>
+                        <View style={styles.buttonsContainer}>
+                            <TouchableOpacity style={[styles.actionButton, styles.detailsButton]} onPress={() => handleDetails(car)}>
+                                <Icon name="eye" size={20} color="#000000" />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.actionButton, styles.editButton]} onPress={() => handleUpdate(car)}>
+                                <Icon name="create" size={20} color="#ffffff" />
+                            </TouchableOpacity>
+                            <TouchableOpacity style={[styles.actionButton, styles.deleteButton]} onPress={() => handleDelete(car)}>
+                                <Icon name="trash" size={20} color="#ffffff" />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                ))}
+            </ScrollView>
         </SafeAreaView>
     );
 };
 
-const renderCarDetail = (label, value, iconName, iconColor) => (
-    <View style={styles.detailRow}>
-        <Icon name={iconName} size={24} color={iconColor}/>
-        <View style={styles.detailTextContainer}>
-            <Text style={styles.carText}>
-                {label}: <Text style={styles.carInfo}>{value}</Text>
-            </Text>
-        </View>
-    </View>
-);
-
 const styles = StyleSheet.create({
-    flexContainer: {
+    container: {
         flex: 1,
+        backgroundColor: '#121212',
     },
     titleContainer: {
         alignItems: 'center',
@@ -192,82 +151,111 @@ const styles = StyleSheet.create({
     mainTitle: {
         fontSize: 34,
         fontWeight: 'bold',
-        color: '#03b3c7',
+        color: '#ffffff',
     },
     secondaryTitle: {
         fontSize: 18,
-        color: '#18b296',
+        color: '#888',
     },
-    navigationContainer: {
+    scrollViewContent: {
+        padding: 20,
+    },
+    card: {
+        backgroundColor: '#1e1e1e',
+        borderRadius: 10,
+        padding: 20,
+        marginBottom: 20,
+        marginHorizontal: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.8,
+        shadowRadius: 2,
+        elevation: 5,
+    },
+    imageAndDetailsContainer: {
         flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flex: 1,
-        paddingHorizontal: 10,
-    },
-    navigationButton: {
-        padding: 10,
-    },
-    navigationText: {
-        fontSize: 30,
-        color: '#007BFF',
-    },
-    detailsScroll: {
-        flex: 1,
-    },
-    detailsScrollContent: {
-        alignItems: 'center',
-        paddingVertical: 20,
-    },
-    contentContainer: {
-        width: '90%',
         alignItems: 'center',
     },
     carImage: {
-        width: '100%',
-        height: 300,
-        resizeMode: 'cover',
-        marginBottom: 20,
-        borderRadius: 20,
-        elevation: 5,
-    },
-    textContainer: {
-        backgroundColor: 'white',
+        width: 100,
+        height: 100,
         borderRadius: 10,
-        padding: 20,
-        elevation: 5,
-        width: '100%',
     },
-    detailRow: {
+    placeholderImage: {
+        backgroundColor: '#444',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    placeholderText: {
+        color: '#888',
+    },
+    cardContent: {
+        flex: 1,
+        marginLeft: 20,
+    },
+    carName: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        color: '#ffffff',
+        marginBottom: 10,
+    },
+    carDetailRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 10,
-        paddingVertical: 5,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
+        marginBottom: 5,
     },
-    detailTextContainer: {
-        marginLeft: 10,
+    carDetail: {
+        fontSize: 14,
+        color: '#cccccc',
+        marginLeft: 5,
     },
-    carText: {
-        fontSize: 16,
-        color: '#444',
+    detailIcon: {
+        marginRight: 5,
     },
-    carInfo: {
-        fontWeight: 'bold',
-    },
-    actionContainer: {
+    buttonsContainer: {
         flexDirection: 'row',
-        marginTop: 10,
+        justifyContent: 'space-between',
+        marginTop: 20,
+    },
+    actionButton: {
+        paddingHorizontal: 15,
+        paddingVertical: 8,
+        borderRadius: 25,
+        alignItems: 'center',
         justifyContent: 'center',
+        flex: 1,
+        marginHorizontal: 5,
     },
-    actionIcon: {
-        marginHorizontal: 10,
+    detailsButton: {
+        backgroundColor: '#ffffff',
     },
-    divider: {
-        height: 1,
-        backgroundColor: '#ddd',
-        marginVertical: 10,
+    editButton: {
+        backgroundColor: '#ff0000',
+    },
+    deleteButton: {
+        backgroundColor: '#ff0000',
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#121212',
+    },
+    loadingText: {
+        color: '#ffffff',
+        fontSize: 18,
+        textAlign: 'center',
+    },
+    noCarsContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#121212',
+    },
+    noCarsText: {
+        color: '#ffffff',
+        fontSize: 18,
+        textAlign: 'center',
     },
 });
 

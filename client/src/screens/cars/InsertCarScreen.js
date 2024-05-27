@@ -18,7 +18,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {manageCreateNewUserVehicle, obtainAllVehicles} from '../../config/api';
 import {obtainAllUserInfo} from "../../utils/UserUtils";
 import {formatDate} from "../../utils/DateUtils";
-import {handleImageChange} from "../../utils/ImageUtils"; // Asegúrate de tener esta función implementada
+import {handleImageChange} from "../../utils/ImageUtils";
 
 const isValidRegistration = (registration) => {
     registration = registration.trim().toUpperCase();

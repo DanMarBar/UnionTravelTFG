@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Alert, Linking} from 'react-native';
 import {useEffect} from 'react';
 
-const BACKEND_URL = 'https://464c-66-81-168-49.ngrok-free.app';
+const BACKEND_URL = 'https://4156-66-81-168-49.ngrok-free.app';
 
 const clientId = "Ov23liVPnKd4Ud6L1ox8";
 
