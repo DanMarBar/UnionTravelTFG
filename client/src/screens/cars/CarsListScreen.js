@@ -125,7 +125,7 @@ const CarListScreen = ({ navigation }) => {
                                 <Icon name="eye" size={20} color="#000000" />
                             </TouchableOpacity>
                             <TouchableOpacity style={[styles.actionButton, styles.editButton]} onPress={() => handleUpdate(car)}>
-                                <Icon name="create" size={20} color="#ffffff" />
+                                <Icon name="create" size={20} color="#ff0000" />
                             </TouchableOpacity>
                             <TouchableOpacity style={[styles.actionButton, styles.deleteButton]} onPress={() => handleDelete(car)}>
                                 <Icon name="trash" size={20} color="#ffffff" />
@@ -230,7 +230,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff',
     },
     editButton: {
-        backgroundColor: '#ff0000',
+        backgroundColor: '#ffffff',
     },
     deleteButton: {
         backgroundColor: '#ff0000',
