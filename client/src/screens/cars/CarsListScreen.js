@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
     Alert,
     Image,
@@ -10,6 +10,7 @@ import {
     View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useFocusEffect } from '@react-navigation/native';
 import { manageDeleteCar, manageGetUserVehiclesByUserId } from '../../config/api.js';
 import { obtainAllUserInfo } from "../../utils/UserUtils";
 import { obtainImgRoute } from "../../utils/ImageUtils";
@@ -18,7 +19,7 @@ const CarListScreen = ({ navigation }) => {
     const [cars, setCars] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const fetchCarsData = async () => {
+    const fetchCarsData = useCallback(async () => {
         try {
             const user = await obtainAllUserInfo();
             const cars = await manageGetUserVehiclesByUserId(user.id);
@@ -27,11 +28,13 @@ const CarListScreen = ({ navigation }) => {
         } catch (error) {
             console.error("Error al obtener los autos:", error);
         }
-    };
-
-    useEffect(() => {
-        fetchCarsData();
     }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchCarsData();
+        }, [fetchCarsData])
+    );
 
     const handleUpdate = (car) => navigation.navigate('UpdateCar', { car });
 

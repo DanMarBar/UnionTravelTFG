@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import {
     Alert,
     Image,
-    ImageBackground,
-    Platform,
     SafeAreaView,
     ScrollView,
     StyleSheet,
@@ -15,8 +13,10 @@ import {
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Icon } from 'react-native-elements';
 import {
-    getUserVehicleByRegistration, manageUpdateUserCarByRegistration,
+    getUserVehicleByRegistration,
+    manageUpdateUserCarByRegistration,
     obtainAllVehicles
 } from '../../config/api';
 import { formatDate } from "../../utils/DateUtils";
@@ -38,6 +38,7 @@ const UpdateCarScreen = ({ route, navigation }) => {
         imageUrl: '',
         carId: '',
     });
+    const [initialCarDetails, setInitialCarDetails] = useState(null);
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [vehicles, setVehicles] = useState([]);
     const [selectedVehicleId, setSelectedVehicleId] = useState('');
@@ -45,6 +46,31 @@ const UpdateCarScreen = ({ route, navigation }) => {
     const [error, setError] = useState('');
     const [newPhoto, setNewPhoto] = useState(null);
     const [finalPhoto, setFinalPhoto] = useState(null);
+
+    const fetchCarDetails = async () => {
+        try {
+            const vehicleFromDb = await getUserVehicleByRegistration(car.registration);
+            const vehicle = vehicleFromDb.data;
+
+            const carDetailsData = {
+                registration: vehicle.registration,
+                color: vehicle.color,
+                year: new Date(vehicle.year),
+                operative: vehicle.operative,
+                imageUrl: vehicle.imageUrl,
+                carId: vehicle.CarId,
+            };
+
+            setCarDetails(carDetailsData);
+            setInitialCarDetails(carDetailsData);
+
+            setDate(new Date(vehicle.year));
+            setSelectedVehicleId(vehicle.CarId);
+            setFinalPhoto(obtainImgRoute(vehicle.imageUrl));
+        } catch (error) {
+            console.error("Error obteniendo los detalles del vehículo:", error);
+        }
+    };
 
     useEffect(() => {
         const fetchVehicles = async () => {
@@ -57,37 +83,19 @@ const UpdateCarScreen = ({ route, navigation }) => {
             }
         };
 
-        const fetchCarDetails = async () => {
-            try {
-                const vehicleFromDb = await getUserVehicleByRegistration(car.registration);
-                const vehicle = vehicleFromDb.data;
-
-                setCarDetails({
-                    registration: vehicle.registration,
-                    color: vehicle.color,
-                    year: new Date(vehicle.year),
-                    operative: vehicle.operative,
-                    imageUrl: vehicle.imageUrl,
-                    carId: vehicle.CarId,
-                });
-
-                setDate(new Date(vehicle.year));
-                setSelectedVehicleId(vehicle.CarId);
-                setFinalPhoto(obtainImgRoute(vehicle.imageUrl));
-            } catch (error) {
-                console.error("Error obteniendo los detalles del vehículo:", error);
-            }
-        };
-
         fetchVehicles();
         fetchCarDetails();
     }, [car.registration]);
 
     const onChangeDate = (event, selectedDate) => {
-        setShowDatePicker(Platform.OS === 'ios');
-        const currentDate = selectedDate || carDetails.year;
-        setDate(currentDate);
-        setCarDetails({ ...carDetails, year: currentDate });
+        if (event.type === "set") {
+            const currentDate = selectedDate || carDetails.year;
+            setShowDatePicker(false);
+            setDate(currentDate);
+            setCarDetails({ ...carDetails, year: currentDate });
+        } else {
+            setShowDatePicker(false);
+        }
     };
 
     const handleProfilePhotoChange = async () => {
@@ -96,7 +104,7 @@ const UpdateCarScreen = ({ route, navigation }) => {
         if (photoResult && !photoResult.cancelled) {
             setNewPhoto({ uri: photoResult.uri, type: photoResult.type, name: photoResult.name });
             setFinalPhoto(photoResult.uri);
-            await setCarDetails(prevState => ({
+            setCarDetails(prevState => ({
                 ...prevState,
                 imageUrl: photoResult.uri
             }));
@@ -143,7 +151,7 @@ const UpdateCarScreen = ({ route, navigation }) => {
 
                             if (newPhoto) {
                                 formData.append('imageUrl', {
-                                    uri: carDetails.imageUrl,
+                                    uri: newPhoto.uri,
                                     type: 'image/jpeg',
                                     name: 'carImage.jpg',
                                 });
@@ -155,11 +163,39 @@ const UpdateCarScreen = ({ route, navigation }) => {
                             navigation.goBack();
 
                         } catch (error) {
-                            if (error.response) {
-                                Alert.alert("Error", error.response.data.message);
-                            } else {
-                                console.error("Error actualizando el vehículo:", error);
-                                Alert.alert("Error", "No se pudo actualizar el vehículo");
+                            console.log("Error actualizando el vehículo en el primer intento:", error);
+
+                            // Esperar un pequeño periodo de tiempo antes de reintentar
+                            await new Promise(resolve => setTimeout(resolve, 1000));
+
+                            try {
+                                const retryFormData = new FormData();
+                                retryFormData.append('registration', carDetails.registration);
+                                retryFormData.append('color', carDetails.color);
+                                retryFormData.append('year', carDetails.year.toISOString());
+                                retryFormData.append('operative', carDetails.operative);
+                                retryFormData.append('carId', selectedVehicleId);
+
+                                if (newPhoto) {
+                                    retryFormData.append('imageUrl', {
+                                        uri: newPhoto.uri,
+                                        type: 'image/jpeg',
+                                        name: 'carImage.jpg',
+                                    });
+                                }
+
+                                await manageUpdateUserCarByRegistration(car.registration, retryFormData);
+
+                                Alert.alert("Éxito", "Vehículo actualizado correctamente");
+                                navigation.goBack();
+                            } catch (secondError) {
+                                console.error("Error actualizando el vehículo en el segundo intento:", secondError);
+
+                                if (secondError.response) {
+                                    Alert.alert("Error", secondError.response.data.message);
+                                } else {
+                                    Alert.alert("Error", "No se pudo actualizar el vehículo");
+                                }
                             }
                         }
                     },
@@ -168,29 +204,53 @@ const UpdateCarScreen = ({ route, navigation }) => {
         );
     };
 
+    const handleDiscardChanges = () => {
+        setCarDetails(initialCarDetails);
+        setDate(initialCarDetails.year);
+        setSelectedVehicleId(initialCarDetails.carId);
+        setFinalPhoto(obtainImgRoute(initialCarDetails.imageUrl));
+    };
+
     return (
         <SafeAreaView style={styles.flexContainer}>
-            <ImageBackground
-                source={require('../../assets/images/peakpx.jpg')}
-                style={styles.flexContainer}
-                resizeMode="cover"
-            >
-                <ScrollView style={styles.scrollView}>
-                    <View style={styles.formContainer}>
+            <ScrollView style={styles.scrollView}>
+                <View style={styles.formContainer}>
+                    <Text style={styles.title}>{"Vehiculo " + carDetails.registration}</Text>
+                    <View style={styles.imageUploaderContainer}>
+                        <Text style={styles.label}>Imagen del Vehículo</Text>
+                        <TouchableOpacity onPress={handleProfilePhotoChange}>
+                            {finalPhoto ?
+                                (<Image source={{ uri: finalPhoto }} style={styles.imagePreview} />)
+                                :
+                                (<View style={styles.imagePlaceholder}>
+                                    <Text style={styles.placeholderText}>No hay imagen seleccionada</Text>
+                                </View>)
+                            }
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.labelWithIcon}>
+                        <Icon name="palette" size={20} color="red" />
+                        <Text style={styles.label}>Color</Text>
+                    </View>
+                    <TextInput
+                        style={[styles.input, styles.largeInput]}
+                        value={carDetails.color}
+                        onChangeText={(text) => setCarDetails({ ...carDetails, color: text })}
+                        placeholder="Color"
+                        placeholderTextColor="#aaa"
+                        maxLength={15}
+                    />
+                    {error && carDetails.color === '' ?
+                        <Text style={styles.errorText}>{error}</Text> : null}
 
-                        <Text>Color</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={carDetails.color}
-                            onChangeText={(text) => setCarDetails({ ...carDetails, color: text })}
-                            placeholder="Color"
-                        />
-                        {error && carDetails.color === '' ? <Text style={styles.errorText}>{error}</Text> : null}
-
-                        <Text>Fecha de creación</Text>
+                    <View style={styles.labelWithIcon}>
+                        <Icon name="calendar-today" size={20} color="red" />
+                        <Text style={styles.label}>Fecha de creación</Text>
+                    </View>
+                    <View style={[styles.dateInput, styles.largeInput]}>
                         <TouchableOpacity onPress={() => setShowDatePicker(true)}
-                                          style={styles.dateInput}>
-                            <Text>{formatDate(date)}</Text>
+                                          style={styles.dateTouchable}>
+                            <Text style={styles.dateText}>{formatDate(date)}</Text>
                         </TouchableOpacity>
                         {showDatePicker && (
                             <DateTimePicker
@@ -203,63 +263,62 @@ const UpdateCarScreen = ({ route, navigation }) => {
                                 onChange={onChangeDate}
                             />
                         )}
-
-                        <View style={styles.switchContainer}>
-                            <Text style={styles.switchLabel}>Operativo</Text>
-                            <Switch
-                                trackColor={{ false: "#7bccff", true: "#7bccff" }}
-                                thumbColor={carDetails.operative ? "#13be13" : "#d53939"}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={newValue => setCarDetails({
-                                    ...carDetails,
-                                    operative: newValue
-                                })}
-                                value={carDetails.operative}
-                            />
-                        </View>
-
-                        <Text>Seleccionar Vehículo</Text>
-                        <Picker
-                            selectedValue={selectedVehicleId}
-                            onValueChange={(itemValue) => {
-                                setSelectedVehicleId(itemValue);
-                                setError('');
-                            }}
-                            style={styles.picker}
-                        >
-                            {vehicles.map((vehicle) => (
-                                <Picker.Item key={vehicle.id} label={vehicle.name} value={vehicle.id} />
-                            ))}
-                        </Picker>
-                        {error && !selectedVehicleId ? <Text style={styles.errorText}>{error}</Text> : null}
-
-                        <View style={styles.imageUploaderContainer}>
-                            <Text style={styles.label}>Imagen del Vehículo</Text>
-                            {finalPhoto ?
-                                (<Image source={{ uri: finalPhoto }} style={styles.imagePreview} />)
-                                :
-                                (<Text style={styles.placeholderText}>No hay imagen seleccionada</Text>)
-                            }
-                            <TouchableOpacity onPress={handleProfilePhotoChange}
-                                              style={styles.button}>
-                                <Text style={styles.buttonText}>Seleccionar Imagen</Text>
-                            </TouchableOpacity>
-                        </View>
-
-                        <TouchableOpacity style={styles.imageButton} onPress={handleUpdate}>
-                            <Text style={styles.buttonText}>Actualizar</Text>
-                        </TouchableOpacity>
                     </View>
-                </ScrollView>
-            </ImageBackground>
+
+                    <View style={styles.labelWithIcon}>
+                        <Icon name="directions-car" size={20} color="red" />
+                        <Text style={styles.label}>Seleccionar Vehículo</Text>
+                    </View>
+                    <Picker
+                        selectedValue={selectedVehicleId}
+                        onValueChange={(itemValue) => {
+                            setSelectedVehicleId(itemValue);
+                            setError('');
+                        }}
+                        style={[styles.picker, styles.smallInput]}
+                        dropdownIconColor="white"
+                    >
+                        {vehicles.map((vehicle) => (
+                            <Picker.Item key={vehicle.id} label={vehicle.name} value={vehicle.id} color="black" />
+                        ))}
+                    </Picker>
+                    {error && !selectedVehicleId ?
+                        <Text style={styles.errorText}>{error}</Text> : null}
+
+                    <View style={styles.switchContainer}>
+                        <Text style={styles.switchLabel}>Operativo</Text>
+                        <Switch
+                            trackColor={{ false: "#ff0000", true: "#ffffff" }}
+                            thumbColor={carDetails.operative ? "#ffffff" : "#000000"}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={newValue => setCarDetails({
+                                ...carDetails,
+                                operative: newValue
+                            })}
+                            value={carDetails.operative}
+                        />
+                    </View>
+                </View>
+            </ScrollView>
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity style={[styles.circularButton, styles.saveButton]} onPress={handleUpdate}>
+                    <Icon name="save" size={24} color="#fff" />
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.circularButton, styles.discardButton]} onPress={handleDiscardChanges}>
+                    <Icon name="refresh" size={24} color="#ff0000" />
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.circularButton, styles.goBackButton]} onPress={() => navigation.goBack()}>
+                    <Icon name="arrow-back" size={24} color="#000" />
+                </TouchableOpacity>
+            </View>
         </SafeAreaView>
     );
-};
-
+}
 
 const styles = StyleSheet.create({
     flexContainer: {
         flex: 1,
+        backgroundColor: '#090909',
     },
     scrollView: {
         flex: 1,
@@ -267,37 +326,54 @@ const styles = StyleSheet.create({
     },
     formContainer: {
         padding: 20,
-        backgroundColor: 'rgba(248,248,248,0.7)',
+        backgroundColor: 'rgba(24,24,24,0.9)',
         borderRadius: 20
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: 'white',
+        textAlign: 'center',
+        marginBottom: 20,
     },
     input: {
         height: 40,
         marginBottom: 10,
         borderWidth: 1,
+        borderColor: '#282828',
         padding: 10,
         borderRadius: 15,
-        backgroundColor: 'white',
+        backgroundColor: '#111',
+        color: 'white',
+    },
+    largeInput: {
+        height: 50,
+    },
+    smallInput: {
+        height: 30,
+        borderRadius: 15,
     },
     dateInput: {
-        height: 40,
+        height: 50,
         borderRadius: 15,
-        backgroundColor: 'white',
+        backgroundColor: '#111',
         marginBottom: 20,
         borderWidth: 1,
+        borderColor: '#444',
+        justifyContent: 'center',
+    },
+    dateTouchable: {
+        justifyContent: 'center',
+        height: '100%',
         padding: 10,
     },
     dateText: {
         fontSize: 16,
+        color: 'white',
     },
     button: {
         backgroundColor: '#3dbbe1',
         padding: 8,
-        borderRadius: 5,
-        alignItems: 'center',
-    },
-    imageButton: {
-        backgroundColor: '#007bff',
-        padding: 10,
         borderRadius: 5,
         alignItems: 'center',
     },
@@ -309,17 +385,24 @@ const styles = StyleSheet.create({
     label: {
         fontSize: 16,
         marginBottom: 8,
-        marginLeft: 2,
+        marginLeft: 8,
+        color: 'white',
+    },
+    labelWithIcon: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 3,
     },
     switchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
-
+        marginBottom: 30,
     },
     switchLabel: {
         marginRight: 10,
         fontSize: 16,
+        color: 'white',
     },
     errorText: {
         color: 'red',
@@ -329,10 +412,11 @@ const styles = StyleSheet.create({
         height: 40,
         marginBottom: 20,
         borderWidth: 1,
+        borderColor: '#444',
         padding: 5,
         borderRadius: 15,
-        backgroundColor: 'white',
-        color: 'black',
+        backgroundColor: '#111',
+        color: 'white',
     },
     imageUploaderContainer: {
         alignItems: 'center',
@@ -343,7 +427,48 @@ const styles = StyleSheet.create({
         height: 200,
         marginBottom: 10,
         borderRadius: 10,
-        backgroundColor: '#eee',
+        backgroundColor: '#222',
+    },
+    imagePlaceholder: {
+        width: 200,
+        height: 200,
+        marginBottom: 10,
+        borderRadius: 10,
+        backgroundColor: '#222',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    placeholderText: {
+        color: '#aaa',
+    },
+    text: {
+        color: 'white',
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        paddingVertical: 15,
+        paddingHorizontal: 20,
+        backgroundColor: '#131313',
+        borderTopWidth: 1,
+        borderTopColor: '#444',
+    },
+    circularButton: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginHorizontal: 10,
+    },
+    saveButton: {
+        backgroundColor: '#ff0000',
+    },
+    discardButton: {
+        backgroundColor: '#fff',
+    },
+    goBackButton: {
+        backgroundColor: '#fff',
     },
 });
 

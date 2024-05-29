@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     mainTitle: {
         fontSize: 40,
         fontWeight: 'bold',
-        color: '#FF0000',
+        color: '#FFF',
         textTransform: 'uppercase',
         alignItems:"center",
         letterSpacing: 2,
