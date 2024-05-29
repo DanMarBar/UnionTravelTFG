@@ -154,71 +154,74 @@ const UserUpdateScreen = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.textContainer}>
-                    <GroupedDetail title="Información Personal">
-                        <EditableDetailWithIcon icon="person" label="Nombre" maxLength={20}
-                                                value={userDetails.name}
-                                                onChangeText={(text) => setUserDetails({
-                                                    ...userDetails,
-                                                    name: text
-                                                })} />
-                        <EditableDetailWithIcon icon="person-outline" label="Apellido" maxLength={15}
-                                                value={userDetails.surname}
-                                                onChangeText={(text) => setUserDetails({
-                                                    ...userDetails,
-                                                    surname: text
-                                                })} />
-                        <View style={styles.detailRow}>
-                            <Icon name="cake" size={26} color="#ff0000"
-                                  style={styles.icon} />
-                            <TouchableOpacity style={styles.editableFieldContainer}
-                                              onPress={() => setShowDatePicker(true)}>
-                                <Text style={styles.label}>Cumpleaños:</Text>
-                                <Text
-                                    style={styles.editableField}>{userDetails.birthday.toDateString()}</Text>
-                            </TouchableOpacity>
-                        </View>
-                        {showDatePicker && (
-                            <DateTimePicker
-                                value={date}
-                                mode="date"
-                                display="default"
-                                onChange={onChangeDate}
-                            />
-                        )}
-                    </GroupedDetail>
-                    <Separator />
-                    <GroupedDetail title="Información de Contacto">
-                        <EditableDetailWithIcon icon="phone" label="Teléfono"
-                                                value={userDetails.cellphone}
-                                                onChangeText={(text) => setUserDetails({
-                                                    ...userDetails,
-                                                    cellphone: text
-                                                })}
-                                                keyboardType="numeric"
-                                                maxLength={9} />
-                        <EditableDetailWithIcon icon="phone" label="Teléfono secundario"
-                                                value={userDetails.secondCellphone}
-                                                onChangeText={(text) => setUserDetails({
-                                                    ...userDetails,
-                                                    secondCellphone: text
-                                                })}
-                                                keyboardType="numeric"
-                                                maxLength={9} />
-                        <EditableDetailWithIcon icon="home" label="Dirección" maxLength={20}
-                                                value={userDetails.direction}
-                                                onChangeText={(text) => setUserDetails({
-                                                    ...userDetails,
-                                                    direction: text
-                                                })} />
-                        <EditableDetailWithIcon icon="location-city" label="Código Postal"
-                                                value={userDetails.zip}
-                                                onChangeText={(text) => setUserDetails({
-                                                    ...userDetails,
-                                                    zip: text
-                                                })}
-                                                keyboardType="numeric"
-                                                maxLength={5} />
-                    </GroupedDetail>
+                    <View style={styles.sectionContainer}>
+                        <GroupedDetail title="Información Personal">
+                            <EditableDetailWithIcon icon="person" label="Nombre" maxLength={20}
+                                                    value={userDetails.name}
+                                                    onChangeText={(text) => setUserDetails({
+                                                        ...userDetails,
+                                                        name: text
+                                                    })} />
+                            <EditableDetailWithIcon icon="person-outline" label="Apellido" maxLength={15}
+                                                    value={userDetails.surname}
+                                                    onChangeText={(text) => setUserDetails({
+                                                        ...userDetails,
+                                                        surname: text
+                                                    })} />
+                            <View style={styles.detailRow}>
+                                <Icon name="cake" size={26} color="#ff0000"
+                                      style={styles.icon} />
+                                <TouchableOpacity style={styles.editableFieldContainer}
+                                                  onPress={() => setShowDatePicker(true)}>
+                                    <Text style={styles.label}>Cumpleaños:</Text>
+                                    <Text
+                                        style={styles.editableField}>{userDetails.birthday.toDateString()}</Text>
+                                </TouchableOpacity>
+                            </View>
+                            {showDatePicker && (
+                                <DateTimePicker
+                                    value={date}
+                                    mode="date"
+                                    display="default"
+                                    onChange={onChangeDate}
+                                />
+                            )}
+                        </GroupedDetail>
+                    </View>
+                    <View style={styles.sectionContainer}>
+                        <GroupedDetail title="Información de Contacto">
+                            <EditableDetailWithIcon icon="phone" label="Teléfono"
+                                                    value={userDetails.cellphone}
+                                                    onChangeText={(text) => setUserDetails({
+                                                        ...userDetails,
+                                                        cellphone: text
+                                                    })}
+                                                    keyboardType="numeric"
+                                                    maxLength={9} />
+                            <EditableDetailWithIcon icon="phone" label="Teléfono secundario"
+                                                    value={userDetails.secondCellphone}
+                                                    onChangeText={(text) => setUserDetails({
+                                                        ...userDetails,
+                                                        secondCellphone: text
+                                                    })}
+                                                    keyboardType="numeric"
+                                                    maxLength={9} />
+                            <EditableDetailWithIcon icon="home" label="Dirección" maxLength={20}
+                                                    value={userDetails.direction}
+                                                    onChangeText={(text) => setUserDetails({
+                                                        ...userDetails,
+                                                        direction: text
+                                                    })} />
+                            <EditableDetailWithIcon icon="location-city" label="Código Postal"
+                                                    value={userDetails.zip}
+                                                    onChangeText={(text) => setUserDetails({
+                                                        ...userDetails,
+                                                        zip: text
+                                                    })}
+                                                    keyboardType="numeric"
+                                                    maxLength={5} />
+                        </GroupedDetail>
+                    </View>
                 </View>
             </ScrollView>
             <View style={styles.buttonContainer}>
@@ -256,12 +259,10 @@ const GroupedDetail = ({ title, children }) => (
     </View>
 );
 
-const Separator = () => <View style={styles.separator} />;
-
 const styles = StyleSheet.create({
     flexContainer: {
         flex: 1,
-        backgroundColor: '#131313',
+        backgroundColor: '#0c0c0c',
     },
     scrollView: {
         paddingHorizontal: 15,
@@ -271,12 +272,12 @@ const styles = StyleSheet.create({
         paddingBottom: 120,
     },
     profileImageContainer: {
-        width: 150, // Increased size
-        height: 150, // Increased size
-        borderRadius: 75, // Adjusted for increased size
+        width: 150,
+        height: 150,
+        borderRadius: 75,
         overflow: 'hidden',
         alignItems: 'center',
-        marginBottom: 10, // Reduced margin
+        marginBottom: 10,
         borderColor: '#fff',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
@@ -293,10 +294,13 @@ const styles = StyleSheet.create({
         marginTop: 5,
         fontSize: 14,
         color: '#ff0000',
-        textAlign: 'center', // Center text
+        textAlign: 'center',
     },
     textContainer: {
-        backgroundColor: '#2C2C2C',
+        marginVertical: 10,
+    },
+    sectionContainer: {
+        backgroundColor: '#1f1f1f',
         borderRadius: 12,
         padding: 20,
         marginVertical: 10,
@@ -308,7 +312,7 @@ const styles = StyleSheet.create({
     },
     outerProfileImageContainer: {
         alignItems: 'center',
-        marginBottom: 10, // Reduced margin
+        marginBottom: 10,
     },
     groupedContainer: {
         marginBottom: 20,
