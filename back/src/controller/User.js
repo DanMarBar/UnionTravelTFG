@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import jwt from "jsonwebtoken";
 import stytchClient from '../config/Stytch.js';
+import sendEmail from "../config/Mailer.js";
 
 dotenv.config();
 
@@ -42,6 +43,19 @@ export const registerNewUser = async (req, res) => {
             id: user.id,
             user: user.user
         }, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '2h'});
+
+        // Crear el contenido del correo en formato HTML
+        const emailContent = `
+            Bienvenido a nuestra aplicación
+            Hola ${name}
+            Gracias por registrarte en nuestra aplicación! Estamos encantados de tenerte con nosotros
+            Si tienes alguna pregunta, no dudes en contactarnos
+            Saludos, El equipo de nuestra aplicación
+        `;
+
+        // Enviar correo de bienvenida
+        sendEmail(email, 'Bienvenido a nuestra aplicación', emailContent);
+
         return res.status(201).json({message: "User created successfully", user, token});
 
     } catch (error) {
