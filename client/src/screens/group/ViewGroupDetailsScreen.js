@@ -39,11 +39,12 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
     const [routeCoordinates, setRouteCoordinates] = useState([]);
     const [newRouteCoordinates, setNewRouteCoordinates] = useState([]);
     const [destination, setDestination] = useState(null);
+    const [stops, setStops] = useState([]);
 
     useEffect(() => {
         const fetchGroupDetails = async () => {
             try {
-                const {groupId} = route.params;
+                const { groupId } = route.params;
                 const groupData = await obtainAllGroupsDataByGroupId(groupId);
                 setGroup(groupData.data[0]);
 
@@ -52,12 +53,15 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
 
                 const routeData = await getGroupRoute(groupId);
                 if (routeData.data.coordinates) {
-                    setRouteCoordinates(routeData.data.coordinates);
+                    const { stops, destination, coordinates } = routeData.data.coordinates;
+                    setStops(stops);
+                    setDestination(destination);
+                    setRouteCoordinates(coordinates);
                 }
 
-                const userInfo = await obtainAllUserInfo()
-                const userGroupInfo = await obtainPersonFromGroupById(userInfo.id, groupId)
-                const groupUserData = userGroupInfo.data
+                const userInfo = await obtainAllUserInfo();
+                const userGroupInfo = await obtainPersonFromGroupById(userInfo.id, groupId);
+                const groupUserData = userGroupInfo.data;
                 setIsLeader(groupUserData.isUserLeader);
                 setIsAdmin(userInfo.isAdmin);
 
@@ -68,7 +72,7 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
 
         const getCurrentLocation = async () => {
             try {
-                let {status} = await Location.requestForegroundPermissionsAsync();
+                let { status } = await Location.requestForegroundPermissionsAsync();
                 if (status !== 'granted') {
                     Alert.alert('Permiso de ubicación denegado', 'Por favor, habilita los servicios de ubicación en la configuración del dispositivo.');
                     setCurrentLocation({
@@ -132,21 +136,71 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
         });
     };
 
+    const areCoordinatesEqual = (coords1, coords2) => {
+        if (coords1.length !== coords2.length) return false;
+        for (let i = 0; i < coords1.length; i++) {
+            if (coords1[i].latitude !== coords2[i].latitude || coords1[i].longitude !== coords2[i].longitude) {
+                return false;
+            }
+        }
+        return true;
+    };
+
     const handleAssignRoute = async () => {
         console.log('Coordinates to Save:', newRouteCoordinates);
-        try {
-            await saveGroupRoute(group.GroupId, newRouteCoordinates);
-            setRouteCoordinates(newRouteCoordinates);
-            setNewRouteCoordinates([]);
-            Alert.alert('Ruta guardada', 'Se ha guardado la ruta')
-        } catch (error) {
-            console.error('Error asignando la ruta:', error);
+
+        const finalRouteCoordinates = [
+            { latitude: currentLocation.latitude, longitude: currentLocation.longitude },
+            ...newRouteCoordinates
+        ];
+
+        if (destination) {
+            finalRouteCoordinates.push(destination);
         }
+
+        if (areCoordinatesEqual(routeCoordinates, finalRouteCoordinates)) {
+            Alert.alert('Sin cambios', 'La ruta nueva es igual a la ruta actual.');
+            return;
+        }
+
+        Alert.alert(
+            'Confirmar Guardado',
+            '¿Estás seguro de que deseas guardar esta ruta?',
+            [
+                {
+                    text: 'Cancelar',
+                    style: 'cancel',
+                },
+                {
+                    text: 'Guardar',
+                    onPress: async () => {
+                        try {
+                            const finalRoute = {
+                                stops: stops,
+                                destination: destination,
+                                coordinates: finalRouteCoordinates
+                            };
+
+                            await saveGroupRoute(group.GroupId, finalRoute);
+                            setRouteCoordinates(finalRouteCoordinates);
+                            setNewRouteCoordinates([]);
+
+                            Alert.alert('Ruta guardada', 'Se ha guardado la ruta con las paradas y el destino final');
+                        } catch (error) {
+                            console.error('Error asignando la ruta:', error);
+                        }
+                    },
+                },
+            ],
+            { cancelable: false }
+        );
     };
 
     const handleResetRoute = () => {
         setRouteCoordinates([]);
         setNewRouteCoordinates([]);
+        setStops([]);
+        setDestination(null);
     };
 
     const fetchPlaceDetails = async (placeId) => {
@@ -159,12 +213,20 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
         if (details && details.geometry && details.geometry.location) {
             const {lat, lng} = details.geometry.location;
             const destinationCoordinate = {latitude: lat, longitude: lng};
+            if (newRouteCoordinates.length > 0) {
+                setStops([...stops, newRouteCoordinates[newRouteCoordinates.length - 1]]);
+            }
             setDestination(destinationCoordinate);
+            setNewRouteCoordinates([destinationCoordinate]);
         } else if (data.place_id) {
             try {
                 const location = await fetchPlaceDetails(data.place_id);
                 const destinationCoordinate = {latitude: location.lat, longitude: location.lng};
+                if (newRouteCoordinates.length > 0) {
+                    setStops([...stops, newRouteCoordinates[newRouteCoordinates.length - 1]]);
+                }
                 setDestination(destinationCoordinate);
+                setNewRouteCoordinates([destinationCoordinate]);
             } catch (error) {
                 console.error('Error fetching place details:', error);
             }
@@ -176,8 +238,9 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
     useEffect(() => {
         if (currentLocation && destination) {
             const fetchDirections = async () => {
+                let waypoints = stops.map(stop => `${stop.latitude},${stop.longitude}`).join('|');
                 const result = await fetch(
-                    `https://maps.googleapis.com/maps/api/directions/json?origin=${currentLocation.latitude},${currentLocation.longitude}&destination=${destination.latitude},${destination.longitude}&key=${configProtection.googleMapsApiKey}`
+                    `https://maps.googleapis.com/maps/api/directions/json?origin=${currentLocation.latitude},${currentLocation.longitude}&destination=${destination.latitude},${destination.longitude}&waypoints=${waypoints}&key=${configProtection.googleMapsApiKey}`
                 );
                 const data = await result.json();
                 console.log(data)
@@ -189,6 +252,7 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                     Alert.alert("No se pudo crear una ruta", "No se ha podido crear una ruta con la ubicacion introducida");
                 }
             };
+
 
             fetchDirections();
         }
@@ -221,7 +285,7 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
 
     if (!group || !currentLocation) {
         return <View style={styles.userContainer}>
-
+            <Text style={styles.loadingText}>Cargando...</Text>
         </View>
     }
 
@@ -281,6 +345,14 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                                         strokeWidth={6}
                                     />
                                 )}
+                                {stops.map((stop, index) => (
+                                    <Marker
+                                        key={index}
+                                        coordinate={stop}
+                                        title={`Stop ${index + 1}`}
+                                        description={`Stop ${index + 1}`}
+                                    />
+                                ))}
                                 {destination && (
                                     <Marker
                                         coordinate={destination}
@@ -289,12 +361,13 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                                     />
                                 )}
                             </MapView>
+
                         </View>
 
                         {(isLeader || isAdmin) && (
                             <View style={styles.routeInputContainer}>
                                 <GooglePlacesAutocomplete
-                                    placeholder='Search for a place'
+                                    placeholder='Añade paradas'
                                     onPress={handleDestinationSelect}
                                     query={{
                                         key: configProtection.googleMapsApiKey,
@@ -453,8 +526,8 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     mapContainer: {
-        height: 200,
-        marginVertical: 20,
+        height: 250,
+        marginBottom: 20,
     },
     map: {
         flex: 1,
