@@ -25,9 +25,10 @@ import {
 import {obtainImgRoute} from '../../utils/ImageUtils';
 import {mapStyle} from "../../utils/MapUtils";
 import {obtainAllUserInfo} from "../../utils/UserUtils";
-import config from "../../config/ProtectedData";
+import {formatTime} from "../../utils/DateUtils";
+import configProtection from "../../config/ProtectedData";
 
-const GOOGLE_MAPS_APIKEY = 'config.googleMapsApiKey';
+const GOOGLE_MAPS_APIKEY = configProtection.googleMapsApiKey;
 
 const ViewGroupDetailsScreen = ({route, navigation}) => {
     const [group, setGroup] = useState(null);
@@ -67,7 +68,7 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
 
         const getCurrentLocation = async () => {
             try {
-                let { status } = await Location.requestForegroundPermissionsAsync();
+                let {status} = await Location.requestForegroundPermissionsAsync();
                 if (status !== 'granted') {
                     Alert.alert('Permiso de ubicación denegado', 'Por favor, habilita los servicios de ubicación en la configuración del dispositivo.');
                     setCurrentLocation({
@@ -133,27 +134,23 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
 
     const handleAssignRoute = async () => {
         console.log('Coordinates to Save:', newRouteCoordinates);
-        if (newRouteCoordinates.length === 0) {
-            console.error('No coordinates to save');
-            return;
-        }
-
         try {
             await saveGroupRoute(group.GroupId, newRouteCoordinates);
             setRouteCoordinates(newRouteCoordinates);
             setNewRouteCoordinates([]);
+            Alert.alert('Ruta guardada', 'Se ha guardado la ruta')
         } catch (error) {
             console.error('Error asignando la ruta:', error);
         }
     };
 
     const handleResetRoute = () => {
+        setRouteCoordinates([]);
         setNewRouteCoordinates([]);
     };
 
     const fetchPlaceDetails = async (placeId) => {
-        const response = await fetch(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${'GOOGLE_MAPS_APIKEY'}`);
-        console.log(response)
+        const response = await fetch(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${configProtection.googleMapsApiKey}`);
         const data = await response.json();
         return data.result.geometry.location;
     };
@@ -180,9 +177,10 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
         if (currentLocation && destination) {
             const fetchDirections = async () => {
                 const result = await fetch(
-                    `https://maps.googleapis.com/maps/api/directions/json?origin=${currentLocation.latitude},${currentLocation.longitude}&destination=${destination.latitude},${destination.longitude}&key=${"GOOGLE_MAPS_APIKEY"}`
+                    `https://maps.googleapis.com/maps/api/directions/json?origin=${currentLocation.latitude},${currentLocation.longitude}&destination=${destination.latitude},${destination.longitude}&key=${configProtection.googleMapsApiKey}`
                 );
                 const data = await result.json();
+                console.log(data)
                 if (data.routes.length) {
                     const points = decode(data.routes[0].overview_polyline.points);
                     const route = points.map(point => ({latitude: point[0], longitude: point[1]}));
@@ -299,7 +297,7 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                                     placeholder='Search for a place'
                                     onPress={handleDestinationSelect}
                                     query={{
-                                        key: GOOGLE_MAPS_APIKEY,
+                                        key: configProtection.googleMapsApiKey,
                                         language: 'en',
                                     }}
                                     styles={{
@@ -325,36 +323,46 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                                     }}
                                 />
                                 <View style={styles.buttonContainer}>
-                                    <Button title="Asignar ruta" color="#ff0000"
-                                            onPress={handleAssignRoute}/>
-                                    <Button title="Reiniciar" color="#ff0000"
-                                            onPress={handleResetRoute}/>
+                                    <TouchableOpacity style={styles.buttonNav}
+                                                      onPress={handleAssignRoute}>
+                                        <Text style={styles.buttonText}>Asignar ruta</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={styles.buttonNav}
+                                                      onPress={handleResetRoute}>
+                                        <Text style={styles.buttonText}>Reiniciar</Text>
+                                    </TouchableOpacity>
                                 </View>
                             </View>
                         )}
 
+                        <View style={styles.groupInfoContainer}>
+                            <Text style={styles.groupTitle}>{group.Group.name}</Text>
+                            <Text style={styles.groupDescription}>{group.Group.description}</Text>
+                            <Divider/>
+                        </View>
+
                         <View style={styles.content}>
                             <View style={styles.section}>
-                                <Text style={styles.groupHeader}>Información del Grupo</Text>
-                                <Divider/>
-                                <DetailWithIcon icon="group" text={`Nombre: ${group.Group.name}`}
-                                                iconColor="#ff0000"/>
-                                <DetailWithIcon icon="info"
-                                                text={`Descripción: ${group.Group.description}`}
-                                                iconColor="#ff0000"/>
                                 <DetailWithIcon icon="place"
                                                 text={`Lugar: ${group.Group.Place.name}`}
                                                 iconColor="#ff0000"/>
                                 <DetailWithIcon icon="event"
-                                                text={`Llegada: ${new Date(group.Group.arrivalDate).toLocaleDateString()} | Salida: ${new Date(group.Group.departureDate).toLocaleDateString()}`}
+                                                text={`Partida: ${formatTime(group.Group.arrivalDate)}`}
                                                 iconColor="#ff0000"/>
+                                <DetailWithIcon icon="event"
+                                                text={`Salida ${formatTime(group.Group.departureDate)}`}
+                                                iconColor="#ff0000"/>
+
                             </View>
 
                             <View style={styles.section}>
                                 <Text style={styles.groupHeader}>Información del Vehículo</Text>
                                 <Divider/>
+                                <Image
+                                    source={{uri: obtainImgRoute(group.Group.VehiclePerson.imageUrl)}}
+                                    style={styles.vehicleImage}/>
                                 <DetailWithIcon icon="directions-car"
-                                                text={`Registro: ${group.Group.VehiclePerson.registration}`}
+                                                text={`Matricula: ${group.Group.VehiclePerson.registration}`}
                                                 iconColor="#ff0000"/>
                                 <DetailWithIcon icon="color-lens"
                                                 text={`Color: ${group.Group.VehiclePerson.color}`}
@@ -362,9 +370,6 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                                 <DetailWithIcon icon="directions-car"
                                                 text={`Carro: ${group.Group.VehiclePerson.Car.brand} ${group.Group.VehiclePerson.Car.model} (${group.Group.VehiclePerson.Car.year.substring(0, 4)})`}
                                                 iconColor="#ff0000"/>
-                                <Image
-                                    source={{uri: obtainImgRoute(group.Group.VehiclePerson.imageUrl)}}
-                                    style={styles.vehicleImage}/>
                             </View>
 
                             <View style={styles.section}>
@@ -378,7 +383,7 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                                         <View style={styles.userInfo}>
                                             <DetailWithIcon icon="person"
                                                             text={`Usuario: ${user.User.user}`}
-                                                            iconColor="#ff0000"/>
+                                                            iconColor="#ffffff"/>
                                             <DetailWithIcon icon="phone"
                                                             text={`Celular: ${user.User.cellphone || 'N/A'}`}
                                                             iconColor="#ff0000"/>
@@ -399,9 +404,9 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                 renderItem={null}
             />
             <View style={styles.buttonRow}>
-                <TouchableOpacity style={styles.iconButton}
+                <TouchableOpacity style={styles.iconButtonChat}
                                   onPress={() => navigation.navigate('GroupChatScreen', {group: group})}>
-                    <Icon name="chat" size={30} color="#ff0000"/>
+                    <Icon name="chat" size={30} color="#ffffff"/>
                 </TouchableOpacity>
                 {(isLeader || isAdmin) && (
                     <>
@@ -411,7 +416,7 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.iconButton}
                                           onPress={() => navigation.goBack()}>
-                            <Icon name="arrow-back" size={30} color="#ff0000"/>
+                            <Icon name="arrow-back" size={30} color="#000000"/>
                         </TouchableOpacity>
                     </>
                 )}
@@ -440,9 +445,9 @@ const styles = StyleSheet.create({
     },
     content: {
         margin: 20,
+        marginTop: 0
     },
     section: {
-        backgroundColor: 'rgba(255, 255, 255, 0.1)',
         borderRadius: 10,
         padding: 15,
         marginBottom: 15,
@@ -464,6 +469,34 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         marginTop: 10,
         borderRadius: 10,
+    },
+    buttonNav: {
+        backgroundColor: 'red',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: '#ffffff',
+        fontSize: 16,
+    },
+    groupInfoContainer: {
+        margin: 30,
+        marginTop: 0,
+        marginBottom: 0,
+        padding: 10,
+        borderRadius: 10,
+    },
+    groupTitle: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        color: '#ffffff',
+        marginBottom: 5,
+    },
+    groupDescription: {
+        fontSize: 15,
+        color: '#ffffff',
     },
     detailRow: {
         flexDirection: 'row',
@@ -509,11 +542,21 @@ const styles = StyleSheet.create({
         width: 60,
         height: 60,
     },
+    iconButtonChat: {
+        backgroundColor: '#ff0000',
+        padding: 15,
+        borderRadius: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: 60,
+        height: 60,
+    },
     vehicleImage: {
         width: '100%',
-        height: 150,
+        height: 200,
         borderRadius: 10,
         marginTop: 10,
+        marginBottom: 10,
     },
     userContainer: {
         flexDirection: 'row',
