@@ -324,8 +324,8 @@ const ViewAllGroupsScreen = ({ route, navigation }) => {
                         </View>
                     );
                 })}
-                <TouchableOpacity style={styles.actionButton} onPress={() => navigation.goBack()}>
-                    <Text style={styles.actionButtonText}>Volver Atrás</Text>
+                <TouchableOpacity style={styles.actionButton} onPress={() => navigation.navigate('InsertGroupScreen')}>
+                    <Text style={styles.actionButtonText}>Crea tu propio grupo</Text>
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>

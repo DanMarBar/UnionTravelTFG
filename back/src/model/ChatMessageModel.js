@@ -38,7 +38,7 @@ const ChatMessageModel = db.define('ChatMessage', {
 });
 
 ChatMessageModel.belongsTo(UserModel, { foreignKey: 'userId' });
-ChatMessageModel.belongsTo(GroupModel, { foreignKey: 'groupId' });
+ChatMessageModel.belongsTo(GroupModel, { foreignKey: 'groupId',onDelete: 'CASCADE' });
 
 (async () => {
     await db.sync();

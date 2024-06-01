@@ -29,7 +29,7 @@ User.hasMany(GroupPersonModel);
 GroupPersonModel.belongsTo(User);
 
 Group.hasMany(GroupPersonModel);
-GroupPersonModel.belongsTo(Group);
+GroupPersonModel.belongsTo(Group, { onDelete: 'CASCADE' });
 
 (async () => {
     await db.sync();

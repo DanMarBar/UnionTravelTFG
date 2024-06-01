@@ -52,11 +52,15 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                 setUsers(usersData.data);
 
                 const routeData = await getGroupRoute(groupId);
-                if (routeData.data.coordinates) {
+                if (routeData.data && routeData.data.coordinates) {
                     const { stops, destination, coordinates } = routeData.data.coordinates;
-                    setStops(stops);
-                    setDestination(destination);
-                    setRouteCoordinates(coordinates);
+                    setStops(stops || []);
+                    setDestination(destination || null);
+                    setRouteCoordinates(coordinates || []);
+                } else {
+                    setStops([]);
+                    setDestination(null);
+                    setRouteCoordinates([]);
                 }
 
                 const userInfo = await obtainAllUserInfo();
@@ -89,7 +93,6 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                 });
             } catch (error) {
                 console.error('Error obteniendo la ubicación:', error);
-                Alert.alert('Error obteniendo la ubicación', 'No se pudo obtener la ubicación actual. Usando coordenadas de respaldo.');
                 setCurrentLocation({
                     latitude: 34.052235,
                     longitude: -118.243683,
@@ -534,7 +537,7 @@ const styles = StyleSheet.create({
     },
     routeInputContainer: {
         marginHorizontal: 20,
-        marginBottom: 20,
+        marginBottom: 7,
         borderRadius: 40,
     },
     buttonContainer: {
