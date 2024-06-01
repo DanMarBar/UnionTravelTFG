@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, {useCallback, useState} from 'react';
 import {
     Alert,
     Image,
@@ -10,12 +10,16 @@ import {
     View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useFocusEffect } from '@react-navigation/native';
-import { manageDeleteCar, manageGetUserVehiclesByUserId } from '../../config/api.js';
-import { obtainAllUserInfo } from "../../utils/UserUtils";
-import { obtainImgRoute } from "../../utils/ImageUtils";
+import {useFocusEffect} from '@react-navigation/native';
+import {
+    checkIfCarIsBeingUsedInGroup,
+    manageDeleteUserCarByRegistration,
+    manageGetUserVehiclesByUserId
+} from '../../config/api.js';
+import {obtainAllUserInfo} from "../../utils/UserUtils";
+import {obtainImgRoute} from "../../utils/ImageUtils";
 
-const CarListScreen = ({ navigation }) => {
+const CarListScreen = ({navigation}) => {
     const [cars, setCars] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -36,9 +40,9 @@ const CarListScreen = ({ navigation }) => {
         }, [fetchCarsData])
     );
 
-    const handleUpdate = (car) => navigation.navigate('UpdateCar', { car });
+    const handleUpdate = (car) => navigation.navigate('UpdateCar', {car});
 
-    const handleDetails = (car) => navigation.navigate('CarDetail', { car });
+    const handleDetails = (car) => navigation.navigate('CarDetail', {car});
 
     const handleDelete = (car) => {
         Alert.alert(
@@ -54,10 +58,17 @@ const CarListScreen = ({ navigation }) => {
                     text: "Eliminar",
                     onPress: async () => {
                         try {
-                            await manageDeleteCar(car.id);
-                            console.log("Auto eliminado correctamente");
-                            Alert.alert("Eliminado", "El auto ha sido eliminado correctamente.");
-                            await fetchCarsData();
+                            const isCarBeingUsed = await checkIfCarIsBeingUsedInGroup(car.registration)
+                            if (isCarBeingUsed.data === true) {
+                                Alert.alert("No se puede usar", "El vehiculo esta siendo usado" +
+                                    " en un grupo. Retiralo del grupo primero");
+                            }else{
+                                await manageDeleteUserCarByRegistration(car.registration);
+                                console.log("Auto eliminado correctamente");
+                                Alert.alert("Eliminado", "El auto ha sido eliminado correctamente.");
+                                await fetchCarsData();
+                            }
+
                         } catch (error) {
                             console.error("Error eliminando el auto:", error);
                             Alert.alert("Error", "No se pudo eliminar el auto.");
@@ -99,7 +110,7 @@ const CarListScreen = ({ navigation }) => {
                         <View style={styles.imageAndDetailsContainer}>
                             {car.imageUrl ? (
                                 <Image
-                                    source={{ uri: obtainImgRoute(car.imageUrl) }}
+                                    source={{uri: obtainImgRoute(car.imageUrl)}}
                                     style={styles.carImage}
                                 />
                             ) : (
@@ -110,28 +121,36 @@ const CarListScreen = ({ navigation }) => {
                             <View style={styles.cardContent}>
                                 <Text style={styles.carName}>{car.registration}</Text>
                                 <View style={styles.carDetailRow}>
-                                    <Icon name="color-palette" size={20} color="#ffffff" style={styles.detailIcon} />
+                                    <Icon name="color-palette" size={20} color="#ffffff"
+                                          style={styles.detailIcon}/>
                                     <Text style={styles.carDetail}>Color: {car.color}</Text>
                                 </View>
                                 <View style={styles.carDetailRow}>
-                                    <Icon name="calendar" size={20} color="#ffffff" style={styles.detailIcon} />
-                                    <Text style={styles.carDetail}>Año: {new Date(car.year).getFullYear()}</Text>
+                                    <Icon name="calendar" size={20} color="#ffffff"
+                                          style={styles.detailIcon}/>
+                                    <Text
+                                        style={styles.carDetail}>Año: {new Date(car.year).getFullYear()}</Text>
                                 </View>
                                 <View style={styles.carDetailRow}>
-                                    <Icon name="construct" size={20} color="#ffffff" style={styles.detailIcon} />
-                                    <Text style={styles.carDetail}>Operativo: {car.operative ? "Sí" : "No"}</Text>
+                                    <Icon name="construct" size={20} color="#ffffff"
+                                          style={styles.detailIcon}/>
+                                    <Text
+                                        style={styles.carDetail}>Operativo: {car.operative ? "Sí" : "No"}</Text>
                                 </View>
                             </View>
                         </View>
                         <View style={styles.buttonsContainer}>
-                            <TouchableOpacity style={[styles.actionButton, styles.detailsButton]} onPress={() => handleDetails(car)}>
-                                <Icon name="eye" size={20} color="#000000" />
+                            <TouchableOpacity style={[styles.actionButton, styles.detailsButton]}
+                                              onPress={() => handleDetails(car)}>
+                                <Icon name="eye" size={20} color="#000000"/>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[styles.actionButton, styles.editButton]} onPress={() => handleUpdate(car)}>
-                                <Icon name="create" size={20} color="#ff0000" />
+                            <TouchableOpacity style={[styles.actionButton, styles.editButton]}
+                                              onPress={() => handleUpdate(car)}>
+                                <Icon name="create" size={20} color="#ff0000"/>
                             </TouchableOpacity>
-                            <TouchableOpacity style={[styles.actionButton, styles.deleteButton]} onPress={() => handleDelete(car)}>
-                                <Icon name="trash" size={20} color="#ffffff" />
+                            <TouchableOpacity style={[styles.actionButton, styles.deleteButton]}
+                                              onPress={() => handleDelete(car)}>
+                                <Icon name="trash" size={20} color="#ffffff"/>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -170,7 +189,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         marginHorizontal: 10,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: {width: 0, height: 2},
         shadowOpacity: 0.8,
         shadowRadius: 2,
         elevation: 5,

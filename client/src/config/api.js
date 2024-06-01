@@ -43,6 +43,7 @@ export const manageUpdateUserCarByRegistration = (registration, carDetails) => a
         'Content-Type': 'multipart/form-data'
     }
 });
+export const manageDeleteUserCarByRegistration = (registration) => api.delete(`/manageDeleteUserCarByRegistration/${registration}`);
 
 // Place
 export const getAllPlaces = () => api.get(`/getAllPlaces`);
@@ -50,6 +51,7 @@ export const getAllPlaces = () => api.get(`/getAllPlaces`);
 // Group
 export const createGroup = (group) => api.post('/createGroup', group);
 export const getGroupById = (groupId) => api.get(`/getGroupById/${groupId}`);
+export const checkIfCarIsBeingUsedInGroup = (registration) => api.get(`/checkIfCarIsBeingUsedInGroup/${registration}`);
 export const updateGroupById = (groupId, group) => api.put(`/updateGroupById/${groupId}`, group);
 export const getAllGroupsWithAllInfo = () => api.get(`/getAllGroupsWithAllInfo`);
 

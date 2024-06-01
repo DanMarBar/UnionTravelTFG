@@ -152,17 +152,17 @@ const updateCar = async (registration, color, year, operative, imageUrl, carId) 
 }
 
 // Obtiene el id necesario para el delete
-export const manageDeleteUserCar = async (req, res) => {
-    const carId = req.params.id;
-    return res.json(deleteCar(carId))
+export const manageDeleteUserCarByRegistration = async (req, res) => {
+    const registration = req.params.registration;
+    return res.json(deleteCar(registration))
 }
 
 // Elimina el vehiculo
-const deleteCar = async (id) => {
+const deleteCar = async (registration) => {
     try {
         await VehiclePersonModel.destroy({
             where: {
-                id: id
+                registration: registration
             }
         })
         return "La eliminacion del vehiculo ha sido exitosa"

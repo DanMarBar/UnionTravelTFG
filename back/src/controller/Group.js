@@ -118,6 +118,24 @@ export const deleteGroup = async (req, res) => {
     }
 };
 
+export const checkIfCarIsBeingUsedInGroup = async (req, res) => {
+    const { registration } = req.params;
+    try {
+        const group = await Group.findOne({
+            where: { registration }
+        });
+
+        if (group) {
+            return res.send(true);
+        } else {
+            return res.send(false);
+        }
+    } catch (error) {
+        console.error(error);
+        return res.status(500).send("Error al verificar los grupos");
+    }
+};
+
 export const saveGroupRoute = async (req, res) => {
     try {
         const { groupId } = req.params;

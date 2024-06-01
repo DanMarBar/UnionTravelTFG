@@ -9,13 +9,14 @@ import {
 import {
     getUserVehicleByRegistration,
     manageCreateNewUserVehicle,
-    manageDeleteUserCar,
+    manageDeleteUserCarByRegistration,
     manageGetUserVehiclesByUserId,
     manageGetUserVehiclesByUserWithCarsId,
     manageGetUserVehicleWithVehicleInfoByCarId,
     manageUpdateUserCarByRegistration
 } from "../controller/VehiclePerson.js";
 import {
+    checkIfCarIsBeingUsedInGroup,
     createGroup,
     deleteGroup,
     getAllGroups,
@@ -67,7 +68,7 @@ router.put('/updateUser/:email', upload.single('profilePhoto'), manageUpdateUser
 // Car
 router.get("/obtainAllVehicles", obtainAllVehicles)
 router.get("/manageGetCarById/:id", manageGetCarById);
-router.delete("/manageDeleteUserCar/:id", manageDeleteUserCar);
+router.delete("/manageDeleteUserCar/:id", manageDeleteUserCarByRegistration);
 
 // UserCar
 router.post("/manageCreateNewUserVehicle/:userId", upload.single('imageUrl'), manageCreateNewUserVehicle);
@@ -77,12 +78,13 @@ router.get("/manageGetUserVehicleWithVehicleInfoByCarId/:carId", manageGetUserVe
 router.get("/manageGetCarById/:id", manageGetCarById);
 router.get("/getUserVehicleByRegistration/:registration", getUserVehicleByRegistration);
 router.put("/manageUpdateCar/:registration", upload.single('imageUrl'), manageUpdateUserCarByRegistration);
-router.delete("/manageGetCarById/:id", manageDeleteUserCar);
+router.delete("/manageDeleteUserCarByRegistration/:registration", manageDeleteUserCarByRegistration);
 
 // Group
 router.post("/createGroup", createGroup)
 router.post("/getAllGroups", getAllGroups)
 router.get("/getGroupById/:id", getGroupById);
+router.get("/checkIfCarIsBeingUsedInGroup/:registration", checkIfCarIsBeingUsedInGroup);
 router.put("/updateGroupById/:id", updateGroupById);
 router.delete("/deleteGroup/:id", deleteGroup);
 
