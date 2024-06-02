@@ -163,7 +163,7 @@ const CarListScreen = ({navigation}) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#121212',
+        backgroundColor: '#030303',
     },
     titleContainer: {
         alignItems: 'center',

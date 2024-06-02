@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
     Alert,
-    ImageBackground,
     SafeAreaView,
     ScrollView,
     StyleSheet,
@@ -20,6 +19,7 @@ import {
 } from '../../config/api';
 import {formatTime} from "../../utils/DateUtils";
 import {obtainAllUserInfo} from "../../utils/UserUtils";
+import {Icon} from "react-native-elements";
 
 const InsertGroupScreen = ({navigation}) => {
     const [groupDetails, setGroupDetails] = useState({
@@ -93,6 +93,10 @@ const InsertGroupScreen = ({navigation}) => {
             setError('Por favor, complete todos los campos.');
             return;
         }
+        if (groupDetails.name.length < 5) {
+            Alert.alert("Nombre no valido", "El nombre del grupo debe de tener mas de 5 caracteres")
+            return;
+        }
 
         setError('');
 
@@ -132,6 +136,7 @@ const InsertGroupScreen = ({navigation}) => {
                             await createGroupPerson(userGroup)
 
                             Alert.alert("Éxito", "Grupo insertado correctamente");
+                            navigation.goBack()
 
                         } catch (error) {
                             if (error.response) {
@@ -149,99 +154,110 @@ const InsertGroupScreen = ({navigation}) => {
 
     return (
         <SafeAreaView style={styles.flexContainer}>
-            <ImageBackground
-                source={require('../../assets/images/peakpx.jpg')}
-                style={styles.flexContainer}
-                resizeMode="cover"
-            >
-                <ScrollView style={styles.scrollView}>
-                    <View style={styles.formContainer}>
+            <ScrollView style={styles.scrollView}>
+                <Text style={styles.title}>Crea tu propio grupo</Text>
+                <View style={styles.formContainer}>
 
-                        <Text>Nombre</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={groupDetails.name}
-                            onChangeText={(text) => setGroupDetails({...groupDetails, name: text})}
-                            placeholder="Nombre"
+                    <Text style={styles.label}>Nombre</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={groupDetails.name}
+                        onChangeText={(text) => setGroupDetails({...groupDetails, name: text})}
+                        placeholder="Nombre"
+                        placeholderTextColor="#aaa"
+                        maxLength={25}
+                    />
+                    {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+                    <Text style={styles.label}>Descripción</Text>
+                    <TextInput
+                        style={[styles.input, styles.descriptionInput]}
+                        value={groupDetails.description}
+                        onChangeText={(text) => setGroupDetails({
+                            ...groupDetails,
+                            description: text
+                        })}
+                        placeholder="Descripción"
+                        placeholderTextColor="#aaa"
+                        multiline
+                        maxLength={150}
+                        textAlignVertical="top"
+                    />
+                    {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+                    <Text style={styles.label}>Hora de llegada</Text>
+                    <TouchableOpacity onPress={() => {
+                        setShowTimePicker(true);
+                        setIsArrival(true);
+                    }}
+                                      style={styles.dateInput}>
+                        <Text style={styles.dateText}>{formatTime(groupDetails.arrivalTime)}</Text>
+                    </TouchableOpacity>
+
+                    <Text style={styles.label}>Hora de salida</Text>
+                    <TouchableOpacity onPress={() => {
+                        setShowTimePicker(true);
+                        setIsArrival(false);
+                    }}
+                                      style={styles.dateInput}>
+                        <Text
+                            style={styles.dateText}>{formatTime(groupDetails.departureTime)}</Text>
+                    </TouchableOpacity>
+
+                    {showTimePicker && (
+                        <DateTimePicker
+                            value={isArrival ? groupDetails.arrivalTime : groupDetails.departureTime}
+                            mode="time"
+                            is24Hour={true}
+                            display="default"
+                            onChange={onChangeTime}
                         />
-                        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+                    )}
 
-                        <Text>Descripción</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={groupDetails.description}
-                            onChangeText={(text) => setGroupDetails({
-                                ...groupDetails,
-                                description: text
-                            })}
-                            placeholder="Descripción"
-                        />
-                        {error ? <Text style={styles.errorText}>{error}</Text> : null}
+                    <Text style={styles.label}>Seleccionar Lugar</Text>
+                    <Picker
+                        selectedValue={groupDetails.placeId}
+                        onValueChange={(itemValue) => setGroupDetails({
+                            ...groupDetails,
+                            placeId: itemValue
+                        })}
+                        style={styles.picker}
+                        dropdownIconColor="white"
+                    >
+                        {places.map((place) => (
+                            <Picker.Item key={place.id} label={place.name} value={place.id}
+                                         color="black"/>
+                        ))}
+                    </Picker>
 
-                        <Text>Hora de llegada</Text>
-                        <TouchableOpacity onPress={() => {
-                            setShowTimePicker(true);
-                            setIsArrival(true);
-                        }}
-                                          style={styles.dateInput}>
-                            <Text>{formatTime(groupDetails.arrivalTime)}</Text>
-                        </TouchableOpacity>
-
-                        <Text>Hora de salida</Text>
-                        <TouchableOpacity onPress={() => {
-                            setShowTimePicker(true);
-                            setIsArrival(false);
-                        }}
-                                          style={styles.dateInput}>
-                            <Text>{formatTime(groupDetails.departureTime)}</Text>
-                        </TouchableOpacity>
-
-                        {showTimePicker && (
-                            <DateTimePicker
-                                value={isArrival ? groupDetails.arrivalTime : groupDetails.departureTime}
-                                mode="time"
-                                is24Hour={true}
-                                display="default"
-                                onChange={onChangeTime}
-                            />
-                        )}
-
-                        <Text>Seleccionar Lugar</Text>
-                        <Picker
-                            selectedValue={groupDetails.placeId}
-                            onValueChange={(itemValue) => setGroupDetails({
-                                ...groupDetails,
-                                placeId: itemValue
-                            })}
-                            style={styles.picker}
-                        >
-                            {places.map((place) => (
-                                <Picker.Item key={place.id} label={place.name} value={place.id}/>
-                            ))}
-                        </Picker>
-
-                        <Text>Registro del Vehículo</Text>
-                        <Picker
-                            selectedValue={groupDetails.registration}
-                            onValueChange={(itemValue) => setGroupDetails({
-                                ...groupDetails,
-                                registration: itemValue
-                            })}
-                            style={styles.picker}
-                        >
-                            {vehiclesPersons.map((vp) => (
-                                <Picker.Item key={vp.registration}
-                                             label={vp.registration + " | " + vp.Car.name}
-                                             value={vp.registration}/>
-                            ))}
-                        </Picker>
-
-                        <TouchableOpacity style={styles.imageButton} onPress={handleInsert}>
-                            <Text style={styles.buttonText}>Insertar</Text>
-                        </TouchableOpacity>
-                    </View>
-                </ScrollView>
-            </ImageBackground>
+                    <Text style={styles.label}>Registro del Vehículo</Text>
+                    <Picker
+                        selectedValue={groupDetails.registration}
+                        onValueChange={(itemValue) => setGroupDetails({
+                            ...groupDetails,
+                            registration: itemValue
+                        })}
+                        style={styles.picker}
+                        dropdownIconColor="white"
+                    >
+                        {vehiclesPersons.map((vp) => (
+                            <Picker.Item key={vp.registration}
+                                         label={vp.registration + " | " + vp.Car.name}
+                                         value={vp.registration} color="black"/>
+                        ))}
+                    </Picker>
+                </View>
+            </ScrollView>
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity style={[styles.circularButton, styles.saveButton]}
+                                  onPress={handleInsert}>
+                    <Icon name="save" size={24} color="#fff"/>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.circularButton, styles.goBackButton]}
+                                  onPress={() => navigation.goBack()}>
+                    <Icon name="arrow-back" size={24} color="#000"/>
+                </TouchableOpacity>
+            </View>
         </SafeAreaView>
     );
 };
@@ -249,40 +265,55 @@ const InsertGroupScreen = ({navigation}) => {
 const styles = StyleSheet.create({
     flexContainer: {
         flex: 1,
+        backgroundColor: '#090909',
     },
     scrollView: {
         flex: 1,
-        padding: 15,
+        padding: 15
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: 'white',
+        textAlign: 'center',
+        marginBottom: 20,
     },
     formContainer: {
         padding: 20,
-        backgroundColor: 'rgba(248,248,248,0.7)',
+        backgroundColor: 'rgba(24,24,24,0.9)',
         borderRadius: 20,
+        paddingBottom: 80,
     },
     input: {
-        height: 40,
+        height: 50,
         marginBottom: 10,
         borderWidth: 1,
+        borderColor: '#282828',
         padding: 10,
         borderRadius: 15,
-        backgroundColor: 'white',
+        backgroundColor: '#111',
+        color: 'white',
+    },
+    descriptionInput: {
+        height: 100,
+        textAlignVertical: 'top',
     },
     dateInput: {
-        height: 40,
+        height: 50,
         borderRadius: 15,
-        backgroundColor: 'white',
+        backgroundColor: '#111',
         marginBottom: 20,
         borderWidth: 1,
-        padding: 10,
+        borderColor: '#444',
+        justifyContent: 'center',
+        paddingHorizontal: 10,
     },
-    button: {
-        backgroundColor: '#3dbbe1',
-        padding: 8,
-        borderRadius: 5,
-        alignItems: 'center',
+    dateText: {
+        fontSize: 16,
+        color: 'white',
     },
-    imageButton: {
-        backgroundColor: '#007bff',
+    deleteButton: {
+        backgroundColor: '#ff0000', // Rojo intenso
         padding: 10,
         borderRadius: 5,
         alignItems: 'center',
@@ -296,16 +327,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginBottom: 8,
         marginLeft: 2,
-    },
-    switchContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-
-    },
-    switchLabel: {
-        marginRight: 10,
-        fontSize: 16,
+        color: 'white',
     },
     errorText: {
         color: 'red',
@@ -315,21 +337,37 @@ const styles = StyleSheet.create({
         height: 40,
         marginBottom: 20,
         borderWidth: 1,
+        borderColor: '#444',
         padding: 5,
         borderRadius: 15,
-        backgroundColor: 'white',
-        color: 'black',
+        backgroundColor: '#111',
+        color: 'white',
     },
-    imageUploaderContainer: {
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        paddingVertical: 15,
+        paddingHorizontal: 20,
+        backgroundColor: '#131313',
+        borderTopWidth: 1,
+        borderTopColor: '#444',
+    },
+    circularButton: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 20,
+        marginHorizontal: 10,
     },
-    imagePreview: {
-        width: 200,
-        height: 200,
-        marginBottom: 10,
-        borderRadius: 10,
-        backgroundColor: '#eee',
+    saveButton: {
+        backgroundColor: '#ff0000', // Rojo intenso
+    },
+    discardButton: {
+        backgroundColor: '#fff',
+    },
+    goBackButton: {
+        backgroundColor: '#fff',
     },
 });
 
