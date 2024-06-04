@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, FlatList, Image, StyleSheet, ActivityIndicator } from 'react-native';
+import {
+    View,
+    Text,
+    TextInput,
+    Button,
+    FlatList,
+    Image,
+    StyleSheet,
+    ActivityIndicator,
+    TouchableOpacity
+} from 'react-native';
 import { getMessages, createMessage } from '../../config/api';
 import { joinGroup, sendMessage, onReceiveMessage, disconnectSocket } from '../../service/socket';
 import { obtainAllUserInfo } from '../../utils/UserUtils';
@@ -76,6 +86,7 @@ const GroupChat = ({ route }) => {
 
     return (
         <View style={styles.container}>
+            <Text style={styles.title}>Chat de Grupo</Text>
             <FlatList
                 data={messages}
                 keyExtractor={(item) => item.id?.toString() ?? Math.random().toString()} // Fallback key extractor
@@ -90,8 +101,8 @@ const GroupChat = ({ route }) => {
                             <Image source={{ uri: obtainImgRoute(item.User.profilePhoto) }} style={styles.profilePhoto} />
                         )}
                         <View style={item.userId === userData.id ? styles.myMessageContent : styles.otherMessageContent}>
-                            {item.User && <Text style={styles.userName}>{item.User.user}</Text>}
-                            <Text style={styles.messageContent}>{item.content}</Text>
+                            {item.User && <Text style={[styles.userName, item.userId === userData.id ? styles.myUserName : styles.otherUserName]}>{item.User.user}</Text>}
+                            <Text style={item.userId === userData.id ? styles.myMessageText : styles.otherMessageText}>{item.content}</Text>
                         </View>
                     </View>
                 )}
@@ -102,8 +113,11 @@ const GroupChat = ({ route }) => {
                     value={newMessage}
                     onChangeText={setNewMessage}
                     placeholder="Escribe un mensaje"
+                    placeholderTextColor="#aaa"
                 />
-                <Button title="Enviar" onPress={handleSendMessage} />
+                <TouchableOpacity style={styles.sendButton} onPress={handleSendMessage}>
+                    <Text style={styles.sendButtonText}>Enviar</Text>
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -113,6 +127,14 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 10,
+        backgroundColor: '#090909',
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: 'white',
+        textAlign: 'center',
+        marginBottom: 20,
     },
     messageContainer: {
         flexDirection: 'row',
@@ -120,11 +142,9 @@ const styles = StyleSheet.create({
     },
     myMessage: {
         alignSelf: 'flex-end',
-        backgroundColor: '#dcf8c6',
     },
     otherMessage: {
         alignSelf: 'flex-start',
-        backgroundColor: '#ffffff',
     },
     profilePhoto: {
         width: 50,
@@ -135,11 +155,23 @@ const styles = StyleSheet.create({
     userName: {
         fontWeight: 'bold',
     },
+    myUserName: {
+        color: 'white',
+    },
+    otherUserName: {
+        color: 'black',
+    },
     messageContent: {
         flex: 1,
     },
+    myMessageText: {
+        color: 'white',
+    },
+    otherMessageText: {
+        color: 'black',
+    },
     myMessageContent: {
-        backgroundColor: '#dcf8c6',
+        backgroundColor: '#ff0000', // Rojo intenso
         padding: 10,
         borderRadius: 10,
         maxWidth: '80%',
@@ -162,6 +194,17 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
         marginRight: 10,
+        color: 'white',
+        backgroundColor: '#111',
+    },
+    sendButton: {
+        backgroundColor: 'white',
+        padding: 10,
+        borderRadius: 5,
+    },
+    sendButtonText: {
+        color: '#ff0000', // Rojo intenso
+        fontWeight: 'bold',
     },
 });
 

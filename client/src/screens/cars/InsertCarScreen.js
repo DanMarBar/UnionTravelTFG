@@ -19,6 +19,7 @@ import {manageCreateNewUserVehicle, obtainAllVehicles} from '../../config/api';
 import {obtainAllUserInfo} from "../../utils/UserUtils";
 import {formatDate} from "../../utils/DateUtils";
 import {handleImageChange} from "../../utils/ImageUtils";
+import {Icon} from "react-native-elements";
 
 const isValidRegistration = (registration) => {
     registration = registration.trim().toUpperCase();
@@ -144,95 +145,102 @@ const InsertCarScreen = ({navigation}) => {
 
     return (
         <SafeAreaView style={styles.flexContainer}>
-            <ImageBackground
-                source={require('../../assets/images/peakpx.jpg')}
-                style={styles.flexContainer}
-                resizeMode="cover"
-            >
-                <ScrollView style={styles.scrollView}>
-                    <View style={styles.formContainer}>
+            <ScrollView style={styles.scrollView}>
+                <View style={styles.formContainer}>
+                    <Text style={styles.title}>Añade tu propio vehiculo</Text>
 
-                        <Text>Matrícula</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={carDetails.registration}
-                            onChangeText={(text) => setCarDetails({
-                                ...carDetails,
-                                registration: text
-                            })}
-                            placeholder="Ej AB-12JK"
-                        />
-                        {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
-                        <Text>Color</Text>
-                        <TextInput
-                            style={styles.input}
-                            value={carDetails.color}
-                            onChangeText={(text) => setCarDetails({...carDetails, color: text})}
-                            placeholder="Color"
-                        />
-                        {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
-                        <Text>Fecha de creación</Text>
-                        <TouchableOpacity onPress={() => setShowDatePicker(true)}
-                                          style={styles.dateInput}>
-                            <Text>{formatDate(date)}</Text>
-                        </TouchableOpacity>
-                        {showDatePicker && (
-                            <DateTimePicker
-                                style={styles.input}
-                                testID="dateTimePicker"
-                                value={date}
-                                mode="date"
-                                is24Hour={true}
-                                display="default"
-                                onChange={onChangeDate}
-                            />
-                        )}
-
-                        <View style={styles.switchContainer}>
-                            <Text style={styles.switchLabel}>Operativo</Text>
-                            <Switch
-                                trackColor={{false: "#7bccff", true: "#7bccff"}}
-                                thumbColor={carDetails.operative ? "#13be13" : "#d53939"}
-                                ios_backgroundColor="#3e3e3e"
-                                onValueChange={newValue => setCarDetails({
-                                    ...carDetails,
-                                    operative: newValue
-                                })}
-                                value={carDetails.operative}
-                            />
-                        </View>
-
-                        <Text>Seleccionar Vehículo</Text>
-                        <Picker
-                            selectedValue={selectedVehicleId}
-                            onValueChange={(itemValue) => setSelectedVehicleId(itemValue)}
-                            style={styles.picker}
-                        >
-                            {vehicles.map((vehicle) => (
-                                <Picker.Item key={vehicle.id} label={vehicle.name} value={vehicle.id}/>
-                            ))}
-                        </Picker>
-
-                        <View style={styles.imageUploaderContainer}>
-                            <Text style={styles.label}>Imagen del Vehículo</Text>
-                            {finalPhoto ?
-                                (<Image source={{ uri: finalPhoto }} style={styles.imagePreview} />)
-                                :
-                                (<Text style={styles.placeholderText}>No hay imagen seleccionada</Text>)
-                            }
-                            <TouchableOpacity onPress={handleProfilePhotoChange} style={styles.button}>
-                                <Text style={styles.buttonText}>Seleccionar Imagen</Text>
-                            </TouchableOpacity>
-                        </View>
-
-                        <TouchableOpacity style={styles.imageButton} onPress={handleInsert}>
-                            <Text style={styles.buttonText}>Insertar</Text>
+                    <View style={styles.imageUploaderContainer}>
+                        <Text style={styles.label}>Imagen del Vehículo</Text>
+                        {finalPhoto ?
+                            (<Image source={{ uri: finalPhoto }} style={styles.imagePreview} />)
+                            :
+                            (<Text style={styles.placeholderText}>No hay imagen seleccionada</Text>)
+                        }
+                        <TouchableOpacity onPress={handleProfilePhotoChange} style={styles.selectImageButton}>
+                            <Text style={styles.selectImageButtonText}>Seleccionar Imagen</Text>
                         </TouchableOpacity>
                     </View>
-                </ScrollView>
-            </ImageBackground>
+
+                    <Text style={styles.label}>Matrícula</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={carDetails.registration}
+                        onChangeText={(text) => setCarDetails({
+                            ...carDetails,
+                            registration: text
+                        })}
+                        placeholder="Ej AB-12JK"
+                        placeholderTextColor="#aaa"
+                        maxLength={10}
+                    />
+                    {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+                    <Text style={styles.label}>Color</Text>
+                    <TextInput
+                        style={styles.input}
+                        value={carDetails.color}
+                        onChangeText={(text) => setCarDetails({ ...carDetails, color: text })}
+                        placeholder="Color"
+                        placeholderTextColor="#aaa"
+                        maxLength={15}
+                    />
+                    {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+                    <Text style={styles.label}>Fecha de creación</Text>
+                    <TouchableOpacity onPress={() => setShowDatePicker(true)}
+                                      style={styles.dateInput}>
+                        <Text style={styles.dateText}>{formatDate(date)}</Text>
+                    </TouchableOpacity>
+                    {showDatePicker && (
+                        <DateTimePicker
+                            style={styles.input}
+                            testID="dateTimePicker"
+                            value={date}
+                            mode="date"
+                            is24Hour={true}
+                            display="default"
+                            onChange={onChangeDate}
+                        />
+                    )}
+
+                    <View style={styles.switchContainer}>
+                        <Text style={styles.switchLabel}>Operativo</Text>
+                        <Switch
+                            trackColor={{ false: "#ff0000", true: "#ffffff" }}
+                            thumbColor={carDetails.operative ? "#ffffff" : "#000000"}
+                            ios_backgroundColor="#3e3e3e"
+                            onValueChange={newValue => setCarDetails({
+                                ...carDetails,
+                                operative: newValue
+                            })}
+                            value={carDetails.operative}
+                        />
+                    </View>
+
+                    <Text style={styles.label}>Seleccionar Vehículo</Text>
+                    <Picker
+                        selectedValue={selectedVehicleId}
+                        onValueChange={(itemValue) => setSelectedVehicleId(itemValue)}
+                        style={styles.picker}
+                        dropdownIconColor="white"
+                    >
+                        {vehicles.map((vehicle) => (
+                            <Picker.Item key={vehicle.id} label={vehicle.name} value={vehicle.id} color="black" />
+                        ))}
+                    </Picker>
+
+                </View>
+            </ScrollView>
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity style={[styles.circularButton, styles.saveButton]}
+                                  onPress={handleInsert}>
+                    <Icon name="save" size={24} color="#fff" />
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.circularButton, styles.goBackButton]}
+                                  onPress={() => navigation.goBack()}>
+                    <Icon name="arrow-back" size={24} color="#000" />
+                </TouchableOpacity>
+            </View>
         </SafeAreaView>
     );
 };
@@ -240,46 +248,59 @@ const InsertCarScreen = ({navigation}) => {
 const styles = StyleSheet.create({
     flexContainer: {
         flex: 1,
+        backgroundColor: '#090909',
     },
     scrollView: {
         flex: 1,
-        padding: 15
+        padding: 15,
     },
     formContainer: {
         padding: 20,
-        backgroundColor: 'rgba(248,248,248,0.7)',
-        borderRadius: 20
+        backgroundColor: 'rgba(24,24,24,0.9)',
+        borderRadius: 20,
+        paddingBottom: 80,
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: 'white',
+        textAlign: 'center',
+        marginBottom: 20,
     },
     input: {
-        height: 40,
+        height: 50,
         marginBottom: 10,
         borderWidth: 1,
+        borderColor: '#282828',
         padding: 10,
         borderRadius: 15,
-        backgroundColor: 'white',
+        backgroundColor: '#111',
+        color: 'white',
     },
     dateInput: {
-        height: 40,
+        height: 50,
         borderRadius: 15,
-        backgroundColor: 'white',
+        backgroundColor: '#111',
         marginBottom: 20,
         borderWidth: 1,
-        padding: 10,
+        borderColor: '#444',
+        justifyContent: 'center',
+        paddingHorizontal: 10,
     },
     dateText: {
         fontSize: 16,
+        color: 'white',
     },
-    button: {
-        backgroundColor: '#3dbbe1',
-        padding: 8,
-        borderRadius: 5,
-        alignItems: 'center',
-    },
-    imageButton: {
-        backgroundColor: '#007bff',
+    selectImageButton: {
+        backgroundColor: '#ff0000',
         padding: 10,
         borderRadius: 5,
         alignItems: 'center',
+    },
+    selectImageButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
     },
     buttonText: {
         color: 'white',
@@ -290,16 +311,17 @@ const styles = StyleSheet.create({
         fontSize: 16,
         marginBottom: 8,
         marginLeft: 2,
+        color: 'white',
     },
     switchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'flex-start',
-
     },
     switchLabel: {
         marginRight: 10,
         fontSize: 16,
+        color: 'white',
     },
     errorText: {
         color: 'red',
@@ -309,10 +331,11 @@ const styles = StyleSheet.create({
         height: 40,
         marginBottom: 20,
         borderWidth: 1,
+        borderColor: '#444',
         padding: 5,
         borderRadius: 15,
-        backgroundColor: 'white',
-        color: 'black',
+        backgroundColor: '#111',
+        color: 'white',
     },
     imageUploaderContainer: {
         alignItems: 'center',
@@ -323,7 +346,36 @@ const styles = StyleSheet.create({
         height: 200,
         marginBottom: 10,
         borderRadius: 10,
-        backgroundColor: '#eee',
+        backgroundColor: '#222',
+    },
+    placeholderText: {
+        color: '#aaa',
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        paddingVertical: 15,
+        paddingHorizontal: 20,
+        backgroundColor: '#131313',
+        borderTopWidth: 1,
+        borderTopColor: '#444',
+    },
+    circularButton: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginHorizontal: 10,
+    },
+    saveButton: {
+        backgroundColor: '#ff0000', // Rojo intenso
+    },
+    discardButton: {
+        backgroundColor: '#fff',
+    },
+    goBackButton: {
+        backgroundColor: '#fff',
     },
 });
 
