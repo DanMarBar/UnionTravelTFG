@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
         color: 'black',
     },
     myMessageContent: {
-        backgroundColor: '#ff0000', // Rojo intenso
+        backgroundColor: '#ff0000',
         padding: 10,
         borderRadius: 10,
         maxWidth: '80%',

@@ -48,7 +48,7 @@ const App = () => {
     }
 
     return (
-        <StripeProvider publishableKey="your-publishable-key">
+        <StripeProvider publishableKey="pk_test_51PHrIw08Duz5BBWEIcQve9H0VFiPYcKCwWX7HYinfTI54281FBz4XLnacrERsXRIQcjkDb2leubrbkOJYVBimuVZ00xgN7LUeC">
             <NavigationContainer ref={navigationRef}>
                 <AppNavigator />
             </NavigationContainer>

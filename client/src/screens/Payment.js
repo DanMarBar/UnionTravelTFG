@@ -1,6 +1,6 @@
 // src/screens/PaymentScreen.js
 import React, { useState, useEffect } from 'react';
-import { View, Button, Alert, StyleSheet } from 'react-native';
+import {View, Button, Alert, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useConfirmPayment, CardForm } from '@stripe/stripe-react-native';
 import { createPaymentIntent } from '../config/api';
@@ -47,19 +47,22 @@ const PaymentScreen = ({ route, navigation }) => {
             const response = await createPaymentIntent(amount);
             const clientSecret = response.data.clientSecret;
 
+            console.log(clientSecret)
+
             const { error, paymentIntent } = await confirmPayment(clientSecret, {
                 type: 'Card',
                 paymentMethodType: 'Card',
                 billingDetails: {
                     email,
                     address: {
-                        country: 'ES', // Código de país para España
+                        country: 'ES',
                     },
                 },
             });
 
             if (error) {
                 Alert.alert('Pago fallido', error.message);
+                console.log(error)
             } else if (paymentIntent) {
                 Alert.alert('Pago exitoso', '¡Tu pago fue exitoso!');
                 navigation.goBack();
@@ -72,6 +75,7 @@ const PaymentScreen = ({ route, navigation }) => {
 
     return (
         <View style={styles.container}>
+            <Text style={styles.title}>Apoya nuestra causa</Text>
             <CardForm
                 style={styles.cardForm}
                 onFormComplete={(cardDetails) => {
@@ -91,7 +95,9 @@ const PaymentScreen = ({ route, navigation }) => {
                 <Picker.Item label="25 EUR" value={2500} />
                 <Picker.Item label="50 EUR" value={5000} />
             </Picker>
-            <Button onPress={handleConfirmPayPress} title="Pagar" disabled={loading} />
+            <TouchableOpacity style={styles.buttonContainer}>
+                <Button onPress={handleConfirmPayPress} title="Pagar" disabled={loading} color="#ff0000" />
+            </TouchableOpacity>
         </View>
     );
 };
@@ -101,15 +107,31 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         padding: 20,
+        backgroundColor: '#151515',
+    },
+    title: {
+        color: '#ffffff',
+        fontSize: 28,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: 30,
+        marginTop: -30,
     },
     cardForm: {
         height: 300,
         marginVertical: 30,
     },
     picker: {
+        backgroundColor: '#fff',
+        borderRadius: 5,
         height: 50,
         marginBottom: 30,
         marginTop: -30,
+    },
+    buttonContainer: {
+        backgroundColor: '#ff0000',
+        borderRadius: 5,
+        justifyContent: 'center',
     },
 });
 
