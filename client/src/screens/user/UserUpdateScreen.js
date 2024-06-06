@@ -262,7 +262,7 @@ const GroupedDetail = ({ title, children }) => (
 const styles = StyleSheet.create({
     flexContainer: {
         flex: 1,
-        backgroundColor: '#0c0c0c',
+        backgroundColor: '#030303',
     },
     scrollView: {
         paddingHorizontal: 15,
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
         marginVertical: 10,
     },
     sectionContainer: {
-        backgroundColor: '#1f1f1f',
+        backgroundColor: '#0e0e0e',
         borderRadius: 12,
         padding: 20,
         marginVertical: 10,

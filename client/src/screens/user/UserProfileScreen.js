@@ -6,15 +6,16 @@ import {
     SafeAreaView,
     ScrollView,
     StyleSheet,
-    Text,
+    Text, TouchableOpacity,
     View,
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {findUserByEmail} from "../../config/api";
 import {obtainAllUserInfo} from "../../utils/UserUtils";
+import {obtainImgRoute} from "../../utils/ImageUtils";
 
-const UserDetailScreen = ({}) => {
+const UserDetailScreen = ({navigation}) => {
     const [userDetails, setUserDetails] = useState(null);
 
     useEffect(() => {
@@ -38,157 +39,228 @@ const UserDetailScreen = ({}) => {
 
     return (
         <SafeAreaView style={styles.flexContainer}>
-            <ImageBackground resizeMode="cover"
-                             source={require('../../assets/images/peakpx.jpg')}
-                             style={styles.imageBackground}>
-                <ScrollView style={styles.scrollView}
-                            contentContainerStyle={styles.contentContainer}>
-                    <View style={styles.outerProfileImageContainer}>
-                        <View style={styles.profileImageContainer}>
-                            <Image
-                                source={{uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuBxpQ8P8WOYWRYOv-HVq2x8ZJDBB1bxohrRnCmd2cZw&s'}}
-                                style={styles.profileImage}
-                            />
-                        </View>
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.navigate('UserProfileScreen')}>
+                    <Icon name="edit" size={30} color="#FF0000" />
+                </TouchableOpacity>
+            </View>
+            <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
+                <View style={styles.headerContainer}>
+                    <View style={styles.profileImageContainer}>
+                        <Image
+                            source={{ uri: obtainImgRoute(userDetails.profilePhoto) }}
+                            style={styles.profileImage}
+                        />
                     </View>
-                    <View style={styles.textContainer}>
-                        <GroupedDetail title="Información Personal">
-                            <DetailWithIcon icon="person" text={`Nombre: ${userDetails.name}`}
-                                            iconColor="#4A90E2"/>
-                            <DetailWithIcon icon="person-outline"
-                                            text={`Apellido: ${userDetails.surname}`}
-                                            iconColor="#50E3C2"/>
-                            <DetailWithIcon icon="cake"
-                                            text={`Cumpleaños: ${new Date(userDetails.birthday).toDateString()}`}
-                                            iconColor="#4A90E2"/>
-                        </GroupedDetail>
-                        <Separator/>
-
-                        <GroupedDetail title="Información de Contacto">
-                            <DetailWithIcon icon="mail" text={`Email: ${userDetails.email}`}
-                                            iconColor="#50E3C2"/>
-                            <DetailWithIcon icon="phone" text={`Teléfono: ${userDetails.cellphone}`}
-                                            iconColor="#4A90E2"/>
-                            <DetailWithIcon icon="phone"
-                                            text={`Teléfono secundario: ${userDetails.secondCellphone}`}
-                                            iconColor="#50E3C2"/>
-                            <DetailWithIcon icon="home" text={`Dirección: ${userDetails.direction}`}
-                                            iconColor="#4A90E2"/>
-                            <DetailWithIcon icon="location-city"
-                                            text={`Código Postal: ${userDetails.zip}`}
-                                            iconColor="#50E3C2"/>
-                        </GroupedDetail>
-                        <Separator/>
-
-                        <GroupedDetail>
-                            <DetailWithIcon
-                                icon="check-circle"
-                                text={`Solo se compartira la informacion importante entre tus compañeros`}
-                                iconColor={'#4CAF50'}
-                            />
-                        </GroupedDetail>
+                    <Text style={styles.userName}>{userDetails.name} {userDetails.surname}</Text>
+                    <View style={styles.infoBoxesContainer}>
+                        <InfoBox icon="work" text="Puesto" value={"No necesario"} />
+                        <InfoBox icon="location-on" text="Ubicación" value={"En Aragon"} />
+                        <InfoBox icon="assignment" text="Proyectos" value={"En progreso"} />
                     </View>
-                </ScrollView>
-            </ImageBackground>
+                </View>
+                <View style={styles.overlayContainer}>
+                    <Section title="Información Personal">
+                        <DetailWithTitle title="Nombre" icon="person" text={userDetails.name} />
+                        <Separator />
+                        <DetailWithTitle title="Apellido" icon="person-outline" text={userDetails.surname} />
+                        <Separator />
+                        <DetailWithTitle title="Cumpleaños" icon="cake" text={new Date(userDetails.birthday).toDateString()} />
+                    </Section>
+                    <Section title="Información de Contacto">
+                        <DetailWithTitle title="Email" icon="mail" text={userDetails.email} />
+                        <Separator />
+                        <DetailWithTitle title="Teléfono" icon="phone" text={userDetails.cellphone} />
+                        <Separator />
+                        <DetailWithTitle title="Teléfono Secundario" icon="phone" text={userDetails.secondCellphone} />
+                        <Separator />
+                        <DetailWithTitle title="Dirección" icon="home" text={userDetails.direction} />
+                        <Separator />
+                        <DetailWithTitle title="Código Postal" icon="location-city" text={userDetails.zip} />
+                    </Section>
+                </View>
+            </ScrollView>
         </SafeAreaView>
     );
 };
 
-const GroupedDetail = ({title, children}) => (
-    <View style={styles.groupedContainer}>
-        <Text style={styles.groupTitle}>{title}</Text>
+const Section = ({ title, children }) => (
+    <View style={styles.sectionContainer}>
+        <Text style={styles.sectionTitle}>{title}</Text>
         {children}
     </View>
 );
 
-const DetailWithIcon = ({icon, text, iconColor}) => (
+const InfoBox = ({ icon, text, value }) => (
+    <View style={styles.infoBox}>
+        <Icon name={icon} size={30} color="#ffffff" style={styles.infoBoxIcon} />
+        <Text style={styles.infoBoxText}>{text}</Text>
+        <Text style={styles.infoBoxValue}>{value}</Text>
+    </View>
+);
+
+const DetailWithIcon = ({ icon, text, iconColor = '#ff0000' }) => (
     <View style={styles.detailRow}>
-        <Icon name={icon} size={26} color={iconColor} style={styles.icon}/>
+        <View style={styles.detailIconContainer}>
+            <Icon name={icon} size={25} color={iconColor} style={styles.icon} />
+        </View>
         <Text style={styles.userDetail}>{text}</Text>
     </View>
 );
 
-const Separator = () => (
-    <View style={styles.separator}/>
+const DetailWithTitle = ({ title, icon, text, iconColor = '#ff0000' }) => (
+    <View style={styles.detailContainer}>
+        <Text style={styles.detailTitle}>{title}</Text>
+        <DetailWithIcon icon={icon} text={text} iconColor={iconColor} />
+    </View>
 );
+
+const Separator = () => <View style={styles.separator} />;
 
 const styles = StyleSheet.create({
     flexContainer: {
         flex: 1,
-        backgroundColor: '#F0F3F5',
+        backgroundColor: '#090909',
+    },
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        padding: 10,
+        backgroundColor: '#090909',
     },
     scrollView: {
-        paddingHorizontal: 15,
+        paddingHorizontal: 0,
     },
     contentContainer: {
         paddingVertical: 20,
     },
-    profileImageContainer: {
-        width: 120,
-        height: 120,
-        borderRadius: 60,
-        overflow: 'hidden',
+    headerContainer: {
         alignItems: 'center',
         marginBottom: 20,
-        borderColor: '#fff',
+    },
+    profileImageContainer: {
+        width: 150,
+        height: 150,
+        borderRadius: 75,
+        overflow: 'hidden',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#2C2C2C',
+        marginBottom: 15,
         shadowColor: '#000',
-        shadowOffset: {width: 0, height: 4},
+        shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
-        shadowRadius: 6,
-        elevation: 10,
-        backgroundColor: '#fff',
+        shadowRadius: 4,
+        elevation: 6,
     },
     profileImage: {
         width: '100%',
         height: '100%',
     },
-    textContainer: {
-        backgroundColor: '#FFFFFF',
-        borderRadius: 12,
+    userName: {
+        fontSize: 26,
+        fontWeight: '700',
+        color: '#FFF',
+        textAlign: 'center',
+        marginBottom: 20,
+        textTransform: 'capitalize',
+    },
+    infoBoxesContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        width: '100%',
+        marginBottom: 20,
+    },
+    infoBox: {
+        width: '30%',
+        backgroundColor: '#111111',
+        borderRadius: 10,
+        padding: 10,
+        alignItems: 'center',
+    },
+    infoBoxIcon: {
+        marginBottom: 10,
+    },
+    infoBoxText: {
+        fontSize: 14,
+        fontWeight: '400',
+        color: '#FFF',
+        textAlign: 'center',
+    },
+    infoBoxValue: {
+        fontWeight: '700',
+        color: '#FFF',
+        textAlign: 'center',
+    },
+    overlayContainer: {
+        width: '100%',
+        backgroundColor: '#111111',
+        borderRadius: 30,
         padding: 20,
-        marginVertical: 10,
+        marginTop: -20,
         shadowColor: '#000',
-        shadowOffset: {width: 0, height: 4},
+        shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
         elevation: 4,
     },
-    outerProfileImageContainer: {
-        alignItems: 'center',
+    sectionContainer: {
         marginBottom: 20,
     },
-    groupedContainer: {
-        marginBottom: 20,
-    },
-    groupTitle: {
-        fontSize: 18,
-        fontWeight: '600',
+    sectionTitle: {
+        fontSize: 24,
+        fontWeight: '700',
+        color: '#FFF',
         marginBottom: 10,
-        color: '#39d9b3',
+        borderBottomWidth: 2,
+        borderBottomColor: '#444',
+        paddingBottom: 5,
+    },
+    detailContainer: {
+        marginBottom: 15,
+    },
+    detailTitle: {
+        fontSize: 17,
+        fontWeight: '700',
+        color: '#FFF',
+        marginBottom: 5,
     },
     detailRow: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 10,
+    },
+    detailIconContainer: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginRight: 15,
+    },
+    icon: {
+        marginRight: 0,
+    },
+    userDetail: {
+        fontSize: 17,
+        fontWeight: '400',
+        color: '#FFF',
     },
     separator: {
         height: 1,
-        backgroundColor: '#E0E0E0',
-        marginVertical: 10,
+        backgroundColor: '#444',
     },
-    icon: {
-        marginRight: 10,
+    button: {
+        backgroundColor: '#111111',
+        borderRadius: 10,
+        paddingVertical: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginVertical: 20,
     },
-    userDetail: {
+    buttonText: {
         fontSize: 16,
-        fontWeight: '500',
-        color: '#333333',
-    },
-    loading: {
-        textAlign: 'center',
-        fontSize: 18,
-        marginTop: 20,
-        color: '#4A90E2',
+        fontWeight: '600',
+        color: '#FFF',
     },
 });
 

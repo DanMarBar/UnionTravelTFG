@@ -99,6 +99,16 @@ const MainMenuScreen = ({navigation}) => {
 
                 <TouchableOpacity
                     style={styles.menuItem}
+                    onPress={() => navigation.navigate('UserDetailScreen')}
+                >
+                    <View style={styles.iconContainer}>
+                        <Icon name="user" type="font-awesome" size={20} color="#FF0000"/>
+                    </View>
+                    <Text style={styles.menuText}>Ver mi perfil</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={styles.menuItem}
                     onPress={() => navigation.navigate('RouteScreen')}
                 >
                     <View style={styles.iconContainer}>

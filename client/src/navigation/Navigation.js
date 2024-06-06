@@ -116,7 +116,7 @@ const AppNavigator = () => {
                     headerStyle: {backgroundColor: '#131313'},
                     headerTintColor: '#ffffff',
                     headerTitleStyle: {fontWeight: 'bold', color: '#ffffff'},
-                    headerTitle: '', // This will hide the title in the navbar
+                    headerTitle: '',
                     headerLeft: () => (
                         <TouchableOpacity onPress={() => navigation.goBack()}>
                             <MaterialIcons name="arrow-back" size={28} color="#ffffff"
