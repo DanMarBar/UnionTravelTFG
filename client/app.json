@@ -25,7 +25,8 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.clientuniontravel"
+      "package": "com.clientuniontravel",
+      "permissions": ["RECEIVE_BOOT_COMPLETED", "SCHEDULE_EXACT_ALARM"]
     },
     "web": {
       "favicon": "./assets/favicon.png"

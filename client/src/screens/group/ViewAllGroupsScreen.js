@@ -16,6 +16,7 @@ import { obtainImgRoute } from "../../utils/ImageUtils";
 import { obtainAllUserInfo } from "../../utils/UserUtils";
 import { useFocusEffect } from "@react-navigation/native";
 import { formatTime } from "../../utils/DateUtils";
+import * as Notifications from "expo-notifications";
 
 const ViewAllGroupsScreen = ({ route, navigation }) => {
     const [groups, setGroups] = useState(null);
@@ -145,6 +146,14 @@ const ViewAllGroupsScreen = ({ route, navigation }) => {
                     },
                 }
             ]);
+            await Notifications.scheduleNotificationAsync({
+                content: {
+                    title: "Unión exitosa al grupo",
+                    body: "Te has unido al grupo exitosamente",
+                    sound: 'default',
+                },
+                trigger: { seconds: 1 },
+            });
         } catch (error) {
             console.error('Error al unirse al grupo:', error);
             Alert.alert('Error', 'Hubo un error al intentar unirse al grupo');
