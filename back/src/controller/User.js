@@ -78,7 +78,8 @@ export const loginUser = async (req, res) => {
         const isValid = await bcrypt.compare(password, user.password);
         if (!isValid) {
             console.log("wrong password")
-            return res.status(400).json({error: "Contraseña no válida"});
+            return res.status(400).json({error: "La contraseña no coincide con el correo" +
+                    " electronico"});
         }
 
         const token = jwt.sign({

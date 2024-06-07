@@ -33,8 +33,14 @@ const LoginScreen = ({navigation}) => {
             navigation.replace('MainMenu');
 
         } catch (error) {
-            console.error('Error logging in', error);
-            Alert.alert('Error', 'Failed to log in');
+            if (error.response) {
+                const errorMessage = error.response.data.error;
+                console.log(errorMessage + error);
+                Alert.alert("Error al iniciar sesion:", errorMessage);
+            }else {
+                console.error('Error logging in', error);
+                Alert.alert('Error', 'No se puede iniciar sesion');
+            }
         }
     };
 
