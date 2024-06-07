@@ -17,6 +17,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import {registerNewUser} from "../config/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {CommonActions} from "@react-navigation/native";
+import * as Notifications from "expo-notifications";
 
 const RegisterScreen = ({navigation}) => {
     const [name, setName] = useState('');
@@ -68,6 +69,15 @@ const RegisterScreen = ({navigation}) => {
                     name: name,
                     email: email,
                 };
+
+                await Notifications.scheduleNotificationAsync({
+                    content: {
+                        title: "Bienvenido a Union Travel",
+                        body: "Tu registro fue exitoso, te deseamos lo mejos",
+                        sound: 'default',
+                    },
+                    trigger: { seconds: 1 },
+                });
 
                 await AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
                 await AsyncStorage.setItem('userToken', response.data.token);

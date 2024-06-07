@@ -5,6 +5,7 @@ import { Picker } from '@react-native-picker/picker';
 import { useConfirmPayment, CardForm } from '@stripe/stripe-react-native';
 import { createPaymentIntent } from '../config/api';
 import { obtainAllUserInfo } from '../utils/UserUtils';
+import * as Notifications from "expo-notifications";
 
 const PaymentScreen = ({ route, navigation }) => {
     const { confirmPayment, loading } = useConfirmPayment();
@@ -64,6 +65,16 @@ const PaymentScreen = ({ route, navigation }) => {
                 Alert.alert('Pago fallido', error.message);
                 console.log(error)
             } else if (paymentIntent) {
+
+                await Notifications.scheduleNotificationAsync({
+                    content: {
+                        title: "Donacion exitosa",
+                        body: "Muchas gracias por tu donacion, apreciamos tu colaboracion",
+                        sound: 'default',
+                    },
+                    trigger: { seconds: 1 },
+                });
+
                 Alert.alert('Pago exitoso', '¡Tu pago fue exitoso!');
                 navigation.goBack();
             }
