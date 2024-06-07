@@ -94,88 +94,88 @@ const RegisterScreen = ({navigation}) => {
                 style={styles.background}
                 resizeMode="cover"
             >
-                <ScrollView>
+                <ScrollView contentContainerStyle={styles.scrollViewContent}>
                     <View style={styles.contentContainer}>
-                        <View style={styles.topView}>
-                            <Image
-                                source={require('../assets/images/register-page.png')}
-                                style={styles.imageLogin}
-                            />
-                        </View>
                         <StatusBar style="auto"/>
-                        <View style={styles.inputs}>
-                            <MaterialIcons name="person" size={20} color="#666"
-                                           style={{marginRight: 5}}/>
-                            <TextInput
-                                placeholder="nombre de usuario"
-                                style={styles.input}
-                                keyboardType={"default"}
-                                value={name}
-                                onChangeText={setName}
-                            />
+                        <Text style={styles.title}>Crear Cuenta</Text>
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.inputLabel}>Nombre de Usuario</Text>
+                            <View style={styles.inputs}>
+                                <MaterialIcons name="person" size={20} color="#666" style={{ marginRight: 5 }} />
+                                <TextInput
+                                    placeholder="Nombre de usuario"
+                                    style={styles.input}
+                                    keyboardType="default"
+                                    value={name}
+                                    onChangeText={setName}
+                                />
+                            </View>
                         </View>
-                        <Animated.View style={[styles.errorContainer, {height: errorHeight}]}>
+                        <Animated.View style={[styles.errorContainer, { height: errorHeight }]}>
                             {!isValidEmail && (
-                                <Text style={styles.errorText}>Por favor, introduce un email
-                                    válido.</Text>
+                                <Text style={styles.errorText}>Por favor, introduce un email válido.</Text>
                             )}
                         </Animated.View>
-                        <View style={styles.inputs}>
-                            <MaterialIcons name="alternate-email" size={20} color="#666"
-                                           style={{marginRight: 5}}/>
-                            <TextInput
-                                placeholder="email"
-                                style={styles.input}
-                                keyboardType="email-address"
-                                value={email}
-                                onChangeText={handleEmailChange}
-                            />
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.inputLabel}>Email</Text>
+                            <View style={styles.inputs}>
+                                <MaterialIcons name="alternate-email" size={20} color="#666" style={{ marginRight: 5 }} />
+                                <TextInput
+                                    placeholder="Email"
+                                    style={styles.input}
+                                    keyboardType="email-address"
+                                    value={email}
+                                    onChangeText={handleEmailChange}
+                                />
+                            </View>
                         </View>
-                        <View style={styles.inputs}>
-                            <MaterialIcons name="key" size={20} color="#666"
-                                           style={{marginRight: 5}}/>
-                            <TextInput
-                                placeholder="Password"
-                                style={styles.input}
-                                secureTextEntry={true}
-                                value={password}
-                                onChangeText={setPassword}
-                            />
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.inputLabel}>Contraseña</Text>
+                            <View style={styles.inputs}>
+                                <MaterialIcons name="key" size={20} color="#666" style={{ marginRight: 5 }} />
+                                <TextInput
+                                    placeholder="Contraseña"
+                                    style={styles.input}
+                                    secureTextEntry={true}
+                                    value={password}
+                                    onChangeText={setPassword}
+                                />
+                            </View>
                         </View>
-                        <View style={styles.inputs}>
-                            <MaterialIcons name="key" size={20} color="#666"
-                                           style={{marginRight: 5}}/>
-                            <TextInput
-                                placeholder="Confirm Password"
-                                style={styles.input}
-                                secureTextEntry={true}
-                                value={confirmPassword}
-                                onChangeText={setConfirmPassword}
-                            />
+                        <View style={styles.inputContainer}>
+                            <Text style={styles.inputLabel}>Confirmar Contraseña</Text>
+                            <View style={styles.inputs}>
+                                <MaterialIcons name="key" size={20} color="#666" style={{ marginRight: 5 }} />
+                                <TextInput
+                                    placeholder="Confirmar Contraseña"
+                                    style={styles.input}
+                                    secureTextEntry={true}
+                                    value={confirmPassword}
+                                    onChangeText={setConfirmPassword}
+                                />
+                            </View>
                         </View>
-                        <TouchableOpacity
-                            onPress={registerUser}
-                            style={styles.loginButton}
-                        >
+                        <TouchableOpacity onPress={registerUser} style={styles.loginButton}>
                             <Text style={styles.loginButtonText}>Registrarse</Text>
                         </TouchableOpacity>
-                        <Text style={styles.orText}>O..., registrate con...</Text>
+                        <View style={styles.dividerContainer}>
+                            <View style={styles.divider} />
+                            <Text style={styles.orText}>O..., regístrate con...</Text>
+                            <View style={styles.divider} />
+                        </View>
                         <View style={styles.socialButtonsContainer}>
                             <TouchableOpacity style={styles.socialButton}>
-                                <Image source={require('../assets/images/misc/google.png')}
-                                       style={styles.socialIcon}/>
+                                <Image source={require('../assets/images/misc/google.png')} style={styles.socialIcon} />
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.socialButton}>
-                                <Image source={require('../assets/images/misc/facebook.png')}
-                                       style={styles.socialIcon}/>
+                                <Image source={require('../assets/images/misc/facebook.png')} style={styles.socialIcon} />
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.socialButton}>
-                                <Image source={require('../assets/images/misc/twitter.png')}
-                                       style={styles.socialIcon}/>
+                                <Image source={require('../assets/images/misc/twitter.png')} style={styles.socialIcon} />
                             </TouchableOpacity>
                         </View>
                         <View style={styles.registerContainer}>
-                            <Text>Ya estás registrado? </Text>
+                            <Text style={styles.registerQuestionText}>¿Ya estás registrado? </Text>
                             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                                 <Text style={styles.registerText}>Inicia sesión aquí</Text>
                             </TouchableOpacity>
@@ -190,44 +190,52 @@ const RegisterScreen = ({navigation}) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
     },
     background: {
         flex: 1,
     },
+    scrollViewContent: {
+        flexGrow: 1,
+        justifyContent: 'center',
+    },
     contentContainer: {
         paddingHorizontal: 25,
         paddingVertical: 40,
-        marginHorizontal: 20,
-        marginTop: 35,
-        marginBottom: 35,
-        backgroundColor: 'rgba(255, 255, 255, 0.85)',
+        marginHorizontal: 10,
+        backgroundColor: 'rgba(0,0,0,0.91)',
         borderRadius: 20,
     },
-    topView: {
-        alignItems: 'center',
-        marginBottom: 5,
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#fff',
+        textAlign: 'center',
+        marginBottom: 20,
     },
-    imageLogin: {
-        width: 300,
-        height: 300,
+    inputContainer: {
+        marginBottom: 25,
+    },
+    inputLabel: {
+        color: '#fff',
+        marginBottom: 5,
     },
     inputs: {
         flexDirection: 'row',
         borderBottomColor: '#ccc',
         borderBottomWidth: 1,
         paddingBottom: 8,
-        marginBottom: 25,
     },
     input: {
         flex: 1,
         paddingVertical: 0,
+        color: '#fff',
     },
     loginButton: {
-        backgroundColor: '#45c4a1',
+        backgroundColor: '#f80000',
         padding: 20,
         borderRadius: 10,
         marginBottom: 30,
+        marginTop: 20,
     },
     loginButtonText: {
         textAlign: 'center',
@@ -235,10 +243,20 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 16,
     },
+    dividerContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 30,
+    },
+    divider: {
+        flex: 1,
+        height: 1,
+        backgroundColor: '#ccc',
+    },
     orText: {
         textAlign: 'center',
         color: '#666',
-        marginBottom: 30,
+        marginHorizontal: 10,
     },
     socialButtonsContainer: {
         flexDirection: 'row',
@@ -259,10 +277,14 @@ const styles = StyleSheet.create({
     registerContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
+        alignItems: 'center',
         marginBottom: 30,
     },
+    registerQuestionText: {
+        color: '#fff',
+    },
     registerText: {
-        color: '#45c4a1',
+        color: '#ff0000',
         fontWeight: '700',
     },
     errorContainer: {
