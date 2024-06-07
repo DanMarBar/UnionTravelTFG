@@ -2,16 +2,14 @@ import React, {useEffect, useState} from 'react';
 import {
     Alert,
     Image,
-    ImageBackground,
     SafeAreaView,
     ScrollView,
     StyleSheet,
-    Text, TouchableOpacity,
+    Text,
+    TouchableOpacity,
     View,
 } from 'react-native';
 import {Icon} from 'react-native-elements';
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {findUserByEmail} from "../../config/api";
 import {obtainAllUserInfo} from "../../utils/UserUtils";
 import {obtainImgRoute} from "../../utils/ImageUtils";
 
@@ -41,7 +39,7 @@ const UserDetailScreen = ({navigation}) => {
         <SafeAreaView style={styles.flexContainer}>
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.navigate('UserProfileScreen')}>
-                    <Icon name="edit" size={30} color="#FF0000" />
+                    <Icon name="edit" size={30} color="#FFFFFF" />
                 </TouchableOpacity>
             </View>
             <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
@@ -80,6 +78,20 @@ const UserDetailScreen = ({navigation}) => {
                     </Section>
                 </View>
             </ScrollView>
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                    style={[styles.circularButton, styles.editButton]}
+                    onPress={() => navigation.navigate('UserProfileScreen')}
+                >
+                    <Icon name="edit" size={24} color="#fff" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[styles.circularButton, styles.goBackButton]}
+                    onPress={() => navigation.goBack()}
+                >
+                    <Icon name="arrow-back" size={24} color="#000" />
+                </TouchableOpacity>
+            </View>
         </SafeAreaView>
     );
 };
@@ -249,18 +261,28 @@ const styles = StyleSheet.create({
         height: 1,
         backgroundColor: '#444',
     },
-    button: {
-        backgroundColor: '#111111',
-        borderRadius: 10,
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
         paddingVertical: 15,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginVertical: 20,
+        paddingHorizontal: 20,
+        backgroundColor: '#131313',
+        borderTopWidth: 1,
+        borderTopColor: '#444',
     },
-    buttonText: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: '#FFF',
+    circularButton: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginHorizontal: 10,
+    },
+    editButton: {
+        backgroundColor: '#ff0000',
+    },
+    goBackButton: {
+        backgroundColor: '#fff',
     },
 });
 

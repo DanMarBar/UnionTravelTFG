@@ -22,6 +22,7 @@ export const loginUser = (credentials) => api.post('/login', credentials);
 
 // User
 export const findUserByEmail = (email) => api.get(`/findUserByEmail/${email}`);
+export const changeUserPasswordByEmail = (email, passwords) => api.post(`/changeUserPasswordByEmail/${email}`, passwords);
 export const updateUserByEmail = (email, formData) => api.put(`/updateUser/${email}`, formData, {
     headers: {
         'Content-Type': 'multipart/form-data'
@@ -72,5 +73,5 @@ export const getMessages = (groupId) => api.get(`/groups/${groupId}/messages`);
 export const createMessage = (groupId, message) => api.post(`/groups/${groupId}/messages`, message);
 
 // Group Routes
-export const saveGroupRoute = (groupId, coordinates) => api.post(`/route/${groupId}`, { coordinates });
+export const saveGroupRoute = (groupId, coordinates) => api.post(`/route/${groupId}`, {coordinates});
 export const getGroupRoute = (groupId) => api.get(`/route/${groupId}`);

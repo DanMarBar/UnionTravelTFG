@@ -1,6 +1,7 @@
 import express from "express";
 
 import {
+    changeUserPasswordByEmail,
     findUserByEmail,
     loginUser,
     manageUpdateUserByEmail,
@@ -63,6 +64,7 @@ const upload = multer({storage: storage});
 router.post("/register", registerNewUser);
 router.post("/login", loginUser);
 router.get("/findUserByEmail/:email", findUserByEmail);
+router.post("/changeUserPasswordByEmail/:email", changeUserPasswordByEmail);
 router.put('/updateUser/:email', upload.single('profilePhoto'), manageUpdateUserByEmail);
 
 // Car

@@ -25,6 +25,7 @@ import PaymentScreen from '../screens/Payment';
 import GroupChatScreen from '../screens/group/GroupChatScreen';
 import UpdateGroupScreen from '../screens/group/UpdateGroupScreen';
 import UserDetailScreen from "../screens/user/UserProfileScreen";
+import changePasswordScreen from "../screens/user/ChangePasswordScreen";
 
 const Stack = createStackNavigator();
 
@@ -52,6 +53,7 @@ const AppNavigator = () => {
         {name: 'CarDetail', component: CarDetailScreen},
         {name: 'UpdateCar', component: UpdateCarScreen},
         {name: 'RouteScreen', component: RouteScreen},
+        {name: 'changePasswordScreen', component: changePasswordScreen},
         {name: 'InsertGroupScreen', component: InsertGroupScreen, options: {title: 'Nuevo grupo'}},
         {
             name: 'ViewAllGroupsScreen',

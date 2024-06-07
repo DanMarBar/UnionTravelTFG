@@ -2,7 +2,6 @@ import User from '../model/UserModel.js';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import jwt from "jsonwebtoken";
-import stytchClient from '../config/Stytch.js';
 import sendEmail from "../config/Mailer.js";
 
 dotenv.config();
@@ -143,6 +142,35 @@ export const manageUpdateUserByEmail = async (req, res,) => {
     } catch (error) {
         console.error(error);
         return res.status(500).send("Error al actualizar el usuario");
+    }
+};
+
+// Cambiar contraseña del usuario
+export const changeUserPasswordByEmail = async (req, res) => {
+    const {email} = req.params;
+    const {newPassword, confirmNewPassword} = req.body;
+
+    try {
+        const user = await User.findOne({where: {email: email}});
+        if (!user) {
+            return res.status(404).json({error: "Usuario no encontrado"});
+        }
+
+        if (newPassword !== confirmNewPassword) {
+            return res.status(400).json({error: "La nueva contraseña y la confirmación no coinciden"});
+        }
+
+        if (newPassword.length < 5) {
+            return res.status(400).json({error: "La nueva contraseña debe tener al menos 5 caracteres"});
+        }
+
+        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+        await User.update({password: hashedNewPassword}, {where: {email}});
+
+        return res.status(200).json({message: "Contraseña actualizada correctamente"});
+    } catch (error) {
+        console.error("Error cambiando la contraseña del usuario:", error);
+        return res.status(500).json({error: "Error cambiando la contraseña del usuario"});
     }
 };
 

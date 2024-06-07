@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Alert,
-    Button,
     Image,
     SafeAreaView,
     ScrollView,
@@ -11,13 +10,13 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import { Icon } from 'react-native-elements';
+import {Icon} from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { serverConnectionId, updateUserByEmail } from '../../config/api';
-import { obtainAllUserInfo } from '../../utils/UserUtils';
-import { handleImageChange } from "../../utils/ImageUtils";
+import {serverConnectionId, updateUserByEmail} from '../../config/api';
+import {obtainAllUserInfo} from '../../utils/UserUtils';
+import {handleImageChange} from "../../utils/ImageUtils";
 
-const UserUpdateScreen = ({ navigation }) => {
+const UserUpdateScreen = ({navigation}) => {
     const [showDatePicker, setShowDatePicker] = useState(false);
     const [newPhoto, setNewPhoto] = useState(null);
     const [finalPhoto, setFinalPhoto] = useState(null);
@@ -108,14 +107,14 @@ const UserUpdateScreen = ({ navigation }) => {
                     }
                 }
             ],
-            { cancelable: false }
+            {cancelable: false}
         );
     };
 
     const handleProfilePhotoChange = async () => {
         const photoResult = await handleImageChange();
         if (photoResult && !photoResult.cancelled) {
-            setNewPhoto({ uri: photoResult.uri, type: photoResult.type, name: photoResult.name });
+            setNewPhoto({uri: photoResult.uri, type: photoResult.type, name: photoResult.name});
             setFinalPhoto(photoResult.uri);
             await setUserDetails(prevState => ({
                 ...prevState,
@@ -128,7 +127,7 @@ const UserUpdateScreen = ({ navigation }) => {
         const currentDate = selectedDate || date;
         setShowDatePicker(false);
         setDate(currentDate);
-        setUserDetails({ ...userDetails, birthday: currentDate });
+        setUserDetails({...userDetails, birthday: currentDate});
     };
 
     const handleDiscardChanges = () => {
@@ -162,7 +161,8 @@ const UserUpdateScreen = ({ navigation }) => {
                                                         ...userDetails,
                                                         name: text
                                                     })} />
-                            <EditableDetailWithIcon icon="person-outline" label="Apellido" maxLength={15}
+                            <EditableDetailWithIcon icon="person-outline" label="Apellido"
+                                                    maxLength={15}
                                                     value={userDetails.surname}
                                                     onChangeText={(text) => setUserDetails({
                                                         ...userDetails,
@@ -225,34 +225,37 @@ const UserUpdateScreen = ({ navigation }) => {
                 </View>
             </ScrollView>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={[styles.circularButton, styles.saveButton]} onPress={handleUpdate}>
+                <TouchableOpacity style={[styles.circularButton, styles.saveButton]}
+                                  onPress={handleUpdate}>
                     <Icon name="save" size={24} color="#fff" />
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.circularButton, styles.discardButton]} onPress={handleDiscardChanges}>
+                <TouchableOpacity style={[styles.circularButton, styles.discardButton]}
+                                  onPress={handleDiscardChanges}>
                     <Icon name="refresh" size={24} color="#ff0000" />
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.circularButton, styles.goBackButton]} onPress={() => navigation.goBack()}>
-                    <Icon name="arrow-back" size={24} color="#000" />
+                <TouchableOpacity style={[styles.circularButton, styles.changePasswordButton]}
+                                  onPress={() => navigation.navigate('changePasswordScreen', { email: userDetails.email })}>
+                    <Icon name="lock" size={24} color="#000" />
                 </TouchableOpacity>
             </View>
         </SafeAreaView>
     );
 };
 
-const EditableDetailWithIcon = ({ icon, label, value, onChangeText, keyboardType, maxLength }) => (
+const EditableDetailWithIcon = ({icon, label, value, onChangeText, keyboardType, maxLength}) => (
     <View style={styles.detailRow}>
-        <Icon name={icon} size={26} color="#ff0000" style={styles.icon} />
+        <Icon name={icon} size={26} color="#ff0000" style={styles.icon}/>
         <View style={styles.editableFieldContainer}>
             <Text style={styles.label}>{label}:</Text>
             <TextInput style={styles.editableField} value={value} onChangeText={onChangeText}
                        keyboardType={keyboardType}
                        maxLength={maxLength}
-                       placeholderTextColor="#888" />
+                       placeholderTextColor="#888"/>
         </View>
     </View>
 );
 
-const GroupedDetail = ({ title, children }) => (
+const GroupedDetail = ({title, children}) => (
     <View style={styles.groupedContainer}>
         {title && <Text style={styles.groupTitle}>{title}</Text>}
         {children}
@@ -280,7 +283,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         borderColor: '#fff',
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
+        shadowOffset: {width: 0, height: 4},
         shadowOpacity: 0.3,
         shadowRadius: 6,
         elevation: 10,
@@ -305,7 +308,7 @@ const styles = StyleSheet.create({
         padding: 20,
         marginVertical: 10,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
+        shadowOffset: {width: 0, height: 4},
         shadowOpacity: 0.1,
         shadowRadius: 4,
         elevation: 4,
@@ -376,6 +379,9 @@ const styles = StyleSheet.create({
     },
     goBackButton: {
         backgroundColor: '#fff',
+    },
+    changePasswordButton: {
+        backgroundColor: '#f6f6f6',
     },
 });
 
