@@ -74,6 +74,8 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
             }
         };
 
+        // Obtiene la ubicacion actual del usuario, si niega los permisos se asignan unos
+        // predeterminados
         const getCurrentLocation = async () => {
             try {
                 let { status } = await Location.requestForegroundPermissionsAsync();
@@ -104,6 +106,7 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
         getCurrentLocation();
     }, [route.params]);
 
+    // Elimina a un usuario del grupo
     const handleRemoveUser = async (userId) => {
         Alert.alert(
             "Eliminar usuario",
@@ -129,6 +132,7 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
         );
     };
 
+    // Permite crear una ruta tocando la pantalla
     const handleMapPress = (e) => {
         const newCoordinate = e.nativeEvent.coordinate;
         setNewRouteCoordinates(prevCoordinates => {
@@ -139,6 +143,7 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
         });
     };
 
+    // Verifica que dos cordenadas sean iguales
     const areCoordinatesEqual = (coords1, coords2) => {
         if (coords1.length !== coords2.length) return false;
         for (let i = 0; i < coords1.length; i++) {
@@ -149,6 +154,7 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
         return true;
     };
 
+    // Guarda la ruta en la base de datos
     const handleAssignRoute = async () => {
         console.log('Coordinates to Save:', newRouteCoordinates);
 
@@ -199,6 +205,7 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
         );
     };
 
+    // Reinicia la ruta
     const handleResetRoute = () => {
         setRouteCoordinates([]);
         setNewRouteCoordinates([]);
@@ -206,12 +213,15 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
         setDestination(null);
     };
 
+    // LLama a la api de google para poder autocompletar
     const fetchPlaceDetails = async (placeId) => {
         const response = await fetch(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${configProtection.googleMapsApiKey}`);
         const data = await response.json();
         return data.result.geometry.location;
     };
 
+    // Usa el destino seleccionado (dado por la api de google) para añadirlo a la ruta, con
+    // parada incluida
     const handleDestinationSelect = async (data, details) => {
         if (details && details.geometry && details.geometry.location) {
             const {lat, lng} = details.geometry.location;
@@ -261,6 +271,7 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
         }
     }, [currentLocation, destination]);
 
+    // Codifica los datos obtenidos de googlemaps para guardados en la base de datos
     const decode = (t, e = 5) => {
         let points = [];
         for (let step = 0, lat = 0, lon = 0; step < t.length;) {

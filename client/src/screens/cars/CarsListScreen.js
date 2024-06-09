@@ -155,6 +155,9 @@ const CarListScreen = ({navigation}) => {
                         </View>
                     </View>
                 ))}
+                <TouchableOpacity style={styles.createButton} onPress={() => navigation.navigate('InsertGroupScreen')}>
+                    <Text style={styles.createButtonText}>Registra tu vehiculo</Text>
+                </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>
     );
@@ -278,6 +281,18 @@ const styles = StyleSheet.create({
         color: '#ffffff',
         fontSize: 18,
         textAlign: 'center',
+    },
+    createButton: {
+        backgroundColor: '#ffffff',
+        padding: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+        margin: 20,
+    },
+    createButtonText: {
+        color: '#ff0000',
+        fontSize: 18,
+        fontWeight: 'bold',
     },
 });
 

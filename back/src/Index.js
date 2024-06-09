@@ -7,12 +7,12 @@ import {dirname} from "path";
 import {fileURLToPath} from 'url';
 import http from 'http';
 import {Server} from 'socket.io';
-import db from './config/database.js';
+import db from './config/Database.js';
 import Payment from './routes/Payment.js';
 import ChatRooms from './routes/ChatRooms.js';
-import router from './routes/index.js';
-import initializeSocket from './config/sockets.js';
-import initializePassport from './config/passport.js';
+import router from './routes/Index.js';
+import initializeSocket from './config/Sockets.js';
+import initializePassport from './config/Passport.js';
 import Auth from "./routes/Auth.js";
 
 const app = express();

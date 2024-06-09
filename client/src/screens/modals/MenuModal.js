@@ -5,7 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const MenuOption = ({ title, iconName, onPress }) => (
     <TouchableOpacity style={styles.menuItem} onPress={onPress}>
-        <Icon name={iconName} type="material" color="#FF0000" />
+        <Icon name={iconName} type="font-awesome" color="#FF0000" size={20} />
         <Text style={styles.menuItemText}>{title}</Text>
     </TouchableOpacity>
 );
@@ -32,23 +32,23 @@ const MenuModal = ({ isVisible, onClose, navigation }) => (
             <View style={styles.modalBackground}>
                 <View style={styles.menuContainer}>
                     <ScrollView style={styles.scrollViewStyle}>
-                        <Text style={styles.modalText}>Mi Menú</Text>
-
-                        {/* Grupo de Perfil */}
                         <Text style={styles.groupTitle}>Perfil</Text>
-                        <MenuOption title="Mi Cuenta" iconName="person" onPress={() => {}} />
-                        <MenuOption title="Mis Pedidos" iconName="shopping-cart" onPress={() => {}} />
+                        <MenuOption title="Actualizar cuenta" iconName="edit" onPress={() => { onClose(); navigation.navigate('UserProfileScreen'); }} />
+                        <MenuOption title="Ver mi perfil" iconName="user" onPress={() => { onClose(); navigation.navigate('UserDetailScreen'); }} />
+
+                        {/* Grupo de Vehículos */}
+                        <Text style={styles.groupTitle}>Vehículos</Text>
+                        <MenuOption title="Vehículos" iconName="car" onPress={() => { onClose(); navigation.navigate('CarsListScreen'); }} />
+                        <MenuOption title="Nuevo auto" iconName="plus" onPress={() => { onClose(); navigation.navigate('InsertCarScreen'); }} />
+
+                        {/* Grupo de Grupos */}
+                        <Text style={styles.groupTitle}>Grupos</Text>
+                        <MenuOption title="Crear Grupo" iconName="users" onPress={() => { onClose(); navigation.navigate('InsertGroupScreen'); }} />
+                        <MenuOption title="Ver grupos" iconName="eye" onPress={() => { onClose(); navigation.navigate('ViewAllGroupsScreen'); }} />
 
                         {/* Grupo de Configuración */}
                         <Text style={styles.groupTitle}>Configuración</Text>
-                        <MenuOption title="Configuración de la App" iconName="settings" onPress={() => {}} />
-                        <MenuOption title="Notificaciones" iconName="notifications" onPress={() => {}} />
-                        <MenuOption title="Cerrar sesión" iconName="exit-to-app" onPress={() => handleLogout(navigation, onClose)} />
-
-                        {/* Grupo de Información */}
-                        <Text style={styles.groupTitle}>Soporte</Text>
-                        <MenuOption title="Ayuda" iconName="help" onPress={() => {}} />
-                        <MenuOption title="Acerca de" iconName="info" onPress={() => {}} />
+                        <MenuOption title="Cerrar sesión" iconName="sign-out" onPress={() => handleLogout(navigation, onClose)} />
                     </ScrollView>
 
                     <TouchableOpacity onPress={onClose} style={styles.buttonClose}>

@@ -1,4 +1,4 @@
-import db from "../config/database.js";
+import db from "../config/Database.js";
 import { DataTypes } from "sequelize";
 import PlaceModel from "./PlaceModel.js";
 import VehiclePersonModel from "./VehiclePersonModel.js";
