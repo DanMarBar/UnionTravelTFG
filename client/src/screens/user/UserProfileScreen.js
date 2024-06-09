@@ -12,23 +12,26 @@ import {
 import {Icon} from 'react-native-elements';
 import {obtainAllUserInfo} from "../../utils/UserUtils";
 import {obtainImgRoute} from "../../utils/ImageUtils";
+import {useFocusEffect} from "@react-navigation/native";
 
 const UserDetailScreen = ({navigation}) => {
     const [userDetails, setUserDetails] = useState(null);
 
-    useEffect(() => {
-        const fetchDetails = async () => {
-            try {
-                const userInfo = await obtainAllUserInfo()
-                setUserDetails(userInfo)
-            } catch (error) {
-                console.error('Error recuperando la info del usuario:', error);
-                Alert.alert("Error del server", "No se pudo recuperar la información del usuario");
-            }
-        };
+    useFocusEffect(
+        React.useCallback(() => {
+            const fetchDetails = async () => {
+                try {
+                    const userInfo = await obtainAllUserInfo();
+                    setUserDetails(userInfo);
+                } catch (error) {
+                    console.error('Error recuperando la info del usuario:', error);
+                    Alert.alert("Error del server", "No se pudo recuperar la información del usuario");
+                }
+            };
 
-        fetchDetails();
-    }, []);
+            fetchDetails();
+        }, [])
+    );
 
     if (!userDetails) {
         return <Text>Cargando detalles del usuario...</Text>;

@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import session from 'express-session';
 import passport from 'passport';
+import './config/cron.js';
 import * as path from "path";
 import {dirname} from "path";
 import {fileURLToPath} from 'url';

@@ -198,10 +198,13 @@ export const createTempPasswordByEmail = async (req, res) => {
         `;
 
         // Enviar correo para avisar de cambio de contraseña
-        sendEmail(email, 'Bienvenido a nuestra aplicación', emailContent);
+        sendEmail(email, 'Tu contraseña temporal', emailContent);
 
         const hashedNewTempPassword = await bcrypt.hash(newTempPassword, 10);
-        await User.update({tempPassword: hashedNewTempPassword}, {where: {email}});
+        await User.update({
+            tempPassword: hashedNewTempPassword,
+            tempPasswordCreatedAt: new Date()
+        }, {where: {email}});
 
         return res.status(200).json({message: "Contraseña actualizada correctamente"});
 

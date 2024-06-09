@@ -6,11 +6,13 @@ import VehiclePersonModel from "./VehiclePersonModel.js";
 const GroupModel = db.define('Group', {
     name: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: true,
+        defaultValue: ''
     },
     description: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: true,
+        defaultValue: ''
     },
     arrivalDate: {
         type: DataTypes.DATE,
