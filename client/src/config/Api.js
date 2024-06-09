@@ -68,6 +68,7 @@ export const obtainPersonFromGroupById = (userId, groupId) => api.get(`/obtainPe
 
 //Payment
 export const createPaymentIntent = (amount) => api.post('/create-payment-intent', {amount});
+export const createInvoiceUsingUserEmail = (email, invoiceData) => api.post(`/createInvoiceUsingUserEmail/${email}`, invoiceData);
 
 // Chat Messages
 export const getMessages = (groupId) => api.get(`/groups/${groupId}/messages`);

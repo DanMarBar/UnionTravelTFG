@@ -20,7 +20,7 @@ import UserUpdateScreen from '../screens/user/UserUpdateScreen';
 import InsertGroupScreen from '../screens/group/InsertGroupScreen';
 import ViewAllGroupsScreen from '../screens/group/ViewAllGroupsScreen';
 import ViewGroupDetailsScreen from '../screens/group/ViewGroupDetailsScreen';
-import PaymentScreen from '../screens/Payment';
+import PaymentScreen from '../screens/PaymentScreen';
 import GroupChatScreen from '../screens/group/GroupChatScreen';
 import UpdateGroupScreen from '../screens/group/UpdateGroupScreen';
 import UserDetailScreen from "../screens/user/UserProfileScreen";

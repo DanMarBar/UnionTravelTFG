@@ -1,14 +1,14 @@
 // src/screens/PaymentScreen.js
-import React, { useState, useEffect } from 'react';
-import {View, Button, Alert, StyleSheet, Text, TouchableOpacity} from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import { useConfirmPayment, CardForm } from '@stripe/stripe-react-native';
-import { createPaymentIntent } from '../config/Api';
-import { obtainAllUserInfo } from '../utils/UserUtils';
+import React, {useEffect, useState} from 'react';
+import {Alert, Button, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Picker} from '@react-native-picker/picker';
+import {CardForm, useConfirmPayment} from '@stripe/stripe-react-native';
+import {createInvoiceUsingUserEmail, createPaymentIntent} from '../config/Api';
+import {obtainAllUserInfo} from '../utils/UserUtils';
 import * as Notifications from "expo-notifications";
 
-const PaymentScreen = ({ route, navigation }) => {
-    const { confirmPayment, loading } = useConfirmPayment();
+const PaymentScreen = ({route, navigation}) => {
+    const {confirmPayment, loading} = useConfirmPayment();
     const [amount, setAmount] = useState(1000);
     const [email, setEmail] = useState('');
 
@@ -39,7 +39,7 @@ const PaymentScreen = ({ route, navigation }) => {
                     onPress: handlePayPress,
                 },
             ],
-            { cancelable: false }
+            {cancelable: false}
         );
     };
 
@@ -48,9 +48,7 @@ const PaymentScreen = ({ route, navigation }) => {
             const response = await createPaymentIntent(amount);
             const clientSecret = response.data.clientSecret;
 
-            console.log(clientSecret)
-
-            const { error, paymentIntent } = await confirmPayment(clientSecret, {
+            const {error, paymentIntent} = await confirmPayment(clientSecret, {
                 type: 'Card',
                 paymentMethodType: 'Card',
                 billingDetails: {
@@ -72,10 +70,19 @@ const PaymentScreen = ({ route, navigation }) => {
                         body: "Muchas gracias por tu donacion, apreciamos tu colaboracion",
                         sound: 'default',
                     },
-                    trigger: { seconds: 1 },
+                    trigger: {seconds: 1},
+                });
+                console.log(paymentIntent)
+                Alert.alert('Pago exitoso', '¡Tu pago fue exitoso!');
+
+                await createInvoiceUsingUserEmail(email, {
+                    invoiceNumber: paymentIntent.id,
+                    amount: paymentIntent.amount,
+                    currency: paymentIntent.currency,
+                    status: paymentIntent.status,
+                    created: paymentIntent.created,
                 });
 
-                Alert.alert('Pago exitoso', '¡Tu pago fue exitoso!');
                 navigation.goBack();
             }
         } catch (error) {
@@ -99,15 +106,16 @@ const PaymentScreen = ({ route, navigation }) => {
                 style={styles.picker}
                 onValueChange={(itemValue) => setAmount(itemValue)}
             >
-                <Picker.Item label="5 EUR" value={500} />
-                <Picker.Item label="10 EUR" value={1000} />
-                <Picker.Item label="15 EUR" value={1500} />
-                <Picker.Item label="20 EUR" value={2000} />
-                <Picker.Item label="25 EUR" value={2500} />
-                <Picker.Item label="50 EUR" value={5000} />
+                <Picker.Item label="5 EUR" value={500}/>
+                <Picker.Item label="10 EUR" value={1000}/>
+                <Picker.Item label="15 EUR" value={1500}/>
+                <Picker.Item label="20 EUR" value={2000}/>
+                <Picker.Item label="25 EUR" value={2500}/>
+                <Picker.Item label="50 EUR" value={5000}/>
             </Picker>
             <TouchableOpacity style={styles.buttonContainer}>
-                <Button onPress={handleConfirmPayPress} title="Pagar" disabled={loading} color="#ff0000" />
+                <Button onPress={handleConfirmPayPress} title="Pagar" disabled={loading}
+                        color="#ff0000"/>
             </TouchableOpacity>
         </View>
     );
