@@ -25,9 +25,11 @@ const User = db.define('User', {
     },
     name: {
         type: DataTypes.STRING,
+        defaultValue: ''
     },
     surname: {
         type: DataTypes.STRING,
+        defaultValue: ''
     },
     birthday: {
         type: DataTypes.DATE,
@@ -35,18 +37,23 @@ const User = db.define('User', {
     },
     cellphone: {
         type: DataTypes.STRING,
+        defaultValue: ''
     },
     secondCellphone: {
         type: DataTypes.STRING,
+        defaultValue: ''
     },
     direction: {
         type: DataTypes.STRING,
+        defaultValue: ''
     },
     zip: {
         type: DataTypes.STRING,
+        defaultValue: ''
     },
     profilePhoto: {
         type: DataTypes.STRING,
+        defaultValue: 'uploads/DefaultProfilePhoto.jpeg'
     },
     isAdmin: {
         type: DataTypes.BOOLEAN,

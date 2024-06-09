@@ -87,7 +87,7 @@ const RegisterScreen = ({navigation}) => {
         } catch (error) {
             if (error.response) {
                 const errorMessage = error.response.data.error;
-                console.log(errorMessage + error);
+                console.log(error.response.data.error);
                 Alert.alert("Error en introducir los datos:", errorMessage);
 
             } else {

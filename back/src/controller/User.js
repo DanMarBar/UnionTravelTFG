@@ -22,9 +22,9 @@ export const registerNewUser = async (req, res) => {
         }
 
         // Que el email no este registrado
-        const userFromDataBaseWithEmail = await User.findOne({where: {user: req.body.email}});
+        const userFromDataBaseWithEmail = await User.findOne({where: {email: req.body.email}});
         if (userFromDataBaseWithEmail) {
-            return res.status(403).json({error: "El correo " + email + "ya existe"});
+            return res.status(403).json({error: "El correo " + email + " ya esta registrado"});
         }
 
         // Ambas contraseñas iguales

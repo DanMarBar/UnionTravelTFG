@@ -11,7 +11,8 @@ const VehiclePersonModel = db.define('VehiclePerson', {
     },
     color: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: true,
+        defaultValue: ''
     },
     year: {
         type: DataTypes.DATE,
