@@ -23,6 +23,7 @@ export const loginUser = (credentials) => api.post('/login', credentials);
 // User
 export const findUserByEmail = (email) => api.get(`/findUserByEmail/${email}`);
 export const changeUserPasswordByEmail = (email, passwords) => api.post(`/changeUserPasswordByEmail/${email}`, passwords);
+export const createTempPasswordByEmail = (email) => api.get(`/createTempPasswordByEmail/${email}`);
 export const updateUserByEmail = (email, formData) => api.put(`/updateUser/${email}`, formData, {
     headers: {
         'Content-Type': 'multipart/form-data'

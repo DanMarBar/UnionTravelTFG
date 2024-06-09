@@ -10,6 +10,10 @@ const User = db.define('User', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    tempPassword: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     email: {
         type: DataTypes.STRING,
         unique: true,

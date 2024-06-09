@@ -1,6 +1,7 @@
 import User from '../model/UserModel.js';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
+import crypto from 'crypto';
 import jwt from "jsonwebtoken";
 import sendEmail from "../config/Mailer.js";
 
@@ -63,7 +64,7 @@ export const registerNewUser = async (req, res) => {
     }
 };
 
-// Logea al usuario en la app
+// Logea al usuario en la app, se puede introducir la contraseña temporal
 export const loginUser = async (req, res) => {
     const email = req.body.email
     const password = req.body.password
@@ -76,10 +77,11 @@ export const loginUser = async (req, res) => {
         }
 
         const isValid = await bcrypt.compare(password, user.password);
-        if (!isValid) {
+        if (!isValid && !await validateTemporalPassword(password, user.tempPassword)) {
             console.log("wrong password")
-            return res.status(400).json({error: "La contraseña no coincide con el correo" +
-                    " electronico"});
+            return res.status(400).json({
+                error: "La contraseña no coincide con el correo electronico"
+            });
         }
 
         const token = jwt.sign({
@@ -175,6 +177,43 @@ export const changeUserPasswordByEmail = async (req, res) => {
     }
 };
 
+// Asigna contraseña temporal al usuario y la envie por gmail
+export const createTempPasswordByEmail = async (req, res) => {
+    const {email} = req.params;
+
+    try {
+        const user = await User.findOne({where: {email: email}});
+        if (!user) {
+            console.log("El usuario introdujo un correo que no existe en nuestra bd")
+            return res.status(404).json({error: "Usuario no encontrado con ese correo"});
+        }
+
+        const newTempPassword = generateTempPassword();
+        const emailContent = `
+            Hola ${user.user}
+            Te enviamos tu contraseña temporal con la que podras inciar sesion: 
+            ${newTempPassword}
+            Te recomendamos que no la compartas con nadie y que inmediatemente vayas a cambiar tu contraseña
+            Atentamente, el equipo de UnionTravel
+        `;
+
+        // Enviar correo para avisar de cambio de contraseña
+        sendEmail(email, 'Bienvenido a nuestra aplicación', emailContent);
+
+        const hashedNewTempPassword = await bcrypt.hash(newTempPassword, 10);
+        await User.update({tempPassword: hashedNewTempPassword}, {where: {email}});
+
+        return res.status(200).json({message: "Contraseña actualizada correctamente"});
+
+    } catch (error) {
+        console.error("Error cambiando la contraseña del usuario:", error);
+        return res.status(500).json({error: "Error cambiando la contraseña del usuario"});
+    }
+};
+
+const generateTempPassword = (length = 8) => {
+    return crypto.randomBytes(length).toString('hex').slice(0, length);
+};
 
 // Verifica que los datos dados por el usuario cumplan con lo esperado para poder registrarlo
 const validateUserCharacterLenght = async (name, password) => {
@@ -188,4 +227,12 @@ const validateUserCharacterLenght = async (name, password) => {
         return [false, "La constraseña debe de tener mas de 5 caracteres"]
     }
     return [true, "Exito!"]
+}
+
+// Verificar si el usuario introdujo una contraseña temporal
+const validateTemporalPassword = async (tempPassword, expectedTempPassword) => {
+    if (expectedTempPassword === undefined || expectedTempPassword === null || expectedTempPassword === '') {
+        return false
+    }
+    return await bcrypt.compare(tempPassword, expectedTempPassword)
 }

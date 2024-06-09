@@ -2,7 +2,8 @@ import React, {useState} from 'react';
 import {StatusBar} from 'expo-status-bar';
 import {
     Alert,
-    Image, ImageBackground,
+    Image,
+    ImageBackground,
     SafeAreaView,
     ScrollView,
     StyleSheet,
@@ -15,8 +16,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useGitHubAuth} from '../service/Oauth';
 import {loginUser} from "../config/Api";
-import {BackgroundImage} from "react-native-elements/dist/config";
-import {obtainAllUserInfo, obtainAllUserInfoWithEmail} from "../utils/UserUtils";
+import {obtainAllUserInfoWithEmail} from "../utils/UserUtils";
 
 const LoginScreen = ({navigation}) => {
     const [email, setEmail] = useState('');
@@ -44,7 +44,7 @@ const LoginScreen = ({navigation}) => {
                 const errorMessage = error.response.data.error;
                 console.log(errorMessage + error);
                 Alert.alert("Error al iniciar sesion:", errorMessage);
-            }else {
+            } else {
                 console.error('Error logging in', error);
                 Alert.alert('Error', 'No se puede iniciar sesion');
             }
@@ -61,12 +61,13 @@ const LoginScreen = ({navigation}) => {
             >
                 <ScrollView contentContainerStyle={styles.scrollViewContent}>
                     <View style={styles.contentContainer}>
-                        <StatusBar style="auto" />
+                        <StatusBar style="auto"/>
                         <Text style={styles.title}>Iniciar Sesión</Text>
                         <View style={styles.inputContainer}>
                             <Text style={styles.inputLabel}>Email</Text>
                             <View style={styles.inputs}>
-                                <MaterialIcons name="alternate-email" size={20} color="#666" style={{ marginRight: 5 }} />
+                                <MaterialIcons name="alternate-email" size={20} color="#666"
+                                               style={{marginRight: 5}}/>
                                 <TextInput
                                     placeholder="Email"
                                     style={styles.input}
@@ -79,7 +80,8 @@ const LoginScreen = ({navigation}) => {
                         <View style={styles.inputContainer}>
                             <Text style={styles.inputLabel}>Contraseña</Text>
                             <View style={styles.inputs}>
-                                <MaterialIcons name="key" size={20} color="#666" style={{ marginRight: 5 }} />
+                                <MaterialIcons name="key" size={20} color="#666"
+                                               style={{marginRight: 5}}/>
                                 <TextInput
                                     placeholder="Password"
                                     style={styles.input}
@@ -93,19 +95,29 @@ const LoginScreen = ({navigation}) => {
                             <Text style={styles.loginButtonText}>Login</Text>
                         </TouchableOpacity>
                         <View style={styles.dividerContainer}>
-                            <View style={styles.divider} />
+                            <View style={styles.divider}/>
                             <Text style={styles.orText}>O inicia sesión con...</Text>
-                            <View style={styles.divider} />
+                            <View style={styles.divider}/>
                         </View>
                         <View style={styles.socialButtonsContainer}>
-                            <TouchableOpacity onPress={() => promptAsync()} style={styles.socialButton}>
-                                <Image source={require('../assets/images/misc/google.png')} style={styles.socialIcon} />
+                            <TouchableOpacity onPress={() => promptAsync()}
+                                              style={styles.socialButton}>
+                                <Image source={require('../assets/images/misc/google.png')}
+                                       style={styles.socialIcon}/>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.registerContainer}>
-                            <Text style={styles.registerQuestionText}>¿No tienes cuenta?  </Text>
+                            <Text style={styles.registerQuestionText}>¿No tienes cuenta? </Text>
                             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
                                 <Text style={styles.registerText}>Regístrate aquí</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.registerContainer}>
+                            <Text style={styles.registerQuestionText}>¿Se te olvido la
+                                contraseña? </Text>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('RequestTempPasswordScreen')}>
+                                <Text style={styles.registerText}>Crea una nueva</Text>
                             </TouchableOpacity>
                         </View>
                     </View>

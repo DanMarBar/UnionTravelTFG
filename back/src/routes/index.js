@@ -1,7 +1,7 @@
 import express from "express";
 
 import {
-    changeUserPasswordByEmail,
+    changeUserPasswordByEmail, createTempPasswordByEmail,
     findUserByEmail,
     loginUser,
     manageUpdateUserByEmail,
@@ -65,6 +65,7 @@ router.post("/register", registerNewUser);
 router.post("/login", loginUser);
 router.get("/findUserByEmail/:email", findUserByEmail);
 router.post("/changeUserPasswordByEmail/:email", changeUserPasswordByEmail);
+router.get("/createTempPasswordByEmail/:email", createTempPasswordByEmail);
 router.put('/updateUser/:email', upload.single('profilePhoto'), manageUpdateUserByEmail);
 
 // Car
