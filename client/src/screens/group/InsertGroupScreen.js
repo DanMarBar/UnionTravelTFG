@@ -97,6 +97,11 @@ const InsertGroupScreen = ({navigation}) => {
             Alert.alert("Nombre no valido", "El nombre del grupo debe de tener mas de 5 caracteres")
             return;
         }
+        if (groupDetails.registration === undefined) {
+            Alert.alert("Vehiculo no valido", "Selecciona un vehiculo en la lista, si no" +
+                " tienes puedes crear uno")
+            return;
+        }
 
         setError('');
 

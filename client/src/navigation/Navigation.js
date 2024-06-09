@@ -172,7 +172,7 @@ const AppNavigator = () => {
                     />
                 ))}
             </Stack.Navigator>
-            <MenuModal isVisible={menuVisible} onClose={() => setMenuVisible(false)}/>
+            <MenuModal isVisible={menuVisible} onClose={() => setMenuVisible(false)} navigation={navigation} />
         </>
     );
 };

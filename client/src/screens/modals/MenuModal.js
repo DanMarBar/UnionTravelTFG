@@ -1,6 +1,7 @@
 import React from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { Icon } from 'react-native-elements';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const MenuOption = ({ title, iconName, onPress }) => (
     <TouchableOpacity style={styles.menuItem} onPress={onPress}>
@@ -9,7 +10,19 @@ const MenuOption = ({ title, iconName, onPress }) => (
     </TouchableOpacity>
 );
 
-const MenuModal = ({ isVisible, onClose }) => (
+// Se encarga de cerrar la sesión del usuario
+const handleLogout = async (navigation, onClose) => {
+    try {
+        await AsyncStorage.removeItem('userToken');
+        await AsyncStorage.removeItem('userInfo');
+        onClose();
+        navigation.navigate('Login');
+    } catch (error) {
+        console.error('Error logging out:', error);
+    }
+};
+
+const MenuModal = ({ isVisible, onClose, navigation }) => (
     <Modal
         animationType="slide"
         transparent={true}
@@ -30,6 +43,7 @@ const MenuModal = ({ isVisible, onClose }) => (
                         <Text style={styles.groupTitle}>Configuración</Text>
                         <MenuOption title="Configuración de la App" iconName="settings" onPress={() => {}} />
                         <MenuOption title="Notificaciones" iconName="notifications" onPress={() => {}} />
+                        <MenuOption title="Cerrar sesión" iconName="exit-to-app" onPress={() => handleLogout(navigation, onClose)} />
 
                         {/* Grupo de Información */}
                         <Text style={styles.groupTitle}>Soporte</Text>

@@ -58,17 +58,6 @@ const MainMenuScreen = ({navigation}) => {
         getCurrentLocation();
     }, []);
 
-    // Se encarga de cerrar la sesión del usuario
-    const handleLogout = async () => {
-        try {
-            await AsyncStorage.removeItem('userToken');
-            await AsyncStorage.removeItem('userInfo');
-            navigation.replace('Login');
-        } catch (error) {
-            console.error('Error logging out:', error);
-        }
-    };
-
     if (!currentLocation) {
         return <View style={styles.loadingContainer}>
             <Text style={styles.loadingText}>Cargando...</Text>
@@ -82,7 +71,7 @@ const MainMenuScreen = ({navigation}) => {
                 <Text style={styles.welcomeText}>Bienvenido de vuelta, {userInfo.name}</Text>
             </View>
             <View style={styles.clockContainer}>
-                <DigitalClock/>
+                <DigitalClock />
             </View>
             <View style={styles.mapContainer}>
                 <MapView
@@ -108,7 +97,7 @@ const MainMenuScreen = ({navigation}) => {
                     onPress={() => navigation.navigate('CarsListScreen')}
                 >
                     <View style={styles.iconContainer}>
-                        <Icon name="car" type="font-awesome" size={20} color="#FF0000"/>
+                        <Icon name="car" type="font-awesome" size={20} color="#FF0000" />
                     </View>
                     <Text style={styles.menuText}>Vehículos</Text>
                 </TouchableOpacity>
@@ -118,9 +107,9 @@ const MainMenuScreen = ({navigation}) => {
                     onPress={() => navigation.navigate('InsertCarScreen')}
                 >
                     <View style={styles.iconContainer}>
-                        <Icon name="plus-circle" type="font-awesome" size={20} color="#FF0000"/>
+                        <Icon name="plus" type="font-awesome" size={23} color="#FF0000" />
                     </View>
-                    <Text style={styles.menuText}>Agregar Vehículo</Text>
+                    <Text style={styles.menuText}>Nuevo auto</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -128,9 +117,9 @@ const MainMenuScreen = ({navigation}) => {
                     onPress={() => navigation.navigate('UserProfileScreen')}
                 >
                     <View style={styles.iconContainer}>
-                        <Icon name="user" type="font-awesome" size={20} color="#FF0000"/>
+                        <Icon name="edit" type="font-awesome" size={20} color="#FF0000" />
                     </View>
-                    <Text style={styles.menuText}>Perfil</Text>
+                    <Text style={styles.menuText}>Actualizar cuenta</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -138,19 +127,9 @@ const MainMenuScreen = ({navigation}) => {
                     onPress={() => navigation.navigate('UserDetailScreen')}
                 >
                     <View style={styles.iconContainer}>
-                        <Icon name="user" type="font-awesome" size={20} color="#FF0000"/>
+                        <Icon name="user" type="font-awesome" size={20} color="#FF0000" />
                     </View>
                     <Text style={styles.menuText}>Ver mi perfil</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    style={styles.menuItem}
-                    onPress={() => navigation.navigate('RouteScreen')}
-                >
-                    <View style={styles.iconContainer}>
-                        <Icon name="road" type="font-awesome" size={20} color="#FF0000"/>
-                    </View>
-                    <Text style={styles.menuText}>Buscar Ruta</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -158,19 +137,9 @@ const MainMenuScreen = ({navigation}) => {
                     onPress={() => navigation.navigate('InsertGroupScreen')}
                 >
                     <View style={styles.iconContainer}>
-                        <Icon name="users" type="font-awesome" size={20} color="#FF0000"/>
+                        <Icon name="users" type="font-awesome" size={20} color="#FF0000" />
                     </View>
-                    <Text style={styles.menuText}>Ver los grupos</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    style={styles.menuItem}
-                    onPress={() => navigation.navigate('PaymentScreen')}
-                >
-                    <View style={styles.iconContainer}>
-                        <Icon name="money" type="font-awesome" size={20} color="#FF0000"/>
-                    </View>
-                    <Text style={styles.menuText}>¡Apóyanos!</Text>
+                    <Text style={styles.menuText}>Crear Grupo</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -178,19 +147,19 @@ const MainMenuScreen = ({navigation}) => {
                     onPress={() => navigation.navigate('ViewAllGroupsScreen')}
                 >
                     <View style={styles.iconContainer}>
-                        <Icon name="group" type="font-awesome" size={20} color="#FF0000"/>
+                        <Icon name="eye" type="font-awesome" size={23} color="#FF0000" />
                     </View>
-                    <Text style={styles.menuText}>Grupos</Text>
+                    <Text style={styles.menuText}>Ver grupos</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                     style={styles.menuItem}
-                    onPress={handleLogout}
+                    onPress={() => navigation.navigate('PaymentScreen')}
                 >
                     <View style={styles.iconContainer}>
-                        <Icon name="sign-out" type="font-awesome" size={20} color="#FF0000"/>
+                        <Icon name="money" type="font-awesome" size={20} color="#FF0000" />
                     </View>
-                    <Text style={styles.menuText}>Cerrar Sesión</Text>
+                    <Text style={styles.menuText}>¡Apóyanos!</Text>
                 </TouchableOpacity>
             </View>
         </ScrollView>
