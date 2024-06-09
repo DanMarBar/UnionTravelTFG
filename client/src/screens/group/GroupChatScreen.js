@@ -10,8 +10,8 @@ import {
     ActivityIndicator,
     TouchableOpacity
 } from 'react-native';
-import { getMessages, createMessage } from '../../config/api';
-import { joinGroup, sendMessage, onReceiveMessage, disconnectSocket } from '../../service/socket';
+import { getMessages, createMessage } from '../../config/Api';
+import { joinGroup, sendMessage, onReceiveMessage, disconnectSocket } from '../../service/Socket';
 import { obtainAllUserInfo } from '../../utils/UserUtils';
 import { obtainImgRoute } from '../../utils/ImageUtils';
 

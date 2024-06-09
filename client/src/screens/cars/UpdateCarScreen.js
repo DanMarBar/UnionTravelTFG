@@ -18,7 +18,7 @@ import {
     getUserVehicleByRegistration,
     manageUpdateUserCarByRegistration,
     obtainAllVehicles
-} from '../../config/api';
+} from '../../config/Api';
 import { formatDate } from "../../utils/DateUtils";
 import { handleImageChange, obtainImgRoute } from "../../utils/ImageUtils";
 
@@ -165,7 +165,6 @@ const UpdateCarScreen = ({ route, navigation }) => {
                         } catch (error) {
                             console.log("Error actualizando el vehículo en el primer intento:", error);
 
-                            // Esperar un pequeño periodo de tiempo antes de reintentar
                             await new Promise(resolve => setTimeout(resolve, 1000));
 
                             try {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { manageGetUserVehicleWithVehicleInfoByCarId } from "../../config/api";
+import { manageGetUserVehicleWithVehicleInfoByCarId } from "../../config/Api";
 import { Icon } from "react-native-elements";
 import { obtainImgRoute } from "../../utils/ImageUtils";
 

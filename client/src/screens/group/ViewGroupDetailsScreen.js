@@ -21,7 +21,7 @@ import {
     obtainAllPeopleFromGroupById,
     obtainPersonFromGroupById,
     saveGroupRoute
-} from '../../config/api';
+} from '../../config/Api';
 import {obtainImgRoute} from '../../utils/ImageUtils';
 import {mapStyle} from "../../utils/MapUtils";
 import {obtainAllUserInfo} from "../../utils/UserUtils";
@@ -86,12 +86,10 @@ const ViewGroupDetailsScreen = ({route, navigation}) => {
                     return;
                 }
 
-                //let location = await Location.getCurrentPositionAsync({});
+                let location = await Location.getCurrentPositionAsync({});
                 setCurrentLocation({
-/*                    latitude: location.coords.latitude,
-                    longitude: location.coords.longitude,*/
-                    latitude: 34.052235,
-                    longitude: -118.243683,
+                    latitude: location.coords.latitude,
+                    longitude: location.coords.longitude,
                 });
             } catch (error) {
                 console.error('Error obteniendo la ubicación:', error);

@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import {Icon} from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {serverConnectionId, updateUserByEmail} from '../../config/api';
+import {serverConnectionId, updateUserByEmail} from '../../config/Api';
 import {obtainAllUserInfo} from '../../utils/UserUtils';
 import {handleImageChange} from "../../utils/ImageUtils";
 
@@ -100,9 +100,36 @@ const UserUpdateScreen = ({navigation}) => {
                             await updateUserByEmail(userDetails.email, formData);
                             Alert.alert("Éxito", "Información actualizada correctamente");
                             navigation.goBack();
+
                         } catch (error) {
-                            console.error('Error actualizando la información del usuario:', error);
-                            Alert.alert("Error", "No se pudo actualizar la información");
+                            try {
+                                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                                const reTryFormData = new FormData();
+                                reTryFormData.append('name', userDetails.name);
+                                reTryFormData.append('surname', userDetails.surname);
+                                reTryFormData.append('birthday', userDetails.birthday.toISOString());
+                                reTryFormData.append('cellphone', userDetails.cellphone);
+                                reTryFormData.append('secondCellphone', userDetails.secondCellphone);
+                                reTryFormData.append('direction', userDetails.direction);
+                                reTryFormData.append('zip', userDetails.zip);
+
+                                if (newPhoto) {
+                                    reTryFormData.append('profilePhoto', {
+                                        uri: newPhoto.uri,
+                                        type: newPhoto.type || 'image/jpeg',
+                                        name: newPhoto.name || 'profilePhoto.jpg',
+                                    });
+                                }
+                                await updateUserByEmail(userDetails.email, reTryFormData);
+                                Alert.alert("Éxito", "Información actualizada correctamente");
+                                navigation.goBack();
+
+                            } catch (secondError) {
+                                console.error('Error En el segundo intento la información del' +
+                                    ' usuario:', error);
+                                Alert.alert("Error", "No se pudo actualizar la información");
+                            }
                         }
                     }
                 }
@@ -147,8 +174,8 @@ const UserUpdateScreen = ({navigation}) => {
                     <TouchableOpacity style={styles.profileImageContainer}
                                       onPress={handleProfilePhotoChange}>
                         <Image
-                            source={{ uri: finalPhoto || "dede" }}
-                            style={styles.profileImage} />
+                            source={{uri: finalPhoto || "dede"}}
+                            style={styles.profileImage}/>
                         <Text style={styles.changePhotoText}>Cambiar foto</Text>
                     </TouchableOpacity>
                 </View>
@@ -160,17 +187,17 @@ const UserUpdateScreen = ({navigation}) => {
                                                     onChangeText={(text) => setUserDetails({
                                                         ...userDetails,
                                                         name: text
-                                                    })} />
+                                                    })}/>
                             <EditableDetailWithIcon icon="person-outline" label="Apellido"
                                                     maxLength={15}
                                                     value={userDetails.surname}
                                                     onChangeText={(text) => setUserDetails({
                                                         ...userDetails,
                                                         surname: text
-                                                    })} />
+                                                    })}/>
                             <View style={styles.detailRow}>
                                 <Icon name="cake" size={26} color="#ff0000"
-                                      style={styles.icon} />
+                                      style={styles.icon}/>
                                 <TouchableOpacity style={styles.editableFieldContainer}
                                                   onPress={() => setShowDatePicker(true)}>
                                     <Text style={styles.label}>Cumpleaños:</Text>
@@ -197,7 +224,7 @@ const UserUpdateScreen = ({navigation}) => {
                                                         cellphone: text
                                                     })}
                                                     keyboardType="numeric"
-                                                    maxLength={9} />
+                                                    maxLength={9}/>
                             <EditableDetailWithIcon icon="phone" label="Teléfono secundario"
                                                     value={userDetails.secondCellphone}
                                                     onChangeText={(text) => setUserDetails({
@@ -205,13 +232,13 @@ const UserUpdateScreen = ({navigation}) => {
                                                         secondCellphone: text
                                                     })}
                                                     keyboardType="numeric"
-                                                    maxLength={9} />
+                                                    maxLength={9}/>
                             <EditableDetailWithIcon icon="home" label="Dirección" maxLength={20}
                                                     value={userDetails.direction}
                                                     onChangeText={(text) => setUserDetails({
                                                         ...userDetails,
                                                         direction: text
-                                                    })} />
+                                                    })}/>
                             <EditableDetailWithIcon icon="location-city" label="Código Postal"
                                                     value={userDetails.zip}
                                                     onChangeText={(text) => setUserDetails({
@@ -219,7 +246,7 @@ const UserUpdateScreen = ({navigation}) => {
                                                         zip: text
                                                     })}
                                                     keyboardType="numeric"
-                                                    maxLength={5} />
+                                                    maxLength={5}/>
                         </GroupedDetail>
                     </View>
                 </View>
@@ -227,15 +254,15 @@ const UserUpdateScreen = ({navigation}) => {
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={[styles.circularButton, styles.saveButton]}
                                   onPress={handleUpdate}>
-                    <Icon name="save" size={24} color="#fff" />
+                    <Icon name="save" size={24} color="#fff"/>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.circularButton, styles.discardButton]}
                                   onPress={handleDiscardChanges}>
-                    <Icon name="refresh" size={24} color="#ff0000" />
+                    <Icon name="refresh" size={24} color="#ff0000"/>
                 </TouchableOpacity>
                 <TouchableOpacity style={[styles.circularButton, styles.changePasswordButton]}
-                                  onPress={() => navigation.navigate('changePasswordScreen', { email: userDetails.email })}>
-                    <Icon name="lock" size={24} color="#000" />
+                                  onPress={() => navigation.navigate('changePasswordScreen', {email: userDetails.email})}>
+                    <Icon name="lock" size={24} color="#000"/>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>

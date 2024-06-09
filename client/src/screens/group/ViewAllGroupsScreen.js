@@ -11,7 +11,7 @@ import {
     View,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { createGroupPerson, deleteUserFromGroup, getAllGroupsWithAllInfo } from '../../config/api';
+import { createGroupPerson, deleteUserFromGroup, getAllGroupsWithAllInfo } from '../../config/Api';
 import { obtainImgRoute } from "../../utils/ImageUtils";
 import { obtainAllUserInfo } from "../../utils/UserUtils";
 import { useFocusEffect } from "@react-navigation/native";

@@ -16,7 +16,7 @@ import {
     createGroupPerson,
     getAllPlaces,
     manageGetUserVehiclesByUserWithCarsId,
-} from '../../config/api';
+} from '../../config/Api';
 import {formatTime} from "../../utils/DateUtils";
 import {obtainAllUserInfo} from "../../utils/UserUtils";
 import {Icon} from "react-native-elements";

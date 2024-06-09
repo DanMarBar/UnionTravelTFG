@@ -1,5 +1,5 @@
 import io from 'socket.io-client';
-import { serverConnectionId } from '../config/api';
+import { serverConnectionId } from '../config/Api';
 
 const socket = io(serverConnectionId);
 

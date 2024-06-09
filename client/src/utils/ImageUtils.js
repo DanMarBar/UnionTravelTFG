@@ -1,5 +1,5 @@
 import * as ImagePicker from "expo-image-picker";
-import {serverConnectionId} from "../config/api";
+import {serverConnectionId} from "../config/Api";
 
 export const handleImageChange = async () => {
     const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();

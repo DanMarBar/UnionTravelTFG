@@ -15,7 +15,7 @@ import {
     checkIfCarIsBeingUsedInGroup,
     manageDeleteUserCarByRegistration,
     manageGetUserVehiclesByUserId
-} from '../../config/api.js';
+} from '../../config/Api.js';
 import {obtainAllUserInfo} from "../../utils/UserUtils";
 import {obtainImgRoute} from "../../utils/ImageUtils";
 

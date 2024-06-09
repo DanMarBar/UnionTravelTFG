@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import {View, Button, Alert, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import { useConfirmPayment, CardForm } from '@stripe/stripe-react-native';
-import { createPaymentIntent } from '../config/api';
+import { createPaymentIntent } from '../config/Api';
 import { obtainAllUserInfo } from '../utils/UserUtils';
 import * as Notifications from "expo-notifications";
 
@@ -118,7 +118,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         padding: 20,
-        backgroundColor: '#151515',
+        backgroundColor: '#111111',
     },
     title: {
         color: '#ffffff',

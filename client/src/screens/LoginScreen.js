@@ -14,8 +14,9 @@ import {
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useGitHubAuth} from '../service/Oauth';
-import {loginUser} from "../config/api";
+import {loginUser} from "../config/Api";
 import {BackgroundImage} from "react-native-elements/dist/config";
+import {obtainAllUserInfo, obtainAllUserInfoWithEmail} from "../utils/UserUtils";
 
 const LoginScreen = ({navigation}) => {
     const [email, setEmail] = useState('');
@@ -28,7 +29,13 @@ const LoginScreen = ({navigation}) => {
             const response = await loginUser({email, password});
             await AsyncStorage.setItem('userToken', response.data.token);
 
-            const userInfo = {email};
+            const userData = await obtainAllUserInfoWithEmail(email)
+            console.log(userData)
+            const userInfo = {
+                name: userData.user,
+                email: email,
+            };
+
             await AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
             navigation.replace('MainMenu');
 

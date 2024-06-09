@@ -10,7 +10,7 @@ import {
     View,
 } from 'react-native';
 import { Icon } from 'react-native-elements';
-import { changeUserPasswordByEmail } from '../../config/api';
+import { changeUserPasswordByEmail } from '../../config/Api';
 
 const ChangePasswordScreen = ({ navigation, route }) => {
     const [password, setPassword] = useState('');

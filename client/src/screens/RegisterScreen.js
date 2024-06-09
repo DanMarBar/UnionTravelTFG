@@ -14,7 +14,7 @@ import {
     View
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import {registerNewUser} from "../config/api";
+import {registerNewUser} from "../config/Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {CommonActions} from "@react-navigation/native";
 import * as Notifications from "expo-notifications";

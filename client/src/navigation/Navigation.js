@@ -9,7 +9,6 @@ import {useNavigation} from '@react-navigation/native';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import MainMenuScreen from '../screens/MainMenuScreen';
-import SignInScreen from '../screens/SignInScreen';
 import CarsListScreen from '../screens/cars/CarsListScreen';
 import CarDetailScreen from '../screens/cars/CarDetailScreen';
 import UpdateCarScreen from '../screens/cars/UpdateCarScreen';
@@ -47,7 +46,6 @@ const AppNavigator = () => {
         {name: 'Login', component: LoginScreen, options: {headerShown: false}},
         {name: 'Register', component: RegisterScreen, options: {headerShown: false}},
         {name: 'MainMenu', component: MainMenuScreen, options: {title: 'Menu principal'}},
-        {name: 'SignIn', component: SignInScreen},
         {name: 'CarsListScreen', component: CarsListScreen, options: {title: 'Lista de Vehiculos'}},
         {name: 'InsertCarScreen', component: InsertCarScreen, options: {title: 'Nuevo vehiculo'}},
         {name: 'CarDetail', component: CarDetailScreen},

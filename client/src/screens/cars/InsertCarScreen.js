@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {manageCreateNewUserVehicle, obtainAllVehicles} from '../../config/api';
+import {manageCreateNewUserVehicle, obtainAllVehicles} from '../../config/Api';
 import {obtainAllUserInfo} from "../../utils/UserUtils";
 import {formatDate} from "../../utils/DateUtils";
 import {handleImageChange} from "../../utils/ImageUtils";
