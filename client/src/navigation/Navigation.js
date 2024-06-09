@@ -112,16 +112,18 @@ const AppNavigator = () => {
         <>
             <Stack.Navigator
                 initialRouteName={initialRoute}
-                screenOptions={({navigation}) => ({
+                screenOptions={({route, navigation}) => ({
                     headerStyle: {backgroundColor: '#131313'},
                     headerTintColor: '#ffffff',
                     headerTitleStyle: {fontWeight: 'bold', color: '#ffffff'},
                     headerTitle: '',
                     headerLeft: () => (
-                        <TouchableOpacity onPress={() => navigation.goBack()}>
-                            <MaterialIcons name="arrow-back" size={28} color="#ffffff"
-                                           style={{marginLeft: 10}}/>
-                        </TouchableOpacity>
+                        route.name !== 'MainMenu' && (
+                            <TouchableOpacity onPress={() => navigation.goBack()}>
+                                <MaterialIcons name="arrow-back" size={28} color="#ffffff"
+                                               style={{marginLeft: 10}}/>
+                            </TouchableOpacity>
+                        )
                     ),
                     headerRight: () => (
                         <View style={{flexDirection: 'row', marginRight: 10, alignItems: 'center'}}>

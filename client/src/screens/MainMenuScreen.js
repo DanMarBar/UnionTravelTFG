@@ -3,14 +3,16 @@ import {Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react
 import {Icon} from 'react-native-elements';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MapView, {Marker} from 'react-native-maps';
+import * as Location from 'expo-location';
 import {mapStyle} from "../utils/MapUtils";
 import DigitalClock from './modals/DigitalClock';
 
 const MainMenuScreen = ({navigation}) => {
     const [userInfo, setUserInfo] = useState({});
+    const [currentLocation, setCurrentLocation] = useState(null);
 
     useEffect(() => {
-        // Obtiene la informacion del usario
+        // Obtiene la información del usuario
         const getUserInfo = async () => {
             try {
                 const userData = await AsyncStorage.getItem('userInfo');
@@ -25,10 +27,38 @@ const MainMenuScreen = ({navigation}) => {
             }
         };
 
+        // Obtiene la ubicación actual del usuario
+        const getCurrentLocation = async () => {
+            try {
+                let {status} = await Location.requestForegroundPermissionsAsync();
+                if (status !== 'granted') {
+                    Alert.alert('Permiso de ubicación denegado', 'Por favor, habilita los servicios de ubicación en la configuración del dispositivo.');
+                    setCurrentLocation({
+                        latitude: 37.78825,
+                        longitude: -122.4324,
+                    });
+                    return;
+                }
+
+                let location = await Location.getCurrentPositionAsync({});
+                setCurrentLocation({
+                    latitude: location.coords.latitude,
+                    longitude: location.coords.longitude,
+                });
+            } catch (error) {
+                console.error('Error obteniendo la ubicación:', error);
+                setCurrentLocation({
+                    latitude: 37.78825,
+                    longitude: -122.4324,
+                });
+            }
+        };
+
         getUserInfo();
+        getCurrentLocation();
     }, []);
 
-    // Se encarga de cerrar la sesion del usuario
+    // Se encarga de cerrar la sesión del usuario
     const handleLogout = async () => {
         try {
             await AsyncStorage.removeItem('userToken');
@@ -38,6 +68,12 @@ const MainMenuScreen = ({navigation}) => {
             console.error('Error logging out:', error);
         }
     };
+
+    if (!currentLocation) {
+        return <View style={styles.loadingContainer}>
+            <Text style={styles.loadingText}>Cargando...</Text>
+        </View>
+    }
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
@@ -52,17 +88,17 @@ const MainMenuScreen = ({navigation}) => {
                 <MapView
                     style={styles.map}
                     initialRegion={{
-                        latitude: 37.78825,
-                        longitude: -122.4324,
+                        latitude: currentLocation.latitude,
+                        longitude: currentLocation.longitude,
                         latitudeDelta: 0.0922,
                         longitudeDelta: 0.0421,
                     }}
                     customMapStyle={mapStyle}
                 >
                     <Marker
-                        coordinate={{latitude: 37.78825, longitude: -122.4324}}
-                        title={"Your Location"}
-                        description={"This is where you are"}
+                        coordinate={currentLocation}
+                        title={"Tu ubicación"}
+                        description={"Aquí estás"}
                     />
                 </MapView>
             </View>
@@ -74,7 +110,7 @@ const MainMenuScreen = ({navigation}) => {
                     <View style={styles.iconContainer}>
                         <Icon name="car" type="font-awesome" size={20} color="#FF0000"/>
                     </View>
-                    <Text style={styles.menuText}>Vehicles</Text>
+                    <Text style={styles.menuText}>Vehículos</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -84,7 +120,7 @@ const MainMenuScreen = ({navigation}) => {
                     <View style={styles.iconContainer}>
                         <Icon name="plus-circle" type="font-awesome" size={20} color="#FF0000"/>
                     </View>
-                    <Text style={styles.menuText}>Add Vehicle</Text>
+                    <Text style={styles.menuText}>Agregar Vehículo</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -94,7 +130,7 @@ const MainMenuScreen = ({navigation}) => {
                     <View style={styles.iconContainer}>
                         <Icon name="user" type="font-awesome" size={20} color="#FF0000"/>
                     </View>
-                    <Text style={styles.menuText}>Profile</Text>
+                    <Text style={styles.menuText}>Perfil</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -114,7 +150,7 @@ const MainMenuScreen = ({navigation}) => {
                     <View style={styles.iconContainer}>
                         <Icon name="road" type="font-awesome" size={20} color="#FF0000"/>
                     </View>
-                    <Text style={styles.menuText}>Find Route</Text>
+                    <Text style={styles.menuText}>Buscar Ruta</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -134,7 +170,7 @@ const MainMenuScreen = ({navigation}) => {
                     <View style={styles.iconContainer}>
                         <Icon name="money" type="font-awesome" size={20} color="#FF0000"/>
                     </View>
-                    <Text style={styles.menuText}>Apoyanos!</Text>
+                    <Text style={styles.menuText}>¡Apóyanos!</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
@@ -154,7 +190,7 @@ const MainMenuScreen = ({navigation}) => {
                     <View style={styles.iconContainer}>
                         <Icon name="sign-out" type="font-awesome" size={20} color="#FF0000"/>
                     </View>
-                    <Text style={styles.menuText}>Logout</Text>
+                    <Text style={styles.menuText}>Cerrar Sesión</Text>
                 </TouchableOpacity>
             </View>
         </ScrollView>
@@ -175,14 +211,14 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#FFF',
         textTransform: 'uppercase',
-        alignItems:"center",
+        alignItems: "center",
         letterSpacing: 2,
         marginBottom: 5,
     },
     welcomeText: {
         fontSize: 18,
         color: '#FFF',
-        alignItems:"flex-start"
+        alignItems: "flex-start"
     },
     clockContainer: {
         backgroundColor: '#1C1C1C',
@@ -236,6 +272,15 @@ const styles = StyleSheet.create({
         marginTop: 5,
         fontSize: 14,
         textAlign: 'center',
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    loadingText: {
+        fontSize: 20,
+        color: '#FFF',
     },
 });
 
