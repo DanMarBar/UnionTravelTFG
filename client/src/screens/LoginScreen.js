@@ -102,7 +102,7 @@ const LoginScreen = ({navigation}) => {
                         <View style={styles.socialButtonsContainer}>
                             <TouchableOpacity onPress={() => promptAsync()}
                                               style={styles.socialButton}>
-                                <Image source={require('../assets/images/misc/google.png')}
+                                <Image source={require('../assets/images/misc/git.png')}
                                        style={styles.socialIcon}/>
                             </TouchableOpacity>
                         </View>

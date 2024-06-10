@@ -13,7 +13,7 @@ const DigitalClock = () => {
         };
 
         updateClock();
-        const intervalId = setInterval(updateClock, 60000); // Actualiza cada minuto
+        const intervalId = setInterval(updateClock, 1000); // Actualiza cada segundo
 
         return () => clearInterval(intervalId);
     }, []);
