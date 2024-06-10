@@ -137,7 +137,7 @@ const MainMenuScreen = ({navigation}) => {
                     onPress={() => navigation.navigate('InsertGroupScreen')}
                 >
                     <View style={styles.iconContainer}>
-                        <Icon name="users" type="font-awesome" size={20} color="#FF0000" />
+                        <Icon name="male" type="font-awesome" size={20} color="#FF0000" />
                     </View>
                     <Text style={styles.menuText}>Crear Grupo</Text>
                 </TouchableOpacity>
@@ -147,7 +147,7 @@ const MainMenuScreen = ({navigation}) => {
                     onPress={() => navigation.navigate('ViewAllGroupsScreen')}
                 >
                     <View style={styles.iconContainer}>
-                        <Icon name="eye" type="font-awesome" size={23} color="#FF0000" />
+                        <Icon name="group" type="font-awesome" size={23} color="#FF0000" />
                     </View>
                     <Text style={styles.menuText}>Ver grupos</Text>
                 </TouchableOpacity>

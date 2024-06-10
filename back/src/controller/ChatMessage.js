@@ -1,6 +1,7 @@
 import ChatMessageModel from '../model/ChatMessageModel.js';
 import UserModel from "../model/UserModel.js";
 
+// Se guarda el mensaje enviado dentro de la base de datos
 export const createMessage = async (req, res) => {
     const {groupId} = req.params;
     const {content, userId} = req.body;
@@ -13,6 +14,7 @@ export const createMessage = async (req, res) => {
     }
 };
 
+// Obtiene los mensajes del grupo cuya id fue pasada por parametro
 export const getMessages = async (req, res) => {
     const { groupId } = req.params;
 

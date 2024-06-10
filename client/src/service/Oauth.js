@@ -46,7 +46,8 @@ const getGitHubUserInfo = async (code, navigation) => {
         Alert.alert('Error', 'Failed to fetch user info');
     }
 };
-
+// Este hook maneja la autenticación con GitHub.
+// Retorna la solicitud de autenticación y una función para iniciarla.
 export const useGitHubAuth = (navigation) => {
     const [request, response, promptAsync] = AuthSession.useAuthRequest(authRequestConfig, authRequestOptions);
     useEffect(() => {
@@ -60,9 +61,10 @@ export const useGitHubAuth = (navigation) => {
     return {request, promptAsync};
 };
 
+// Maneja un enlace profundo recibido, analizando la URL y extrayendo la información relevante.
 const handleDeepLink = async (event, navigationRef) => {
     const url = event.url;
-    console.log('Received URL:', url); // Imprime la URL recibida
+    console.log('Received URL:', url);
 
     const parseUrl = (url) => {
         const [path, queryString] = url.split('?');
@@ -84,6 +86,7 @@ const handleDeepLink = async (event, navigationRef) => {
     }
 };
 
+// Obtiene y maneja la URL inicial cuando la aplicación se abre por primera vez.
 const getInitialURL = async (navigationRef) => {
     const initialUrl = await Linking.getInitialURL();
     if (initialUrl) {

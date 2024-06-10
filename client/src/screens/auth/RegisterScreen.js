@@ -14,10 +14,11 @@ import {
     View
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
-import {registerNewUser} from "../config/Api";
+import {registerNewUser} from "../../config/Api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {CommonActions} from "@react-navigation/native";
 import * as Notifications from "expo-notifications";
+import {useGitHubAuth} from "../../service/Oauth";
 
 const RegisterScreen = ({navigation}) => {
     const [name, setName] = useState('');
@@ -26,6 +27,7 @@ const RegisterScreen = ({navigation}) => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isValidEmail, setIsValidEmail] = useState(true);
     const errorHeight = useRef(new Animated.Value(0)).current;
+    const {request, promptAsync} = useGitHubAuth(navigation);
 
     useEffect(() => {
         Animated.timing(errorHeight, {
@@ -100,7 +102,7 @@ const RegisterScreen = ({navigation}) => {
     return (
         <SafeAreaView style={styles.container}>
             <ImageBackground
-                source={require('../assets/images/RegisterFondo.jpg')}
+                source={require('../../assets/images/RegisterFondo.jpg')}
                 style={styles.background}
                 resizeMode="cover"
             >
@@ -174,14 +176,10 @@ const RegisterScreen = ({navigation}) => {
                             <View style={styles.divider} />
                         </View>
                         <View style={styles.socialButtonsContainer}>
-                            <TouchableOpacity style={styles.socialButton}>
-                                <Image source={require('../assets/images/misc/google.png')} style={styles.socialIcon} />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.socialButton}>
-                                <Image source={require('../assets/images/misc/facebook.png')} style={styles.socialIcon} />
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.socialButton}>
-                                <Image source={require('../assets/images/misc/twitter.png')} style={styles.socialIcon} />
+                            <TouchableOpacity onPress={() => promptAsync()}
+                                              style={styles.socialButton}>
+                                <Image source={require('../../assets/images/misc/git.png')}
+                                       style={styles.socialIcon}/>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.registerContainer}>

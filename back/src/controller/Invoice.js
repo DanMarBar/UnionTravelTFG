@@ -2,6 +2,7 @@ import User from "../model/UserModel.js";
 import InvoiceModel from "../model/InvoiceModel.js";
 import sendEmail from "../config/Mailer.js";
 
+// Crea la factura de los usuarios que hayan hehco una transaccion exitosa y la envia por correo
 export const createInvoiceUsingUserEmail = async (req, res) => {
     const {email} = req.params;
     const {amount, currency, status, created, invoiceNumber} = req.body;

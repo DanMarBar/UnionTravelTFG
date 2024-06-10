@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import User from '../model/UserModel.js';
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import sendEmail from "../config/Mailer.js";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ export const redirectToGitHub = (req, res) => {
     res.redirect(`${GITHUB_OAUTH_URL}?${params.toString()}`);
 };
 
+// Utiliza el oauth de github para identificar al usuario
 export const githubAuth = async (req, res) => {
     const code = req.query.code;
 
@@ -69,6 +71,7 @@ export const githubAuth = async (req, res) => {
     }
 };
 
+// Registra al usuario si es necesario usando lso datos del oauth
 const verifyAndRegisterUser = async (userInfo, res) => {
     try {
         const email = userInfo.email;
@@ -85,6 +88,16 @@ const verifyAndRegisterUser = async (userInfo, res) => {
                 email: email,
                 password: hashedPassword
             });
+
+            const emailContent =
+            `Bienvenido a nuestra aplicación
+            Hola ${user.user}
+            Gracias por registrarte en nuestra aplicación! Estamos encantados de tenerte con nosotros
+            Si tienes alguna pregunta, no dudes en contactarnos
+            Saludos, El equipo de nuestra aplicación
+        `;
+            // Enviar correo de bienvenida
+            sendEmail(email, 'Bienvenido a nuestra aplicación', emailContent);
         }
 
         // Generar un token de JWT para el usuario

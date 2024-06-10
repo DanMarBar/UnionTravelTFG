@@ -8,7 +8,7 @@ import {
     registerNewUser
 } from "../controller/User.js";
 import {
-    getUserVehicleByRegistration,
+    getUserVehicleByRegistration, getUserVehicleWithCarByRegistration,
     manageCreateNewUserVehicle,
     manageDeleteUserCarByRegistration,
     manageGetUserVehiclesByUserId,
@@ -80,6 +80,7 @@ router.get("/manageGetUserVehiclesByUserWithCarsId/:userId", manageGetUserVehicl
 router.get("/manageGetUserVehicleWithVehicleInfoByCarId/:carId", manageGetUserVehicleWithVehicleInfoByCarId);
 router.get("/manageGetCarById/:id", manageGetCarById);
 router.get("/getUserVehicleByRegistration/:registration", getUserVehicleByRegistration);
+router.get("/getUserVehicleWithCarByRegistration/:registration", getUserVehicleWithCarByRegistration);
 router.put("/manageUpdateCar/:registration", upload.single('imageUrl'), manageUpdateUserCarByRegistration);
 router.delete("/manageDeleteUserCarByRegistration/:registration", manageDeleteUserCarByRegistration);
 
@@ -102,7 +103,6 @@ router.delete("/deletePlace/:id", deletePlace);
 router.post("/createGroupPerson", createGroupPerson)
 router.delete("/deleteGroupPerson/:userId/:groupId", deleteGroupPerson);
 router.get("/obtainPersonFromGroupById/:userId/:groupId", obtainPersonFromGroupById);
-
 
 // Toda la informacion relacionada los grupos
 router.get("/obtainAllGroupsData", obtainAllGroupsData)

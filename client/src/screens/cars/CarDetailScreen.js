@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { manageGetUserVehicleWithVehicleInfoByCarId } from "../../config/Api";
+import {
+    getUserVehicleByRegistration, getUserVehicleWithCarByRegistration,
+    manageGetUserVehicleWithVehicleInfoByCarId
+} from "../../config/Api";
 import { Icon } from "react-native-elements";
 import { obtainImgRoute } from "../../utils/ImageUtils";
 
@@ -11,7 +14,8 @@ const CarDetailScreen = ({ route }) => {
         const fetchCarDetails = async () => {
             try {
                 const { car } = route.params;
-                const response = await manageGetUserVehicleWithVehicleInfoByCarId(car.CarId);
+                const response = await getUserVehicleWithCarByRegistration(car.registration);
+                console.log(response.data)
                 setCarDetails(response.data);
             } catch (error) {
                 console.error("Error obteniendo los detalles del coche:", error);
@@ -29,7 +33,7 @@ const CarDetailScreen = ({ route }) => {
         );
     }
 
-    const car = carDetails[0];
+    const car = carDetails;
 
     return (
         <SafeAreaView style={styles.flexContainer}>

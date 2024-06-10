@@ -14,9 +14,9 @@ import {
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useGitHubAuth} from '../service/Oauth';
-import {loginUser} from "../config/Api";
-import {obtainAllUserInfoWithEmail} from "../utils/UserUtils";
+import {useGitHubAuth} from '../../service/Oauth';
+import {loginUser} from "../../config/Api";
+import {obtainAllUserInfoWithEmail} from "../../utils/UserUtils";
 
 const LoginScreen = ({navigation}) => {
     const [email, setEmail] = useState('');
@@ -55,7 +55,7 @@ const LoginScreen = ({navigation}) => {
     return (
         <SafeAreaView style={styles.container}>
             <ImageBackground
-                source={require('../assets/images/loginBg.jpg')}
+                source={require('../../assets/images/loginBg.jpg')}
                 style={styles.background}
                 resizeMode="cover"
             >
@@ -102,7 +102,7 @@ const LoginScreen = ({navigation}) => {
                         <View style={styles.socialButtonsContainer}>
                             <TouchableOpacity onPress={() => promptAsync()}
                                               style={styles.socialButton}>
-                                <Image source={require('../assets/images/misc/git.png')}
+                                <Image source={require('../../assets/images/misc/git.png')}
                                        style={styles.socialIcon}/>
                             </TouchableOpacity>
                         </View>

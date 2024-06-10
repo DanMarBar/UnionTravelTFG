@@ -44,6 +44,7 @@ const CarListScreen = ({navigation}) => {
 
     const handleDetails = (car) => navigation.navigate('CarDetail', {car});
 
+    // Elimina el vehiculo siempre y cuando este no este siendo usado en un grupo
     const handleDelete = (car) => {
         Alert.alert(
             "Confirmar Eliminación",
@@ -155,7 +156,7 @@ const CarListScreen = ({navigation}) => {
                         </View>
                     </View>
                 ))}
-                <TouchableOpacity style={styles.createButton} onPress={() => navigation.navigate('InsertGroupScreen')}>
+                <TouchableOpacity style={styles.createButton} onPress={() => navigation.navigate('InsertCarScreen')}>
                     <Text style={styles.createButtonText}>Registra tu vehiculo</Text>
                 </TouchableOpacity>
             </ScrollView>

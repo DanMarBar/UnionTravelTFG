@@ -83,7 +83,7 @@ export const deleteGroupPerson = async (req, res) => {
 };
 
 
-// Toda la informacion relacionada al grupo
+// Toda la informacion relacionada al grupo a partir de los GroupPersonModel
 export const obtainAllGroupsData = async (req, res) => {
     try {
         const data = await GroupPersonModel.findAll({
@@ -118,7 +118,7 @@ export const obtainAllGroupsData = async (req, res) => {
     }
 };
 
-
+// Toda la informacion relacionada a GroupPersonModel, como el grupo, los usuarios, el vehiculo...
 export const obtainAllGroupsDataByGroupId = async (req, res) => {
     const {groupId} = req.params;
 
@@ -128,7 +128,6 @@ export const obtainAllGroupsDataByGroupId = async (req, res) => {
             include: [
                 {
                     model: User,
-                    // No incluir VehiclePersonModel aquí
                 },
                 {
                     model: GroupModel,

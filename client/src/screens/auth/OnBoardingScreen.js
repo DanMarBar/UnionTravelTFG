@@ -9,8 +9,8 @@ const { width, height } = Dimensions.get('window');
 
 const OnBoardingScreen = ({ navigation }) => {
     const [fontsLoaded] = useFonts({
-        'Roboto-Medium': require('../assets/fonts/Roboto-Medium.ttf'),
-        'Roboto-Italic': require('../assets/fonts/Roboto-Italic.ttf')
+        'Roboto-Medium': require('../../assets/fonts/Roboto-Medium.ttf'),
+        'Roboto-Italic': require('../../assets/fonts/Roboto-Italic.ttf')
     });
 
     const completeOnboarding = async () => {
@@ -37,7 +37,7 @@ const OnBoardingScreen = ({ navigation }) => {
         <Swiper loop={false}>
             <ImageBackground
                 style={styles.backgroundImage}
-                source={require('../assets/images/onboarding/OnBoarding-bg-1.jpg')}
+                source={require('../../assets/images/onboarding/OnBoarding-bg-1.jpg')}
             >
                 <View style={styles.textContainer}>
                     <Text style={styles.title}>Transformando la Movilidad Industrial</Text>
@@ -46,7 +46,7 @@ const OnBoardingScreen = ({ navigation }) => {
             </ImageBackground>
             <ImageBackground
                 style={styles.backgroundImage}
-                source={require('../assets/images/onboarding/OnBoarding-bg-2.jpg')}
+                source={require('../../assets/images/onboarding/OnBoarding-bg-2.jpg')}
             >
                 <View style={styles.textContainer}>
                     <Text style={styles.title}>Eficiencia y Sostenibilidad</Text>
@@ -55,7 +55,7 @@ const OnBoardingScreen = ({ navigation }) => {
             </ImageBackground>
             <ImageBackground
                 style={styles.backgroundImage}
-                source={require('../assets/images/onboarding/OnBoarding-bg-3.jpg')}
+                source={require('../../assets/images/onboarding/OnBoarding-bg-3.jpg')}
             >
                 <View style={styles.textContainer}>
                     <Text style={styles.title}>Acelera tu Tiempo</Text>

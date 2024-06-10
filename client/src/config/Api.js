@@ -39,6 +39,7 @@ export const manageCreateNewUserVehicle = (userId, carDetails) => api.post(`/man
 export const manageGetUserVehiclesByUserId = (userId) => api.get(`/manageGetUserVehiclesByUserId/${userId}`);
 export const manageGetUserVehiclesByUserWithCarsId = (userId) => api.get(`/manageGetUserVehiclesByUserWithCarsId/${userId}`);
 export const getUserVehicleByRegistration = (registration) => api.get(`/getUserVehicleByRegistration/${registration}`);
+export const getUserVehicleWithCarByRegistration = (registration) => api.get(`/getUserVehicleWithCarByRegistration/${registration}`);
 export const manageGetUserVehicleWithVehicleInfoByCarId = (carId) => api.get(`/manageGetUserVehicleWithVehicleInfoByCarId/${carId}`);
 export const manageUpdateUserCarByRegistration = (registration, carDetails) => api.put(`/manageUpdateCar/${registration}`, carDetails, {
     headers: {

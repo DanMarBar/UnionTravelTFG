@@ -58,6 +58,7 @@ const InsertCarScreen = ({navigation}) => {
         fetchVehicles();
     }, []);
 
+    // Se encarga de cambiar la fecha
     const onChangeDate = (event, selectedDate) => {
         setShowDatePicker(Platform.OS === 'ios');
         const currentDate = selectedDate || carDetails.year;
@@ -77,6 +78,7 @@ const InsertCarScreen = ({navigation}) => {
         }
     };
 
+    // Crea el veiculo siempre y cuando se hayan llenado los datos necesarios
     const handleInsert = async () => {
         if (!carDetails.color) {
             setError('Por favor, seleccione un vehículo.');

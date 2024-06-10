@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
+// Verifica que el intento de pago sea correcto y envia el resultado
 export const createPaymentIntent = async (req, res) => {
     const { amount } = req.body;
 

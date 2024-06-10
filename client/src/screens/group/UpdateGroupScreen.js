@@ -288,7 +288,7 @@ const UpdateGroupScreen = ({ route, navigation }) => {
                         ))}
                     </Picker>
 
-                    <Text style={styles.label}>Eliminar vehiculo</Text>
+                    <Text style={styles.label}>Eliminar grupo</Text>
                     <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
                         <Text style={styles.buttonText}>Eliminar</Text>
                     </TouchableOpacity>

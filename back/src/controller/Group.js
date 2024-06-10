@@ -36,6 +36,7 @@ export const getAllGroups = async (req, res) => {
     }
 };
 
+// Obtiene toda la informacion partiendo desde los grupos
 export const getAllGroupsWithAllInfo = async (req, res) => {
     try {
         const groups = await Group.findAll({
@@ -118,6 +119,7 @@ export const deleteGroup = async (req, res) => {
     }
 };
 
+// Verifica si el vehiculo esta siendo usado en al menos un grupo
 export const checkIfCarIsBeingUsedInGroup = async (req, res) => {
     const { registration } = req.params;
     try {
@@ -136,6 +138,7 @@ export const checkIfCarIsBeingUsedInGroup = async (req, res) => {
     }
 };
 
+// Guarda la ruta propuesta dentro de la base de datos, lo guarda como json
 export const saveGroupRoute = async (req, res) => {
     try {
         const { groupId } = req.params;
@@ -159,6 +162,8 @@ export const saveGroupRoute = async (req, res) => {
     }
 };
 
+// Obtiene los valores de la ruta del grupo cuya id fue pasada por parametro de la base de
+// datos, parsea el json y la envia
 export const getGroupRoute = async (req, res) => {
     try {
         const { groupId } = req.params;

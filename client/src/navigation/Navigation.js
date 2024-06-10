@@ -6,21 +6,21 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 
-import LoginScreen from '../screens/LoginScreen';
-import RegisterScreen from '../screens/RegisterScreen';
+import LoginScreen from '../screens/auth/LoginScreen';
+import RegisterScreen from '../screens/auth/RegisterScreen';
 import MainMenuScreen from '../screens/MainMenuScreen';
 import CarsListScreen from '../screens/cars/CarsListScreen';
 import CarDetailScreen from '../screens/cars/CarDetailScreen';
 import UpdateCarScreen from '../screens/cars/UpdateCarScreen';
 import InsertCarScreen from '../screens/cars/InsertCarScreen';
-import OnBoardingScreen from '../screens/OnBoardingScreen';
+import OnBoardingScreen from '../screens/auth/OnBoardingScreen';
 import MenuModal from '../screens/modals/MenuModal';
 import RouteScreen from '../screens/RouteScreen';
 import UserUpdateScreen from '../screens/user/UserUpdateScreen';
 import InsertGroupScreen from '../screens/group/InsertGroupScreen';
 import ViewAllGroupsScreen from '../screens/group/ViewAllGroupsScreen';
 import ViewGroupDetailsScreen from '../screens/group/ViewGroupDetailsScreen';
-import PaymentScreen from '../screens/PaymentScreen';
+import PaymentScreen from '../screens/payment/PaymentScreen';
 import GroupChatScreen from '../screens/group/GroupChatScreen';
 import UpdateGroupScreen from '../screens/group/UpdateGroupScreen';
 import UserDetailScreen from "../screens/user/UserProfileScreen";
@@ -36,6 +36,8 @@ const AppNavigator = () => {
     const [filteredScreens, setFilteredScreens] = useState([]);
     const navigation = useNavigation();
 
+    // Pantallas de la aplicacion, name es el nombre usado para que navigation identifique y
+    // title es para que puedan ser localizadas por el usuario
     const screens = [
         {name: 'OnBoardingScreen', component: OnBoardingScreen, options: {headerShown: false}},
         {

@@ -23,6 +23,7 @@ const GroupChat = ({ route }) => {
     const [groupId, setGroupId] = useState(null);
 
     useEffect(() => {
+        // Entra en el chatroom y pude todos los mensajes correspondientes al id del grupo.
         const fetchUserAndMessages = async () => {
             try {
                 const userResponse = await obtainAllUserInfo();
@@ -52,6 +53,7 @@ const GroupChat = ({ route }) => {
         };
     }, [route.params.group.Group.id]);
 
+    // Envia el mensaje dado por el usuario
     const handleSendMessage = async () => {
         if (newMessage.trim() === '') return;
 

@@ -84,6 +84,7 @@ const getUserVehicleWithVehicleInfoByCarId = async (carId) => {
     }
 }
 
+// Vehiculo del usuario por su id
 export const manageGetUserVehiclesByUserId = async (req, res) => {
     try {
         const userId = req.params.userId
@@ -96,6 +97,7 @@ export const manageGetUserVehiclesByUserId = async (req, res) => {
     }
 }
 
+// Vehiculo del usuario por su id y la del vehiculo
 export const manageGetUserVehiclesByUserWithCarsId = async (req, res) => {
     try {
         const userId = req.params.userId;
@@ -173,6 +175,7 @@ const deleteCar = async (registration) => {
     }
 }
 
+// Obtiene VehiclePersonModel por su matricula
 export const getUserVehicleByRegistration = async (req, res) => {
     try {
         const registration = req.params.registration
@@ -183,3 +186,22 @@ export const getUserVehicleByRegistration = async (req, res) => {
         return "Ha ocurrido un error a actualizar"
     }
 }
+
+// Obtiene VehiclePersonModel por su matricula
+export const getUserVehicleWithCarByRegistration = async (req, res) => {
+    try {
+        const registration = req.params.registration;
+        const vehicle = await VehiclePersonModel.findOne({
+            include: [
+                {
+                    model: VehicleModel,
+                }
+            ],
+            where: { registration: registration }
+        });
+        return res.json(vehicle);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Ha ocurrido un error al actualizar" });
+    }
+};

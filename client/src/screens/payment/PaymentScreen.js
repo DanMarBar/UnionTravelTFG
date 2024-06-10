@@ -3,8 +3,8 @@ import React, {useEffect, useState} from 'react';
 import {Alert, Button, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {CardForm, useConfirmPayment} from '@stripe/stripe-react-native';
-import {createInvoiceUsingUserEmail, createPaymentIntent} from '../config/Api';
-import {obtainAllUserInfo} from '../utils/UserUtils';
+import {createInvoiceUsingUserEmail, createPaymentIntent} from '../../config/Api';
+import {obtainAllUserInfo} from '../../utils/UserUtils';
 import * as Notifications from "expo-notifications";
 
 const PaymentScreen = ({route, navigation}) => {
@@ -43,6 +43,8 @@ const PaymentScreen = ({route, navigation}) => {
         );
     };
 
+    // Hace la transaccion del pago enviado por el usuario, llama a la base de datos para
+    // verificar y luego a Stripe. Si no hay error enviara notificacion y creara una factura
     const handlePayPress = async () => {
         try {
             const response = await createPaymentIntent(amount);
