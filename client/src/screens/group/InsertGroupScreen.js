@@ -65,6 +65,7 @@ const InsertGroupScreen = ({navigation}) => {
         fetchData();
     }, []);
 
+    // Permite cambiar la hora de llega y salida del grupo
     const onChangeTime = (event, selectedTime) => {
         setShowTimePicker(false);
         if (selectedTime) {
@@ -88,6 +89,7 @@ const InsertGroupScreen = ({navigation}) => {
         }
     };
 
+    // Si los campso estan bien completados crea el grupo
     const handleInsert = async () => {
         if (!groupDetails.name || !groupDetails.description) {
             setError('Por favor, complete todos los campos.');

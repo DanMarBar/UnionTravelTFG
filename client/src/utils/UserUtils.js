@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {findUserByEmail} from "../config/Api";
 import {Alert} from "react-native";
 
+// Obtiene toda la info del usuario con el email almacenado en el storage
 export const obtainAllUserInfo = async () => {
     try {
         const userData = await AsyncStorage.getItem('userInfo');
@@ -18,6 +19,7 @@ export const obtainAllUserInfo = async () => {
     }
 };
 
+// Obtiene toda la info del usuario con el email enviado por parametro
 export const obtainAllUserInfoWithEmail = async (email) => {
     try {
         const response = await findUserByEmail(email);

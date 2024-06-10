@@ -104,12 +104,14 @@ const UpdateGroupScreen = ({ route, navigation }) => {
         }
     };
 
+    // Reincia los campos
     const handleRefresh = async () => {
         if (originalGroupDetails) {
             setGroupDetails(originalGroupDetails);
         }
     };
 
+    // Si los campos se mantienen bien rellanados permite actualizar el grupo
     const handleUpdate = async () => {
         if (!groupDetails.name || !groupDetails.description) {
             setError('Por favor, complete todos los campos.');
@@ -164,6 +166,7 @@ const UpdateGroupScreen = ({ route, navigation }) => {
         );
     };
 
+    // Permite eliminar un grupo por su id
     const handleDelete = async () => {
         Alert.alert(
             "Confirmar Eliminación",

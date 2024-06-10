@@ -1,6 +1,7 @@
 import * as ImagePicker from "expo-image-picker";
 import {serverConnectionId} from "../config/Api";
 
+// Gestionar el cambio de imagen
 export const handleImageChange = async () => {
     const {status} = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
@@ -21,6 +22,7 @@ export const handleImageChange = async () => {
     }
 }
 
+// Obtener la ruta de la imagen
 export const obtainImgRoute = (imageUri) => {
     return serverConnectionId + '/' + imageUri
 }

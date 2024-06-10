@@ -1,3 +1,4 @@
+// Diseño visual del mapa
 export const mapStyle = [
     { "elementType": "geometry", "stylers": [{ "color": "#212121" }] },
     { "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] },

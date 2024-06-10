@@ -10,6 +10,7 @@ Notifications.setNotificationHandler({
     }),
 });
 
+// Permite que las notificiaciones aparezcan en la pantalla del telefono
 export async function registerForPushNotificationsAsync() {
     let token;
     if (Platform.OS === 'android') {

@@ -2,6 +2,7 @@
 import {Platform} from "react-native";
 import {useState} from "react";
 
+// Formato yyyy-mm-dd
 export const formatDate = (date) => {
     return date.toLocaleDateString('es-ES', {
         day: '2-digit',
@@ -10,6 +11,7 @@ export const formatDate = (date) => {
     });
 }
 
+// Formato hora - minuto
 export const formatTime = (date) => {
     const options = {
         hour: '2-digit',
